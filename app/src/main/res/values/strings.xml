@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Score Reporter</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">login</string>
+    <string name="forgot_password">Forgot Password</string>
+    <string name="account">Account</string>
 </resources>
