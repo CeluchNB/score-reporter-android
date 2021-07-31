@@ -11,7 +11,7 @@ class FakeUserRepository : UserRepository {
         return if (email == "email@email.com") {
             Result.Success(Constants.USER_PROFILE)
         } else {
-            Result.Error(Exception("Invalid email or password"))
+            Result.Error(Exception(Constants.LOGIN_ERROR))
         }
     }
 

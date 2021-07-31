@@ -6,10 +6,12 @@ import com.noah.scorereporter.account.UserRepository
 import com.noah.scorereporter.getOrAwaitValue
 import com.noah.scorereporter.network.Result
 import com.noah.scorereporter.network.succeeded
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.everyItem
+import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsIn
+import org.hamcrest.core.IsNot
+import org.hamcrest.core.IsNull
+import org.jetbrains.annotations.NotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,14 +33,16 @@ class LoginViewModelUnitTest {
         viewModel.onLoginClicked("email@email.com", "password")
         assertThat(viewModel.loading.getOrAwaitValue(), `is`(false))
 
-        val result = viewModel.userProfile.getOrAwaitValue()
-        assertThat(result.succeeded, `is`(true))
+        val userProfile = viewModel.userProfile.getOrAwaitValue()
+        assertThat(userProfile, `is`(notNullValue()))
 
-        result as Result.Success
-        assertThat(result.data.email, `is`(Constants.USER_PROFILE.email))
-        assertThat(result.data.firstName, `is`(Constants.USER_PROFILE.firstName))
-        assertThat(result.data.lastName, `is`(Constants.USER_PROFILE.lastName))
-        assertThat(result.data.teams.entries, everyItem(IsIn(Constants.USER_PROFILE.teams.entries)))
+        assertThat(userProfile.email, `is`(Constants.USER_PROFILE.email))
+        assertThat(userProfile.firstName, `is`(Constants.USER_PROFILE.firstName))
+        assertThat(userProfile.lastName, `is`(Constants.USER_PROFILE.lastName))
+        assertThat(userProfile.teams.entries, everyItem(IsIn(Constants.USER_PROFILE.teams.entries)))
+
+        val loginError = viewModel.loginError.getOrAwaitValue()
+        assertThat(loginError, IsNull())
     }
 
     @Test
@@ -46,10 +50,10 @@ class LoginViewModelUnitTest {
         viewModel.onLoginClicked("invalid@email.com", "password")
         assertThat(viewModel.loading.getOrAwaitValue(), `is`(false))
 
-        val result = viewModel.userProfile.getOrAwaitValue()
-        assertThat(result.succeeded, `is`(false))
+        val userProfile = viewModel.userProfile.getOrAwaitValue()
+        assertThat(userProfile, IsNull())
 
-        result as Result.Error
-        assertThat(result.exception.message, `is`("Invalid email or password"))
+        val loginError = viewModel.loginError.getOrAwaitValue()
+        assertThat(loginError, `is`(Constants.LOGIN_ERROR))
     }
 }
