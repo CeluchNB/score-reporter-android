@@ -10,7 +10,7 @@ import com.noah.scorereporter.network.Result
 import com.noah.scorereporter.network.succeeded
 import kotlinx.coroutines.launch
 
-class LoginViewModel(val repository: UserRepository) : ViewModel() {
+class LoginViewModel(private val repository: UserRepository) : ViewModel() {
 
     private val _loading: MutableLiveData<Boolean> = MutableLiveData(false)
     val loading: LiveData<Boolean>

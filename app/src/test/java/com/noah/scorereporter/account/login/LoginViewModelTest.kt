@@ -3,15 +3,12 @@ package com.noah.scorereporter.account.login
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.noah.scorereporter.Constants
 import com.noah.scorereporter.account.UserRepository
+import com.noah.scorereporter.fake.FakeUserRepository
 import com.noah.scorereporter.getOrAwaitValue
-import com.noah.scorereporter.network.Result
-import com.noah.scorereporter.network.succeeded
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsIn
-import org.hamcrest.core.IsNot
 import org.hamcrest.core.IsNull
-import org.jetbrains.annotations.NotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,7 +26,7 @@ class LoginViewModelUnitTest {
     }
 
     @Test
-    fun `test login with valid email`() {
+    fun `login with valid email`() {
         viewModel.onLoginClicked("email@email.com", "password")
         assertThat(viewModel.loading.getOrAwaitValue(), `is`(false))
 
@@ -46,7 +43,7 @@ class LoginViewModelUnitTest {
     }
 
     @Test
-    fun `test login with invalid email`() {
+    fun `login with invalid email`() {
         viewModel.onLoginClicked("invalid@email.com", "password")
         assertThat(viewModel.loading.getOrAwaitValue(), `is`(false))
 

@@ -1,4 +1,4 @@
-package com.noah.scorereporter.account.login
+package com.noah.scorereporter.fake
 
 import com.noah.scorereporter.Constants
 import com.noah.scorereporter.account.UserRepository
@@ -15,7 +15,7 @@ class FakeUserRepository : UserRepository {
         }
     }
 
-    override suspend fun getProfile(jwt: String): Result<UserProfile> {
+    override suspend fun getProfile(): Result<UserProfile> {
         return Result.Success(Constants.USER_PROFILE)
     }
 }
