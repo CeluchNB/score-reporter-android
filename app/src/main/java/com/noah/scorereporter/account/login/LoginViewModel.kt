@@ -4,13 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.noah.scorereporter.account.UserRepository
+import com.noah.scorereporter.account.AccountRepository
 import com.noah.scorereporter.model.UserProfile
 import com.noah.scorereporter.network.Result
 import com.noah.scorereporter.network.succeeded
 import kotlinx.coroutines.launch
 
-class LoginViewModel(private val repository: UserRepository) : ViewModel() {
+class LoginViewModel(private val repository: AccountRepository) : ViewModel() {
 
     private val _loading: MutableLiveData<Boolean> = MutableLiveData(false)
     val loading: LiveData<Boolean>

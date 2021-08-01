@@ -1,11 +1,11 @@
 package com.noah.scorereporter.fake
 
 import com.noah.scorereporter.Constants
-import com.noah.scorereporter.account.UserRepository
+import com.noah.scorereporter.account.AccountRepository
 import com.noah.scorereporter.model.UserProfile
 import com.noah.scorereporter.network.Result
 
-class FakeUserRepository : UserRepository {
+class FakeUserRepository : AccountRepository {
 
     override suspend fun login(email: String, password: String): Result<UserProfile> {
         return if (email == "email@email.com") {

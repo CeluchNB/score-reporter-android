@@ -1,5 +1,7 @@
 package com.noah.scorereporter.account
 
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.noah.scorereporter.Constants
 import com.noah.scorereporter.MainCoroutineRule
@@ -11,6 +13,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsIn
 import org.junit.Before
@@ -22,14 +25,16 @@ import org.junit.runner.RunWith
 @ExperimentalCoroutinesApi
 class UserProfileRepositoryTest {
 
-    private lateinit var repository: UserRepository
+    private lateinit var repository: AccountRepository
     private lateinit var dataSource: UserDataSource
+    private lateinit var context: Context
 
     @get:Rule
     val mainCoroutineRule = MainCoroutineRule()
 
     @Before
     fun initializeRepository() {
+        context = ApplicationProvider.getApplicationContext()
         dataSource = FakeUserDataSource()
         (dataSource as FakeUserDataSource).shouldReturnError = false
         repository = UserProfileRepository(dataSource)
@@ -48,7 +53,10 @@ class UserProfileRepositoryTest {
             CoreMatchers.everyItem(IsIn(Constants.USER_RESPONSE.teams.entries))
         )
 
-        TODO("assert jwt is saved in AccountManager")
+        val sharedPrefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        val jwt = sharedPrefs.getString("jwt_token", "bad_token")
+        assertThat(jwt, `is`(not("bad_token")))
+        assertThat(jwt, `is`(Constants.USER_RESPONSE.jwt))
     }
 
     @Test
@@ -58,7 +66,10 @@ class UserProfileRepositoryTest {
 
         result as Result.Error
         assertThat(result.exception.message, `is`(Constants.LOGIN_ERROR))
-        TODO("assert jwt is NOT saved in AccountManager")
+
+        val sharedPrefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        val jwt = sharedPrefs.getString("jwt_token", "bad_token")
+        assertThat(jwt, `is`("bad_token"))
     }
 
     @Test
