@@ -37,7 +37,7 @@ class UserProfileRepositoryTest {
         context = ApplicationProvider.getApplicationContext()
         dataSource = FakeUserDataSource()
         (dataSource as FakeUserDataSource).shouldReturnError = false
-        repository = UserProfileRepository(dataSource)
+        repository = UserProfileRepository(context, dataSource)
     }
 
     @Test
