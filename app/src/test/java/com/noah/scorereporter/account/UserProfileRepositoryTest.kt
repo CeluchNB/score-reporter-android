@@ -25,7 +25,7 @@ import org.junit.runner.RunWith
 @ExperimentalCoroutinesApi
 class UserProfileRepositoryTest {
 
-    private lateinit var repository: AccountRepository
+    private lateinit var repository: IUserProfileRepository
     private lateinit var dataSource: UserDataSource
     private lateinit var context: Context
 
@@ -46,17 +46,17 @@ class UserProfileRepositoryTest {
         assertThat(result.succeeded, `is`(true))
 
         result as Result.Success
-        assertThat(result.data.email, `is`(Constants.USER_RESPONSE.email))
-        assertThat(result.data.firstName, `is`(Constants.USER_RESPONSE.firstName))
-        assertThat(result.data.lastName, `is`(Constants.USER_RESPONSE.lastName))
+        assertThat(result.data.email, `is`(Constants.USER_RESPONSE.user.email))
+        assertThat(result.data.firstName, `is`(Constants.USER_RESPONSE.user.firstName))
+        assertThat(result.data.lastName, `is`(Constants.USER_RESPONSE.user.lastName))
         assertThat(result.data.teams.entries,
-            CoreMatchers.everyItem(IsIn(Constants.USER_RESPONSE.teams.entries))
+            CoreMatchers.everyItem(IsIn(Constants.USER_RESPONSE.user.teams.entries))
         )
 
         val sharedPrefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
         val jwt = sharedPrefs.getString("jwt_token", "bad_token")
         assertThat(jwt, `is`(not("bad_token")))
-        assertThat(jwt, `is`(Constants.USER_RESPONSE.jwt))
+        assertThat(jwt, `is`(Constants.USER_RESPONSE.token))
     }
 
     @Test
@@ -79,11 +79,11 @@ class UserProfileRepositoryTest {
         assertThat(result.succeeded, `is`(true))
 
         result as Result.Success
-        assertThat(result.data.email, `is`(Constants.USER_RESPONSE.email))
-        assertThat(result.data.firstName, `is`(Constants.USER_RESPONSE.firstName))
-        assertThat(result.data.lastName, `is`(Constants.USER_RESPONSE.lastName))
+        assertThat(result.data.email, `is`(Constants.USER_RESPONSE.user.email))
+        assertThat(result.data.firstName, `is`(Constants.USER_RESPONSE.user.firstName))
+        assertThat(result.data.lastName, `is`(Constants.USER_RESPONSE.user.lastName))
         assertThat(result.data.teams.entries,
-            CoreMatchers.everyItem(IsIn(Constants.USER_RESPONSE.teams.entries))
+            CoreMatchers.everyItem(IsIn(Constants.USER_RESPONSE.user.teams.entries))
         )
     }
 

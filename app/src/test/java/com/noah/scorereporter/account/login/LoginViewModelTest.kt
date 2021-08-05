@@ -2,7 +2,7 @@ package com.noah.scorereporter.account.login
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.noah.scorereporter.Constants
-import com.noah.scorereporter.account.AccountRepository
+import com.noah.scorereporter.account.IUserProfileRepository
 import com.noah.scorereporter.fake.FakeUserRepository
 import com.noah.scorereporter.getOrAwaitValue
 import org.hamcrest.CoreMatchers.*
@@ -16,7 +16,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class LoginViewModelUnitTest {
 
-    private lateinit var repository: AccountRepository
+    private lateinit var repository: IUserProfileRepository
     private lateinit var viewModel: LoginViewModel
 
     @Before

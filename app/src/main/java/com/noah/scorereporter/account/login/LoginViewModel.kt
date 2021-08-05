@@ -1,16 +1,13 @@
 package com.noah.scorereporter.account.login
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.noah.scorereporter.account.AccountRepository
+import androidx.lifecycle.*
+import com.noah.scorereporter.account.IUserProfileRepository
 import com.noah.scorereporter.model.UserProfile
 import com.noah.scorereporter.network.Result
 import com.noah.scorereporter.network.succeeded
 import kotlinx.coroutines.launch
 
-class LoginViewModel(private val repository: AccountRepository) : ViewModel() {
+class LoginViewModel(private val repository: IUserProfileRepository) : ViewModel() {
 
     private val _loading: MutableLiveData<Boolean> = MutableLiveData(false)
     val loading: LiveData<Boolean>
@@ -37,5 +34,12 @@ class LoginViewModel(private val repository: AccountRepository) : ViewModel() {
             }
         }
         _loading.value = false
+    }
+}
+
+@Suppress("UNCHECKED_CAST")
+class LoginViewModelFactory(private val repository: IUserProfileRepository) : ViewModelProvider.NewInstanceFactory() {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        return LoginViewModel(repository) as T
     }
 }
