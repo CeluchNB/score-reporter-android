@@ -5,9 +5,12 @@ import com.noah.scorereporter.account.IUserProfileRepository
 import com.noah.scorereporter.model.UserProfile
 import com.noah.scorereporter.network.Result
 import com.noah.scorereporter.network.succeeded
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginViewModel(private val repository: IUserProfileRepository) : ViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor(private val repository: IUserProfileRepository) : ViewModel() {
 
     private val _loading: MutableLiveData<Boolean> = MutableLiveData(false)
     val loading: LiveData<Boolean>

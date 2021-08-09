@@ -1,22 +1,16 @@
 package com.noah.scorereporter.account
 
+import com.noah.scorereporter.model.UserProfile
 import com.noah.scorereporter.network.Result
 import com.noah.scorereporter.network.UserDataSource
 import com.noah.scorereporter.network.UserService
-import com.noah.scorereporter.network.model.LoginUser
 import com.noah.scorereporter.network.model.User
-import retrofit2.Retrofit
-import retrofit2.awaitResponse
-import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 
-class UserProfileDataSource : UserDataSource {
+class UserProfileDataSource @Inject constructor(): UserDataSource {
 
-    private var retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl("https://score-reporter.herokuapp.com/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private var service: UserService = retrofit.create(UserService::class.java)
+    @Inject
+    lateinit var service: UserService
 
     override suspend fun login(email: String, password: String): Result<User> {
 //        val response = service.login(LoginUser(email, password)).awaitResponse()
@@ -26,7 +20,7 @@ class UserProfileDataSource : UserDataSource {
 //            }
 //        }
 //        return Result.Error(Exception(response.message()))
-        TODO("Not yet implemented")
+        return Result.Success(User(UserProfile("f", "l", "t@g.c", mapOf("one" to "two")), "123.asdf.1234"))
     }
 
     override suspend fun getProfile(jwt: String): Result<User> {

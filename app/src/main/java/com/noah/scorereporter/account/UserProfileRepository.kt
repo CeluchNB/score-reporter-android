@@ -1,14 +1,15 @@
 package com.noah.scorereporter.account
 
 import android.content.Context
-import android.util.Log
 import com.noah.scorereporter.model.UserProfile
 import com.noah.scorereporter.network.Result
 import com.noah.scorereporter.network.UserDataSource
 import com.noah.scorereporter.network.succeeded
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
-class UserProfileRepository(private val context: Context,
-                            private val userRemoteDataSource: UserDataSource) : IUserProfileRepository {
+class UserProfileRepository @Inject constructor(@ApplicationContext private val context: Context,
+                                                private val userRemoteDataSource: UserDataSource) : IUserProfileRepository {
 
     override suspend fun login(email: String, password: String): Result<UserProfile> {
         val result = userRemoteDataSource.login(email, password)
