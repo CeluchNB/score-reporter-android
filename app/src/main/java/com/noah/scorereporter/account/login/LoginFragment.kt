@@ -21,7 +21,6 @@ class LoginFragment : Fragment() {
     ): View? {
         val binding = FragmentLoginBinding.inflate(inflater)
 
-        loginViewModel.onLoginClicked("test@gmail.com", "Pass12!")
         return binding.root
     }
 }

@@ -3,7 +3,7 @@ package com.noah.scorereporter
 import com.noah.scorereporter.model.UserProfile
 import com.noah.scorereporter.network.model.User
 
-object Constants {
+object TestConstants {
 
     val USER_RESPONSE = User(
         UserProfile(

@@ -1,7 +1,7 @@
 package com.noah.scorereporter.account.login
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.noah.scorereporter.Constants
+import com.noah.scorereporter.TestConstants
 import com.noah.scorereporter.account.IUserProfileRepository
 import com.noah.scorereporter.fake.FakeUserRepository
 import com.noah.scorereporter.getOrAwaitValue
@@ -33,10 +33,10 @@ class LoginViewModelUnitTest {
         val userProfile = viewModel.userProfile.getOrAwaitValue()
         assertThat(userProfile, `is`(notNullValue()))
 
-        assertThat(userProfile.email, `is`(Constants.USER_PROFILE.email))
-        assertThat(userProfile.firstName, `is`(Constants.USER_PROFILE.firstName))
-        assertThat(userProfile.lastName, `is`(Constants.USER_PROFILE.lastName))
-        assertThat(userProfile.teams.entries, everyItem(IsIn(Constants.USER_PROFILE.teams.entries)))
+        assertThat(userProfile.email, `is`(TestConstants.USER_PROFILE.email))
+        assertThat(userProfile.firstName, `is`(TestConstants.USER_PROFILE.firstName))
+        assertThat(userProfile.lastName, `is`(TestConstants.USER_PROFILE.lastName))
+        assertThat(userProfile.teams.entries, everyItem(IsIn(TestConstants.USER_PROFILE.teams.entries)))
 
         val loginError = viewModel.loginError.getOrAwaitValue()
         assertThat(loginError, IsNull())
@@ -51,6 +51,6 @@ class LoginViewModelUnitTest {
         assertThat(userProfile, IsNull())
 
         val loginError = viewModel.loginError.getOrAwaitValue()
-        assertThat(loginError, `is`(Constants.LOGIN_ERROR))
+        assertThat(loginError, `is`(TestConstants.LOGIN_ERROR))
     }
 }

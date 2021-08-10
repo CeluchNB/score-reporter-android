@@ -1,23 +1,24 @@
 package com.noah.scorereporter.account
 
-import android.content.Context
+import android.content.SharedPreferences
 import com.noah.scorereporter.model.UserProfile
 import com.noah.scorereporter.network.Result
 import com.noah.scorereporter.network.UserDataSource
 import com.noah.scorereporter.network.succeeded
-import dagger.hilt.android.qualifiers.ApplicationContext
+import com.noah.scorereporter.util.Constants
 import javax.inject.Inject
 
-class UserProfileRepository @Inject constructor(@ApplicationContext private val context: Context,
-                                                private val userRemoteDataSource: UserDataSource) : IUserProfileRepository {
+class UserProfileRepository @Inject constructor(
+    private val userRemoteDataSource: UserDataSource,
+    private val sharedPrefs: SharedPreferences
+) : IUserProfileRepository {
 
     override suspend fun login(email: String, password: String): Result<UserProfile> {
         val result = userRemoteDataSource.login(email, password)
 
         return if (result.succeeded) {
-            val sharedPrefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
             result as Result.Success
-            sharedPrefs.edit().putString("jwt_token", result.data.token).apply()
+            sharedPrefs.edit().putString(Constants.USER_TOKEN, result.data.token).apply()
             Result.Success(result.data.user)
         } else {
             Result.Error((result as Result.Error).exception)
@@ -25,8 +26,7 @@ class UserProfileRepository @Inject constructor(@ApplicationContext private val 
     }
 
     override suspend fun getProfile(): Result<UserProfile> {
-        val sharedPrefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
-        val jwt = sharedPrefs.getString("jwt_token", "")
+        val jwt = sharedPrefs.getString(Constants.USER_TOKEN, "")
 
         val result = userRemoteDataSource.getProfile(jwt ?: "")
         return if (result.succeeded) {
