@@ -16,6 +16,7 @@ buildscript {
         coroutines_version = "1.2.1"
         hilt_version = "2.35"
         retrofit_version = "2.9.0"
+        espresso_version = "3.4.0"
     }
 
     dependencies {
