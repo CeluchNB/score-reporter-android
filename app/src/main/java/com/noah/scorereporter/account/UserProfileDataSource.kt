@@ -26,4 +26,13 @@ class UserProfileDataSource @Inject constructor(): UserDataSource {
     override suspend fun getProfile(jwt: String): Result<User> {
         TODO("Not yet implemented")
     }
+
+    override suspend fun signUp(
+        firstName: String,
+        lastName: String,
+        email: String,
+        password: String
+    ): Result<User> {
+        TODO("Not yet implemented")
+    }
 }

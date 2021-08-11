@@ -24,4 +24,17 @@ class FakeUserDataSource : UserDataSource {
             Result.Error(Exception(TestConstants.LOGIN_ERROR))
         }
     }
+
+    override suspend fun signUp(
+        firstName: String,
+        lastName: String,
+        email: String,
+        password: String
+    ): Result<User> {
+        return if (!shouldReturnError) {
+            Result.Success(TestConstants.USER_RESPONSE)
+        } else {
+            Result.Error(java.lang.Exception(TestConstants.LOGIN_ERROR))
+        }
+    }
 }

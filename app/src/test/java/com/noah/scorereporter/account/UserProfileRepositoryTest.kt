@@ -6,8 +6,9 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.noah.scorereporter.TestConstants
 import com.noah.scorereporter.MainCoroutineRule
+import com.noah.scorereporter.TestConstants
+import com.noah.scorereporter.fake.FakeAndroidKeyStore
 import com.noah.scorereporter.fake.FakeUserDataSource
 import com.noah.scorereporter.network.Result
 import com.noah.scorereporter.network.UserDataSource
@@ -21,6 +22,7 @@ import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsIn
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -111,5 +113,48 @@ class UserProfileRepositoryTest {
 
         result as Result.Error
         assertThat(result.exception.message, `is`(TestConstants.LOGIN_ERROR))
+    }
+
+    @Test
+    fun `signUp with valid data`() = mainCoroutineRule.runBlockingTest {
+        val result = repository.signUp(
+            TestConstants.USER_PROFILE.firstName,
+            TestConstants.USER_PROFILE.lastName,
+            TestConstants.USER_PROFILE.email,
+            "Pass12!"
+        )
+        assertThat(result.succeeded, `is`(true))
+
+        result as Result.Success
+        assertThat(result.data.firstName, `is`(TestConstants.USER_PROFILE.firstName))
+        assertThat(result.data.lastName, `is`(TestConstants.USER_PROFILE.lastName))
+        assertThat(result.data.email, `is`(TestConstants.USER_PROFILE.email))
+
+        val jwt = sharedPrefs.getString(Constants.USER_TOKEN, "bad_token")
+        assertThat(jwt, `is`(not("bad_token")))
+        assertThat(jwt, `is`(TestConstants.USER_RESPONSE.token))
+    }
+
+    @Test
+    fun `signUp with invalid data`() = mainCoroutineRule.runBlockingTest {
+        (dataSource as FakeUserDataSource).shouldReturnError = true
+
+        val result = repository.signUp(
+            TestConstants.USER_PROFILE.firstName,
+            TestConstants.USER_PROFILE.lastName,
+            TestConstants.USER_PROFILE.email,
+            "Pass12!"
+        )
+        assertThat(result.succeeded, `is`(false))
+        val jwt = sharedPrefs.getString(Constants.USER_TOKEN, "bad_token")
+        assertThat(jwt, `is`("bad_token"))
+    }
+
+    companion object {
+        @JvmStatic
+        @BeforeClass
+        fun beforeClass() {
+            FakeAndroidKeyStore.setup
+        }
     }
 }

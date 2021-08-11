@@ -7,4 +7,6 @@ interface UserDataSource {
     suspend fun login(email: String, password: String): Result<User>
 
     suspend fun getProfile(jwt: String): Result<User>
+
+    suspend fun signUp(firstName: String, lastName: String, email: String, password: String): Result<User>
 }

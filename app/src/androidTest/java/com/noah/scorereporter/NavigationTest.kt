@@ -1,4 +1,4 @@
-package com.noah.scorereporter.account.login
+package com.noah.scorereporter
 
 import android.view.Gravity
 import androidx.test.espresso.Espresso.*
@@ -11,8 +11,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import com.noah.scorereporter.MainActivity
-import com.noah.scorereporter.R
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

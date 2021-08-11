@@ -18,4 +18,13 @@ class FakeUserRepository : IUserProfileRepository {
     override suspend fun getProfile(): Result<UserProfile> {
         return Result.Success(TestConstants.USER_PROFILE)
     }
+
+    override suspend fun signUp(
+        firstName: String,
+        lastName: String,
+        email: String,
+        password: String
+    ): Result<UserProfile> {
+        TODO("Not yet implemented")
+    }
 }

@@ -37,4 +37,13 @@ class UserProfileRepository @Inject constructor(
             Result.Error(result.exception)
         }
     }
+
+    override suspend fun signUp(
+        firstName: String,
+        lastName: String,
+        email: String,
+        password: String
+    ): Result<UserProfile> {
+        TODO("Not yet implemented")
+    }
 }
