@@ -34,7 +34,6 @@ class UserProfileRepository @Inject constructor(
             Result.Success(result.data.user)
         } else {
             result as Result.Error
-            Result.Error(result.exception)
         }
     }
 
@@ -44,6 +43,14 @@ class UserProfileRepository @Inject constructor(
         email: String,
         password: String
     ): Result<UserProfile> {
-        TODO("Not yet implemented")
+        val result = userRemoteDataSource.signUp(firstName, lastName, email, password)
+
+        return if (result.succeeded) {
+            result as Result.Success
+            sharedPrefs.edit().putString(Constants.USER_TOKEN, result.data.token).apply()
+            Result.Success(result.data.user)
+        } else {
+            result as Result.Error
+        }
     }
 }

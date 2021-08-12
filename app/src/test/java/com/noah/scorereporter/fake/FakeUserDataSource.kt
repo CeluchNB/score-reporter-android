@@ -34,7 +34,7 @@ class FakeUserDataSource : UserDataSource {
         return if (!shouldReturnError) {
             Result.Success(TestConstants.USER_RESPONSE)
         } else {
-            Result.Error(java.lang.Exception(TestConstants.LOGIN_ERROR))
+            Result.Error(Exception(TestConstants.LOGIN_ERROR))
         }
     }
 }
