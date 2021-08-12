@@ -39,10 +39,3 @@ class LoginViewModel @Inject constructor(private val repository: IUserProfileRep
         }
     }
 }
-
-@Suppress("UNCHECKED_CAST")
-class LoginViewModelFactory(private val repository: IUserProfileRepository) : ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return LoginViewModel(repository) as T
-    }
-}
