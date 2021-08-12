@@ -35,8 +35,8 @@ class LoginViewModel @Inject constructor(private val repository: IUserProfileRep
                     _loginError.value = (result as Result.Error).exception.message
                 }
             }
+            _loading.value = false
         }
-        _loading.value = false
     }
 }
 

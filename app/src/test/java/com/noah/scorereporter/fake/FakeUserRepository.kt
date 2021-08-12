@@ -25,6 +25,10 @@ class FakeUserRepository : IUserProfileRepository {
         email: String,
         password: String
     ): Result<UserProfile> {
-        TODO("Not yet implemented")
+        return if (email != "invalid@email.com") {
+            Result.Success(TestConstants.USER_PROFILE)
+        } else {
+            Result.Error(Exception(TestConstants.LOGIN_ERROR))
+        }
     }
 }
