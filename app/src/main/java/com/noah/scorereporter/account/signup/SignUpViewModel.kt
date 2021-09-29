@@ -37,7 +37,7 @@ class SignUpViewModel @Inject constructor(val repository: IUserProfileRepository
                     _user.value = Event((result as Result.Success).data)
                 } else {
                     _error.value = Event(
-                        (result as Result.Error).exception.message ?: "Unable to login"
+                        (result as Result.Error).exception.message ?: "Unable to sign up"
                     )
                 }
             }

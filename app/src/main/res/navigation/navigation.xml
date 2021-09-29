@@ -12,5 +12,13 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.noah.scorereporter.account.login.LoginFragment"
-        android:label="Login" />
+        android:label="Login" >
+        <action
+            android:id="@+id/action_loginFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.noah.scorereporter.account.signup.SignUpFragment"
+        android:label="SignUpFragment" />
 </navigation>
