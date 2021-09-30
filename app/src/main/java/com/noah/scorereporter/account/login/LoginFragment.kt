@@ -1,6 +1,7 @@
 package com.noah.scorereporter.account.login
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,19 +18,34 @@ class LoginFragment : Fragment() {
 
     private val loginViewModel: LoginViewModel by viewModels()
 
+    private lateinit var binding: FragmentLoginBinding
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentLoginBinding.inflate(inflater)
+        binding = FragmentLoginBinding.inflate(inflater)
 
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.findViewById<Button>(R.id.button_sign_up).setOnClickListener {
+        binding.buttonSignUp.setOnClickListener {
             navigateToSignUpFragment()
+        }
+
+        binding.buttonLogin.setOnClickListener {
+            loginViewModel.onLoginClicked(
+                binding.inputEmail.text.toString(),
+                binding.inputPassword.text.toString()
+            )
+        }
+
+        loginViewModel.userProfile.observe(viewLifecycleOwner) { profile ->
+            profile?.let {
+                findNavController().popBackStack()
+            }
         }
     }
 

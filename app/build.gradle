@@ -62,6 +62,8 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 
+    debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
+
     testImplementation 'junit:junit:4.13.2'
     testImplementation "org.hamcrest:hamcrest-all:$hamcrest_version"
     testImplementation "androidx.test.ext:junit-ktx:$androidX_test_ext_kotlin_runner_version"

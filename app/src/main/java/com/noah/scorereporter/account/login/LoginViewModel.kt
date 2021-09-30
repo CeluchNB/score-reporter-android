@@ -16,8 +16,8 @@ class LoginViewModel @Inject constructor(private val repository: IUserProfileRep
     val loading: LiveData<Boolean>
         get() = _loading
 
-    private val _userProfile: MutableLiveData<UserProfile> = MutableLiveData(null)
-    val userProfile: LiveData<UserProfile>
+    private val _userProfile: MutableLiveData<UserProfile?> = MutableLiveData(null)
+    val userProfile: LiveData<UserProfile?>
         get() = _userProfile
 
     private val _loginError: MutableLiveData<String> = MutableLiveData(null)
