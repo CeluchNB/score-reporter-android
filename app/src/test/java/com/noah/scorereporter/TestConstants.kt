@@ -17,5 +17,5 @@ object TestConstants {
 
     val USER_PROFILE = USER_RESPONSE.user
 
-    val LOGIN_ERROR = "Invalid email or password"
+    const val LOGIN_ERROR = "Invalid email or password"
 }

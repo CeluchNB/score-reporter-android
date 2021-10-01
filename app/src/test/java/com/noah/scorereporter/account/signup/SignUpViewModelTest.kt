@@ -18,7 +18,7 @@ class SignUpViewModelTest {
     private lateinit var repository: IUserProfileRepository
 
     @Before
-    fun init() {
+    fun initializeViewModel() {
         repository = FakeUserRepository()
         viewModel = SignUpViewModel(repository)
     }
