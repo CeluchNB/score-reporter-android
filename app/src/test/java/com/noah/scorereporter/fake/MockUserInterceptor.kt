@@ -23,7 +23,27 @@ class MockUserInterceptor(private val valid: Boolean) : Interceptor {
                     TestConstants.LOGIN_ERROR
                 }
             }
+            uri.endsWith("profile") -> {
+                response = if (valid) {
+                    gson.toJson(
+                        TestConstants.USER_RESPONSE
+                    )
+                } else {
+                    TestConstants.LOGIN_ERROR
+                }
+            }
+            uri.endsWith("user") -> {
+                response = if (valid) {
+                    gson.toJson(
+                        TestConstants.USER_RESPONSE
+                    )
+                } else {
+                    TestConstants.LOGIN_ERROR
+                }
+            }
         }
+
+
         if (valid) {
             return chain.proceed(chain.request())
                 .newBuilder()
