@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, develop, actions-work ]
   pull_request:
     branches: [ main ]
 
@@ -47,7 +47,7 @@ jobs:
       - name: Run Instrumentation Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 29
+          api-level: 30
           script: ./gradlew connectedCheck
 
       - name: Upload test report
