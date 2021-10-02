@@ -11,11 +11,10 @@ import com.noah.scorereporter.network.succeeded
 import com.noah.scorereporter.util.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(val repository: IUserProfileRepository) : ViewModel() {
+class SignUpViewModel @Inject constructor(private val repository: IUserProfileRepository) : ViewModel() {
 
     private val _loading = MutableLiveData(false)
     val loading: LiveData<Boolean>

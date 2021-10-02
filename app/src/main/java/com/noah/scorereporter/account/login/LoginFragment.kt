@@ -40,6 +40,7 @@ class LoginFragment : Fragment() {
                 binding.inputEmail.text.toString(),
                 binding.inputPassword.text.toString()
             )
+            binding.inputPassword.setText("")
         }
 
         loginViewModel.userProfile.observe(viewLifecycleOwner) { profile ->
