@@ -2,6 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/loginFragment"
+        android:id="@+id/mainActivity"
+        android:title="@string/search" />
+
+    <item
+        android:id="@+id/accountActivity"
         android:title="@string/account"/>
 </menu>
