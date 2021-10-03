@@ -2,8 +2,6 @@ package com.noah.scorereporter.fake
 
 import com.google.gson.Gson
 import com.noah.scorereporter.TestConstants
-import com.noah.scorereporter.model.UserProfile
-import com.noah.scorereporter.network.model.User
 import okhttp3.*
 
 class MockUserInterceptor(private val valid: Boolean) : Interceptor {
@@ -26,7 +24,7 @@ class MockUserInterceptor(private val valid: Boolean) : Interceptor {
             uri.endsWith("profile") -> {
                 response = if (valid) {
                     gson.toJson(
-                        TestConstants.USER_RESPONSE
+                        TestConstants.USER_RESPONSE.user
                     )
                 } else {
                     TestConstants.LOGIN_ERROR

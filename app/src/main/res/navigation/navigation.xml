@@ -8,17 +8,9 @@
         android:id="@+id/searchFragment"
         android:name="com.noah.scorereporter.search.SearchFragment"
         android:label="Search" />
+    <activity
+        android:id="@+id/accountActivity"
+        android:name="com.noah.scorereporter.account.AccountActivity"
+        android:label="AccountActivity" />
 
-    <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.noah.scorereporter.account.login.LoginFragment"
-        android:label="Login" >
-        <action
-            android:id="@+id/action_loginFragment_to_signUpFragment"
-            app:destination="@id/signUpFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/signUpFragment"
-        android:name="com.noah.scorereporter.account.signup.SignUpFragment"
-        android:label="SignUpFragment" />
 </navigation>
