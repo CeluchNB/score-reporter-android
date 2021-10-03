@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/account_navigation"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/profileFragment">
 
     <fragment
         android:id="@+id/loginFragment"
@@ -21,5 +21,10 @@
         android:id="@+id/mainActivity"
         android:name="com.noah.scorereporter.MainActivity"
         android:label="MainActivity" />
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.noah.scorereporter.account.profile.ProfileFragment"
+        android:label="ProfileFragment" />
 
 </navigation>

@@ -25,7 +25,7 @@ class LoginViewModel @Inject constructor(private val repository: IUserProfileRep
         get() = _loginError
 
 
-    fun onLoginClicked(email: String, password: String) {
+    fun login(email: String, password: String) {
         _loading.value = true
         viewModelScope.launch {
             repository.login(email, password).let { result ->

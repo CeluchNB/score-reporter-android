@@ -1,11 +1,9 @@
 package com.noah.scorereporter.account.login
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -36,7 +34,7 @@ class LoginFragment : Fragment() {
         }
 
         binding.buttonLogin.setOnClickListener {
-            loginViewModel.onLoginClicked(
+            loginViewModel.login(
                 binding.inputEmail.text.toString(),
                 binding.inputPassword.text.toString()
             )
