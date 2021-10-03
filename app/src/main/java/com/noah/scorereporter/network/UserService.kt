@@ -1,5 +1,6 @@
 package com.noah.scorereporter.network
 
+import com.noah.scorereporter.model.UserProfile
 import com.noah.scorereporter.network.model.LoginUser
 import com.noah.scorereporter.network.model.SignUpUser
 import com.noah.scorereporter.network.model.User
@@ -14,7 +15,7 @@ interface UserService {
     fun login(@Body user: LoginUser): Call<User>
 
     @GET("/user/profile")
-    fun getProfile(@Header("Authorization") jwt: String): Call<User>
+    fun getProfile(@Header("Authorization") jwt: String): Call<UserProfile>
 
     @POST("/user")
     fun signup(@Body user: SignUpUser): Call<User>

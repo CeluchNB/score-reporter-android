@@ -1,11 +1,13 @@
 package com.noah.scorereporter.account
 
+import com.noah.scorereporter.model.UserProfile
 import com.noah.scorereporter.network.Result
 import com.noah.scorereporter.network.UserDataSource
 import com.noah.scorereporter.network.UserService
 import com.noah.scorereporter.network.model.LoginUser
 import com.noah.scorereporter.network.model.SignUpUser
 import com.noah.scorereporter.network.model.User
+import retrofit2.HttpException
 import retrofit2.Response
 import retrofit2.awaitResponse
 import javax.inject.Inject
@@ -20,9 +22,14 @@ class UserProfileDataSource @Inject constructor(): UserDataSource {
         return unwrapUserResult(response)
     }
 
-    override suspend fun getProfile(jwt: String): Result<User> {
-        val response = service.getProfile(jwt).awaitResponse()
-        return unwrapUserResult(response)
+    override suspend fun getProfile(jwt: String): Result<UserProfile> {
+        val response = service.getProfile("Bearer $jwt").awaitResponse()
+        if (response.isSuccessful) {
+            response.body()?.let {
+                return Result.Success(it)
+            }
+        }
+        return Result.Error(Exception(response.message()))
     }
 
     override suspend fun signUp(

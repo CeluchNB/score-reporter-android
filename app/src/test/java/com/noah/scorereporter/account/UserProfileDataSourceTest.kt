@@ -65,10 +65,10 @@ class UserProfileDataSourceTest {
 
         assertThat(result, instanceOf(Result.Success::class.java))
         result as Result.Success
-        assertThat(result.data.user.email, `is`(TestConstants.USER_PROFILE.email))
-        assertThat(result.data.user.firstName, `is`(TestConstants.USER_PROFILE.firstName))
-        assertThat(result.data.user.lastName, `is`(TestConstants.USER_PROFILE.lastName))
-        assertThat(result.data.user.teams, `is`(TestConstants.USER_PROFILE.teams))
+        assertThat(result.data.email, `is`(TestConstants.USER_PROFILE.email))
+        assertThat(result.data.firstName, `is`(TestConstants.USER_PROFILE.firstName))
+        assertThat(result.data.lastName, `is`(TestConstants.USER_PROFILE.lastName))
+        assertThat(result.data.teams, `is`(TestConstants.USER_PROFILE.teams))
     }
 
     @Test

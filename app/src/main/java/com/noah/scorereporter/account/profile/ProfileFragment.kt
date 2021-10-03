@@ -22,8 +22,9 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentProfileBinding.inflate(inflater)
+        binding.lifecycleOwner = this
         binding.viewModel = viewModel
         return binding.root
     }

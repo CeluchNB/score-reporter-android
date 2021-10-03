@@ -31,7 +31,7 @@ class UserProfileRepository @Inject constructor(
         val result = userRemoteDataSource.getProfile(jwt ?: "")
         return if (result.succeeded) {
             result as Result.Success
-            Result.Success(result.data.user)
+            Result.Success(result.data)
         } else {
             result as Result.Error
         }

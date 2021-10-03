@@ -19,7 +19,11 @@
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.noah.scorereporter.account.signup.SignUpFragment"
-        android:label="Sign Up" />
+        android:label="Sign Up" >
+        <action
+            android:id="@+id/action_signUpFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
     <activity
         android:id="@+id/mainActivity"
         android:name="com.noah.scorereporter.MainActivity"

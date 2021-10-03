@@ -1,6 +1,7 @@
 package com.noah.scorereporter.fake
 
 import com.noah.scorereporter.TestConstants
+import com.noah.scorereporter.model.UserProfile
 import com.noah.scorereporter.network.Result
 import com.noah.scorereporter.network.UserDataSource
 import com.noah.scorereporter.network.model.User
@@ -17,9 +18,9 @@ class FakeUserDataSource : UserDataSource {
         }
     }
 
-    override suspend fun getProfile(jwt: String): Result<User> {
+    override suspend fun getProfile(jwt: String): Result<UserProfile> {
         return if (!shouldReturnError) {
-            Result.Success(TestConstants.USER_RESPONSE)
+            Result.Success(TestConstants.USER_RESPONSE.user)
         } else {
             Result.Error(Exception(TestConstants.LOGIN_ERROR))
         }

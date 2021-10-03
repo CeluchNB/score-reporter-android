@@ -24,7 +24,7 @@ class MockUserInterceptor(private val valid: Boolean) : Interceptor {
             uri.endsWith("profile") -> {
                 response = if (valid) {
                     gson.toJson(
-                        TestConstants.USER_RESPONSE
+                        TestConstants.USER_RESPONSE.user
                     )
                 } else {
                     TestConstants.LOGIN_ERROR
