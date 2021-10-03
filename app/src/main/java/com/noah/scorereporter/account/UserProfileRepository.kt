@@ -54,6 +54,15 @@ class UserProfileRepository @Inject constructor(
         }
     }
 
+    override suspend fun logout(): Result<Boolean> {
+        val jwt = sharedPrefs.getString(Constants.USER_TOKEN, "")
+        val result = userRemoteDataSource.logout(jwt ?: "")
+        if (result.succeeded) {
+            sharedPrefs.edit().remove(Constants.USER_TOKEN).apply()
+        }
+        return result
+    }
+
     override fun hasSavedToken(): Boolean {
         return if (!sharedPrefs.contains(Constants.USER_TOKEN)) {
             false

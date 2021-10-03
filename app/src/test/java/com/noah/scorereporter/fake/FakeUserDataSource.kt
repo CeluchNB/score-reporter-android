@@ -38,4 +38,12 @@ class FakeUserDataSource : UserDataSource {
             Result.Error(Exception(TestConstants.LOGIN_ERROR))
         }
     }
+
+    override suspend fun logout(jwt: String): Result<Boolean> {
+        return if (!shouldReturnError) {
+            return Result.Success(true)
+        } else {
+            Result.Error(java.lang.Exception(TestConstants.LOGIN_ERROR))
+        }
+    }
 }

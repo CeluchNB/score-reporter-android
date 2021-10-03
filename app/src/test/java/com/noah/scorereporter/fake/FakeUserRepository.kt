@@ -38,6 +38,14 @@ class FakeUserRepository : IUserProfileRepository {
         }
     }
 
+    override suspend fun logout(): Result<Boolean> {
+        return if (valid) {
+            Result.Success(true)
+        } else {
+            Result.Error(Exception(TestConstants.LOGIN_ERROR))
+        }
+    }
+
     override fun hasSavedToken(): Boolean {
         return valid
     }

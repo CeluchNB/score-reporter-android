@@ -32,6 +32,16 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.buttonLogout.setOnClickListener {
+            viewModel.logout()
+        }
+
+        viewModel.logoutSuccess.observe(viewLifecycleOwner) { success ->
+            if (success.getContentIfNotHandled() == true) {
+                this.findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
+            }
+        }
+
         if (!viewModel.hasSavedToken()) {
             this.findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
         } else {

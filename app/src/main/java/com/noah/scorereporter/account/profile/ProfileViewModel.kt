@@ -8,6 +8,7 @@ import com.noah.scorereporter.account.IUserProfileRepository
 import com.noah.scorereporter.model.UserProfile
 import com.noah.scorereporter.network.Result
 import com.noah.scorereporter.network.succeeded
+import com.noah.scorereporter.util.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,6 +28,10 @@ class ProfileViewModel @Inject constructor(private val repository: IUserProfileR
     val getProfileError: LiveData<Boolean>
         get() = _getProfileError
 
+    private val _logoutSuccess: MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
+    val logoutSuccess: LiveData<Event<Boolean>>
+        get() = _logoutSuccess
+
     fun fetchUserProfile() {
         _loading.value = true
         viewModelScope.launch {
@@ -39,6 +44,17 @@ class ProfileViewModel @Inject constructor(private val repository: IUserProfileR
                 }
             }
             _loading.value = false
+        }
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            val result = repository.logout()
+            if (result.succeeded) {
+                _logoutSuccess.value = Event((result as Result.Success).data)
+            } else {
+                _logoutSuccess.value = Event(false)
+            }
         }
     }
 
