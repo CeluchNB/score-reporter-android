@@ -23,6 +23,10 @@ class ProfileViewModel @Inject constructor(private val repository: IUserProfileR
     val user: LiveData<UserProfile?>
         get() = _user
 
+    private val _getProfileError: MutableLiveData<Boolean> = MutableLiveData(false)
+    val getProfileError: LiveData<Boolean>
+        get() = _getProfileError
+
     fun getUserProfile() {
         _loading.value = true
         viewModelScope.launch {
@@ -30,6 +34,7 @@ class ProfileViewModel @Inject constructor(private val repository: IUserProfileR
                 if (result.succeeded) {
                     _user.value = (result as Result.Success).data
                 } else {
+                    _getProfileError.value = true
                     _user.value = null
                 }
             }

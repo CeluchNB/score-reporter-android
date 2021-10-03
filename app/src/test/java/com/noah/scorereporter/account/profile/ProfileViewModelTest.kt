@@ -41,6 +41,8 @@ class ProfileViewModelTest {
         assertThat(userProfile?.teams?.entries,
             CoreMatchers.everyItem(IsIn(TestConstants.USER_PROFILE.teams.entries))
         )
+
+        assertThat(viewModel.getProfileError.getOrAwaitValue(), `is`(false))
     }
 
     @Test
@@ -52,6 +54,7 @@ class ProfileViewModelTest {
 
         val userProfile = viewModel.user.getOrAwaitValue()
         assertThat(userProfile, IsNull())
+        assertThat(viewModel.getProfileError.getOrAwaitValue(), `is`(true))
     }
 
 
