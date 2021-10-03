@@ -3,7 +3,6 @@ package com.noah.scorereporter.account.profile
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.noah.scorereporter.TestConstants
 import com.noah.scorereporter.account.IUserProfileRepository
-import com.noah.scorereporter.account.UserProfileRepository
 import com.noah.scorereporter.fake.FakeUserRepository
 import com.noah.scorereporter.getOrAwaitValue
 import org.hamcrest.CoreMatchers
@@ -29,7 +28,7 @@ class ProfileViewModelTest {
 
     @Test
     fun `test getUserProfile with existing token`() {
-        viewModel.getUserProfile()
+        viewModel.fetchUserProfile()
         assertThat(viewModel.loading.getOrAwaitValue(), `is`(false))
 
         val userProfile = viewModel.user.getOrAwaitValue()
@@ -47,8 +46,8 @@ class ProfileViewModelTest {
 
     @Test
     fun `test getUserProfile without existing token`() {
-        (repository as FakeUserRepository).validToken = false
-        viewModel.getUserProfile()
+        (repository as FakeUserRepository).valid = false
+        viewModel.fetchUserProfile()
 
         assertThat(viewModel.loading.getOrAwaitValue(), `is`(false))
 
@@ -57,5 +56,13 @@ class ProfileViewModelTest {
         assertThat(viewModel.getProfileError.getOrAwaitValue(), `is`(true))
     }
 
+    @Test
+    fun `test hasSavedToken`() {
+        (repository as FakeUserRepository).valid = true
+        assertThat(viewModel.hasSavedToken(), `is`(true))
+
+        (repository as FakeUserRepository).valid = false
+        assertThat(viewModel.hasSavedToken(), `is`(false))
+    }
 
 }

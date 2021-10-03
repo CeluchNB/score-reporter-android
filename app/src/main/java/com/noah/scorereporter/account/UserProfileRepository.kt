@@ -53,4 +53,13 @@ class UserProfileRepository @Inject constructor(
             result as Result.Error
         }
     }
+
+    override fun hasSavedToken(): Boolean {
+        return if (!sharedPrefs.contains(Constants.USER_TOKEN)) {
+            false
+        } else {
+            val jwt = sharedPrefs.getString(Constants.USER_TOKEN, null)
+            !(jwt == null || jwt.isEmpty())
+        }
+    }
 }

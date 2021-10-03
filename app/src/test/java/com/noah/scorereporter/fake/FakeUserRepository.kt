@@ -7,7 +7,7 @@ import com.noah.scorereporter.network.Result
 
 class FakeUserRepository : IUserProfileRepository {
 
-    var validToken = true
+    var valid = true
 
     override suspend fun login(email: String, password: String): Result<UserProfile> {
         return if (email == "email@email.com") {
@@ -18,7 +18,7 @@ class FakeUserRepository : IUserProfileRepository {
     }
 
     override suspend fun getProfile(): Result<UserProfile> {
-        return if (validToken) {
+        return if (valid) {
             Result.Success(TestConstants.USER_PROFILE)
         } else {
             Result.Error(Exception("Error"))
@@ -36,5 +36,9 @@ class FakeUserRepository : IUserProfileRepository {
         } else {
             Result.Error(Exception(TestConstants.LOGIN_ERROR))
         }
+    }
+
+    override fun hasSavedToken(): Boolean {
+        return valid
     }
 }

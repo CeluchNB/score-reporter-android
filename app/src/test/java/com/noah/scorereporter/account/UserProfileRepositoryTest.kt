@@ -150,6 +150,21 @@ class UserProfileRepositoryTest {
         assertThat(jwt, `is`("bad_token"))
     }
 
+    @Test
+    fun `hasSavedToken without saved token`() {
+        val value = repository.hasSavedToken()
+        assertThat(value, `is`(false))
+    }
+
+    @Test
+    fun `hasSavedToken with saved token`() = mainCoroutineRule.runBlockingTest {
+        val result = repository.login("email@email.com", "password")
+        assertThat(result.succeeded, `is`(true))
+
+        val value = repository.hasSavedToken()
+        assertThat(value, `is`(true))
+    }
+
     companion object {
         @JvmStatic
         @BeforeClass

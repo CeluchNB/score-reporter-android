@@ -27,7 +27,7 @@ class ProfileViewModel @Inject constructor(private val repository: IUserProfileR
     val getProfileError: LiveData<Boolean>
         get() = _getProfileError
 
-    fun getUserProfile() {
+    fun fetchUserProfile() {
         _loading.value = true
         viewModelScope.launch {
             repository.getProfile().let { result ->
@@ -41,4 +41,6 @@ class ProfileViewModel @Inject constructor(private val repository: IUserProfileR
             _loading.value = false
         }
     }
+
+    fun hasSavedToken() = repository.hasSavedToken()
 }

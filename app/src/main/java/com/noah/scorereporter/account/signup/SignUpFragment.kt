@@ -1,9 +1,11 @@
 package com.noah.scorereporter.account.signup
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -42,6 +44,10 @@ class SignUpFragment : Fragment() {
         viewModel.user.observe(viewLifecycleOwner) { event ->
             val user = event?.getContentIfNotHandled()
             user?.let {
+                binding.root.clearFocus()
+                val imm: InputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(getView()?.rootView?.windowToken, 0)
+
                 findNavController().navigate(R.id.action_signUpFragment_to_profileFragment)
             }
         }
