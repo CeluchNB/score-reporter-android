@@ -11,11 +11,16 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.noah.scorereporter.account.AccountActivity
+import com.noah.scorereporter.account.IUserProfileRepository
+import com.noah.scorereporter.fake.AndroidFakeUserRepository
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Inject
 
 @MediumTest
 @RunWith(AndroidJUnit4::class)
@@ -33,8 +38,16 @@ class NavigationTest {
     var accountActivityRule: ActivityScenarioRule<AccountActivity>
         = ActivityScenarioRule(AccountActivity::class.java)
 
+    @Inject
+    lateinit var repository: IUserProfileRepository
+
+    @Before
+    fun setUp() {
+        hiltRule.inject()
+    }
+
     @Test
-    fun testNavigateToLogin() {
+    fun testNavigateToAccount() {
         onView(withId(R.id.drawer_layout))
             .check(matches(isClosed(Gravity.LEFT)))
             .perform(DrawerActions.open())
@@ -42,11 +55,11 @@ class NavigationTest {
         onView(withId(R.id.view_navigation))
             .perform(NavigationViewActions.navigateTo(R.id.accountActivity))
 
-        onView(withId(R.id.input_email))
-            .check(matches(withHint("Email")))
+        onView(withId(R.id.email_title))
+            .check(matches(withText("EMAIL")))
 
-        onView(withId(R.id.input_password))
-            .check(matches(withHint("Password")))
+        onView(withId(R.id.name_title))
+            .check(matches(withText("NAME")))
     }
 
     @Test
