@@ -9,4 +9,8 @@ interface IUserProfileRepository {
     suspend fun getProfile() : Result<UserProfile>
 
     suspend fun signUp(firstName: String, lastName: String, email: String, password: String): Result<UserProfile>
+
+    suspend fun logout(): Result<Boolean>
+
+    fun hasSavedToken(): Boolean
 }

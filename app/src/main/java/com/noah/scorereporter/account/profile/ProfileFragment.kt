@@ -32,12 +32,31 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.user.observe(viewLifecycleOwner) { user ->
-            if (user == null && viewModel.getProfileError.value == true) {
+        binding.buttonLogout.setOnClickListener {
+            viewModel.logout()
+        }
+
+        viewModel.logoutSuccess.observe(viewLifecycleOwner) { success ->
+            if (success.getContentIfNotHandled() == true) {
                 this.findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
             }
         }
 
-        viewModel.getUserProfile()
+        val bundle = arguments
+        if (bundle != null) {
+            val args = ProfileFragmentArgs.fromBundle(bundle)
+            val userProfile = args.userProfile
+            userProfile?.let {
+                viewModel.setUserProfile(it)
+            }
+        }
+
+        if (!viewModel.hasSavedToken()) {
+            this.findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
+        } else {
+            if (viewModel.userProfile.value == null) {
+                viewModel.fetchUserProfile()
+            }
+        }
     }
 }

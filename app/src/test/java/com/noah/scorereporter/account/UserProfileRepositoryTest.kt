@@ -150,6 +150,44 @@ class UserProfileRepositoryTest {
         assertThat(jwt, `is`("bad_token"))
     }
 
+    @Test
+    fun `test successful logout`() = mainCoroutineRule.runBlockingTest {
+        (dataSource as FakeUserDataSource).shouldReturnError = false
+        repository.login("email@email.com", "password")
+        assertThat(sharedPrefs.contains(Constants.USER_TOKEN), `is`(true))
+
+        val result = repository.logout()
+        assertThat(result.succeeded, `is`(true))
+        assertThat(sharedPrefs.contains(Constants.USER_TOKEN), `is`(false))
+    }
+
+    @Test
+    fun `test unsuccessful logout`() = mainCoroutineRule.runBlockingTest {
+        repository.login("email@email.com", "password")
+        assertThat(sharedPrefs.contains(Constants.USER_TOKEN), `is`(true))
+        (dataSource as FakeUserDataSource).shouldReturnError = true
+
+        val result = repository.logout()
+        assertThat(result.succeeded, `is`(false))
+        assertThat(sharedPrefs.contains(Constants.USER_TOKEN), `is`(true))
+
+    }
+
+    @Test
+    fun `hasSavedToken without saved token`() {
+        val value = repository.hasSavedToken()
+        assertThat(value, `is`(false))
+    }
+
+    @Test
+    fun `hasSavedToken with saved token`() = mainCoroutineRule.runBlockingTest {
+        val result = repository.login("email@email.com", "password")
+        assertThat(result.succeeded, `is`(true))
+
+        val value = repository.hasSavedToken()
+        assertThat(value, `is`(true))
+    }
+
     companion object {
         @JvmStatic
         @BeforeClass

@@ -6,6 +6,8 @@ import com.noah.scorereporter.TestConstants
 import com.noah.scorereporter.fake.MockUserClient
 import com.noah.scorereporter.network.Result
 import com.noah.scorereporter.network.UserService
+import com.noah.scorereporter.network.succeeded
+import dalvik.annotation.TestTarget
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
@@ -102,5 +104,23 @@ class UserProfileDataSourceTest {
         assertThat(result, instanceOf(Result.Error::class.java))
         result as Result.Error
         assertThat(result.exception.message, `is`(TestConstants.LOGIN_ERROR))
+    }
+
+    @Test
+    fun `test successful logout`() = runBlocking {
+        dataSource.service = validService
+        val result = dataSource.logout("")
+        assertThat(result.succeeded, `is`(true))
+        result as Result.Success
+        assertThat(result.data, `is`(true))
+    }
+
+    @Test
+    fun `test unsuccessful logout`() = runBlocking {
+        dataSource.service = invalidService
+        val result = dataSource.logout("")
+        assertThat(result.succeeded, `is`(true))
+        result as Result.Success
+        assertThat(result.data, `is`(false))
     }
 }

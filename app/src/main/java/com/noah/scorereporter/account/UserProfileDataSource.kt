@@ -24,12 +24,7 @@ class UserProfileDataSource @Inject constructor(): UserDataSource {
 
     override suspend fun getProfile(jwt: String): Result<UserProfile> {
         val response = service.getProfile("Bearer $jwt").awaitResponse()
-        if (response.isSuccessful) {
-            response.body()?.let {
-                return Result.Success(it)
-            }
-        }
-        return Result.Error(Exception(response.message()))
+        return unwrapUserResult(response)
     }
 
     override suspend fun signUp(
@@ -42,7 +37,21 @@ class UserProfileDataSource @Inject constructor(): UserDataSource {
         return unwrapUserResult(response)
     }
 
-    private fun unwrapUserResult(response: Response<User>): Result<User> {
+    override suspend fun logout(jwt: String): Result<Boolean> {
+        return try {
+            val response = service.logout("Bearer $jwt").awaitResponse()
+
+            if (response.code() == 200) {
+                Result.Success(true)
+            } else {
+                Result.Success(false)
+            }
+        } catch (exception: HttpException) {
+            Result.Error(Exception(exception.message()))
+        }
+    }
+
+    private fun <T> unwrapUserResult(response: Response<T>): Result<T> {
         if (response.isSuccessful) {
             response.body()?.let {
                 return Result.Success(it)

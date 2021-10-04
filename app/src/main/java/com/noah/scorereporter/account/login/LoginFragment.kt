@@ -1,9 +1,11 @@
 package com.noah.scorereporter.account.login
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -43,12 +45,18 @@ class LoginFragment : Fragment() {
 
         loginViewModel.userProfile.observe(viewLifecycleOwner) { profile ->
             profile?.let {
-                findNavController().popBackStack()
+                binding.root.clearFocus()
+                val imm: InputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(getView()?.rootView?.windowToken, 0)
+
+                val action = LoginFragmentDirections.actionLoginFragmentToProfileFragment(it)
+                this.findNavController().navigate(action)
             }
         }
     }
 
     private fun navigateToSignUpFragment() {
-        findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
+        val action = LoginFragmentDirections.actionLoginFragmentToSignUpFragment()
+        findNavController().navigate(action)
     }
 }

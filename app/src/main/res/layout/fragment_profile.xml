@@ -19,7 +19,8 @@
         <ProgressBar
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="@{viewModel.loading ? View.VISIBLE : View.GONE}" />
+            android:visibility="@{viewModel.loading ? View.VISIBLE : View.GONE}"
+            tools:visibility="gone" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -30,32 +31,41 @@
                 android:id="@+id/welcome_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:text="@{`Welcome, ` + viewModel.user.firstName}"
+                android:text="@{`Welcome, ` + viewModel.userProfile.firstName}"
                 android:textSize="36sp"
-                app:layout_constraintBottom_toTopOf="@id/name_title"
+                android:layout_marginTop="@dimen/profile_margin"
+                app:layout_constraintBottom_toTopOf="@id/button_logout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Welcome, Amy!" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_logout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/logout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/welcome_title" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/name_title"
                 style="@style/Theme.ScoreReporter.ProfileTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="@dimen/profile_margin"
                 android:text="@string/name_caps"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/welcome_title" />
+                app:layout_constraintTop_toBottomOf="@id/button_logout" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/name_field"
                 style="@style/Theme.ScoreReporter.ProfileField"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{viewModel.user.firstName + ` ` + viewModel.user.lastName}"
+                android:text="@{viewModel.userProfile.firstName + ` ` + viewModel.userProfile.lastName}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/name_title"
@@ -66,7 +76,7 @@
                 style="@style/Theme.ScoreReporter.ProfileTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="@dimen/profile_margin"
                 android:text="@string/email_caps"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -77,7 +87,7 @@
                 style="@style/Theme.ScoreReporter.ProfileField"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{viewModel.user.email}"
+                android:text="@{viewModel.userProfile.email}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/email_title"
@@ -88,7 +98,7 @@
                 style="@style/Theme.ScoreReporter.ProfileTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="@dimen/profile_margin"
                 android:text="@string/teams_caps"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
