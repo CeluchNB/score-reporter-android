@@ -31,7 +31,7 @@ class ProfileViewModelTest {
         viewModel.fetchUserProfile()
         assertThat(viewModel.loading.getOrAwaitValue(), `is`(false))
 
-        val userProfile = viewModel.user.getOrAwaitValue()
+        val userProfile = viewModel.userProfile.getOrAwaitValue()
         assertThat(userProfile, `is`(CoreMatchers.notNullValue()))
 
         assertThat(userProfile?.email, `is`(TestConstants.USER_PROFILE.email))
@@ -51,7 +51,7 @@ class ProfileViewModelTest {
 
         assertThat(viewModel.loading.getOrAwaitValue(), `is`(false))
 
-        val userProfile = viewModel.user.getOrAwaitValue()
+        val userProfile = viewModel.userProfile.getOrAwaitValue()
         assertThat(userProfile, IsNull())
         assertThat(viewModel.getProfileError.getOrAwaitValue(), `is`(true))
     }

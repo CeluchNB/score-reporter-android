@@ -20,9 +20,9 @@ class ProfileViewModel @Inject constructor(private val repository: IUserProfileR
     val loading: LiveData<Boolean>
         get() = _loading
 
-    private val _user: MutableLiveData<UserProfile?> = MutableLiveData(null)
-    val user: LiveData<UserProfile?>
-        get() = _user
+    private val _userProfile: MutableLiveData<UserProfile?> = MutableLiveData(null)
+    val userProfile: LiveData<UserProfile?>
+        get() = _userProfile
 
     private val _getProfileError: MutableLiveData<Boolean> = MutableLiveData(false)
     val getProfileError: LiveData<Boolean>
@@ -37,10 +37,10 @@ class ProfileViewModel @Inject constructor(private val repository: IUserProfileR
         viewModelScope.launch {
             repository.getProfile().let { result ->
                 if (result.succeeded) {
-                    _user.value = (result as Result.Success).data
+                    _userProfile.value = (result as Result.Success).data
                 } else {
                     _getProfileError.value = true
-                    _user.value = null
+                    _userProfile.value = null
                 }
             }
             _loading.value = false
@@ -59,4 +59,8 @@ class ProfileViewModel @Inject constructor(private val repository: IUserProfileR
     }
 
     fun hasSavedToken() = repository.hasSavedToken()
+
+    fun setUserProfile(user: UserProfile) {
+        _userProfile.value = user
+    }
 }

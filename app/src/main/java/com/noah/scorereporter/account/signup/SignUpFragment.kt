@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.noah.scorereporter.R
+import com.noah.scorereporter.account.profile.ProfileFragmentDirections
 import com.noah.scorereporter.databinding.FragmentSignupBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -48,7 +49,8 @@ class SignUpFragment : Fragment() {
                 val imm: InputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(getView()?.rootView?.windowToken, 0)
 
-                findNavController().navigate(R.id.action_signUpFragment_to_profileFragment)
+                val action = SignUpFragmentDirections.actionSignUpFragmentToProfileFragment(it)
+                findNavController().navigate(action)
             }
         }
     }

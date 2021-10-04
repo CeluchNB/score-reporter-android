@@ -42,10 +42,21 @@ class ProfileFragment : Fragment() {
             }
         }
 
+        val bundle = arguments
+        if (bundle != null) {
+            val args = ProfileFragmentArgs.fromBundle(bundle)
+            val userProfile = args.userProfile
+            userProfile?.let {
+                viewModel.setUserProfile(it)
+            }
+        }
+
         if (!viewModel.hasSavedToken()) {
             this.findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
         } else {
-            viewModel.fetchUserProfile()
+            if (viewModel.userProfile.value == null) {
+                viewModel.fetchUserProfile()
+            }
         }
     }
 }
