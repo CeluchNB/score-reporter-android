@@ -4,6 +4,7 @@ import com.noah.scorereporter.AndroidTestConstants
 import com.noah.scorereporter.account.IUserProfileRepository
 import com.noah.scorereporter.model.UserProfile
 import com.noah.scorereporter.network.Result
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class AndroidFakeUserRepository @Inject constructor(): IUserProfileRepository {
@@ -11,6 +12,7 @@ class AndroidFakeUserRepository @Inject constructor(): IUserProfileRepository {
     var valid = true
 
     override suspend fun login(email: String, password: String): Result<UserProfile> {
+        delay(1000)
         return if (email == "email@email.com") {
             Result.Success(AndroidTestConstants.USER_PROFILE)
         } else {

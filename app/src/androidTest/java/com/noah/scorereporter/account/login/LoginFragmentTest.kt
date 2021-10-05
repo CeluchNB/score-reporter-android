@@ -4,6 +4,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.noah.scorereporter.R
@@ -15,6 +16,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.AdditionalMatchers.not
 
 @HiltAndroidTest
 @ExperimentalCoroutinesApi
@@ -50,5 +52,18 @@ class LoginFragmentTest {
 
         onView(withId(R.id.input_email)).check(matches(withText("test@email.com")))
         onView(withId(R.id.input_password)).check(matches(withText("")))
+    }
+
+    @Test
+    fun testLoginClickSwitchesToProgressBar() {
+        launchFragmentInHiltContainer<LoginFragment>()
+
+        onView(withId(R.id.input_email)).perform(typeText("test@email.com"))
+        onView(withId(R.id.input_password)).perform(typeText("Pass123!"))
+
+        onView(withId(R.id.button_login)).perform(click())
+
+        onView(withId(R.id.login_progress)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+        onView(withId(R.id.button_login)).check(matches(withEffectiveVisibility(Visibility.GONE)))
     }
 }

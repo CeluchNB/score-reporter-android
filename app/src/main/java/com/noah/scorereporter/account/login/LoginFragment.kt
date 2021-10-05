@@ -26,7 +26,8 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentLoginBinding.inflate(inflater)
-
+        binding.lifecycleOwner = this
+        binding.viewModel = loginViewModel
         return binding.root
     }
 

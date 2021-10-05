@@ -3,7 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <import type="android.view.View" />
+        <variable
+            name="viewModel"
+            type="com.noah.scorereporter.account.login.LoginViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -35,17 +38,33 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/input_email" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_login"
+        <LinearLayout
+            android:id="@+id/login_button_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/input_margin"
             android:layout_marginStart="@dimen/input_margin"
             android:layout_marginEnd="@dimen/input_margin"
-            android:text="@string/login"
+            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/input_password" />
+            app:layout_constraintTop_toBottomOf="@id/input_password">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login"
+                android:visibility="@{viewModel.loading ? View.GONE : View.VISIBLE}" />
+
+            <ProgressBar
+                android:id="@+id/login_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:indeterminateTint="@color/primaryColor"
+                android:visibility="@{viewModel.loading ? View.VISIBLE : View.GONE}" />
+        </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_sign_up"
@@ -57,7 +76,7 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/button_login" />
+            app:layout_constraintTop_toBottomOf="@id/login_button_container" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
