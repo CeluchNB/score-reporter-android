@@ -3,6 +3,7 @@ package com.noah.scorereporter.account.profile
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.MediumTest
@@ -14,6 +15,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -62,6 +64,22 @@ class ProfileFragmentTest {
 
         onView(withId(R.id.teams_title))
             .check(matches(withText(teams)))
+    }
 
+    @Test
+    fun testLogoutProgressBar() {
+        val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
+
+        (repository as AndroidFakeUserRepository).valid = true
+        launchFragmentInHiltContainer<ProfileFragment>(
+            navController = navController,
+            navGraph = R.navigation.account_navigation
+        )
+
+        Thread.sleep(1000)
+        onView(withId(R.id.button_logout)).perform(click())
+
+        onView(withId(R.id.button_logout)).check(matches(withEffectiveVisibility(Visibility.GONE)))
+        onView(withId(R.id.logout_progress)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
     }
 }

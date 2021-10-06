@@ -21,6 +21,7 @@ class AndroidFakeUserRepository @Inject constructor(): IUserProfileRepository {
     }
 
     override suspend fun getProfile(): Result<UserProfile> {
+        delay(1000)
         return if (valid) {
             Result.Success(AndroidTestConstants.USER_PROFILE)
         } else {
@@ -43,6 +44,7 @@ class AndroidFakeUserRepository @Inject constructor(): IUserProfileRepository {
     }
 
     override suspend fun logout(): Result<Boolean> {
+        delay(1000)
         return if (valid) {
             Result.Success(true)
         } else {

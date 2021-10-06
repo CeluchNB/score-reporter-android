@@ -34,21 +34,36 @@
                 android:text="@{`Welcome, ` + viewModel.userProfile.firstName}"
                 android:textSize="36sp"
                 android:layout_marginTop="@dimen/profile_margin"
-                app:layout_constraintBottom_toTopOf="@id/button_logout"
+                app:layout_constraintBottom_toTopOf="@id/logout_button_container"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Welcome, Amy!" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/button_logout"
+            <LinearLayout
+                android:id="@+id/logout_button_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/logout"
+                android:orientation="vertical"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/welcome_title" />
+                app:layout_constraintTop_toBottomOf="@id/welcome_title">
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_logout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/logout"
+                    android:visibility="@{viewModel.logoutLoading ? View.GONE : View.VISIBLE}"/>
+
+                <ProgressBar
+                    android:id="@+id/logout_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:indeterminateTint="@color/primaryColor"
+                    android:visibility="@{viewModel.logoutLoading ? View.VISIBLE : View.GONE}" />
+            </LinearLayout>
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/name_title"
                 style="@style/Theme.ScoreReporter.ProfileTitle"
@@ -58,7 +73,7 @@
                 android:text="@string/name_caps"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/button_logout" />
+                app:layout_constraintTop_toBottomOf="@id/logout_button_container" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/name_field"

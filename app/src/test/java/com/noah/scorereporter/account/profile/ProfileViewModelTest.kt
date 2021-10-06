@@ -66,20 +66,20 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun `test valid login`() {
+    fun `test valid logout`() {
         (repository as FakeUserRepository).valid = true
         viewModel.logout()
-        assertThat(viewModel.loading.getOrAwaitValue(), `is`(false))
+        assertThat(viewModel.logoutLoading.getOrAwaitValue(), `is`(false))
         val event = viewModel.logoutSuccess.getOrAwaitValue()
         assertThat(event.getContentIfNotHandled(), `is`(true))
     }
 
 
     @Test
-    fun `test invalid login`() {
+    fun `test invalid logout`() {
         (repository as FakeUserRepository).valid = false
         viewModel.logout()
-        assertThat(viewModel.loading.getOrAwaitValue(), `is`(false))
+        assertThat(viewModel.logoutLoading.getOrAwaitValue(), `is`(false))
         val event = viewModel.logoutSuccess.getOrAwaitValue()
         assertThat(event.getContentIfNotHandled(), `is`(false))
     }
