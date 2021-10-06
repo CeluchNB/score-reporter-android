@@ -76,7 +76,6 @@ class ProfileFragmentTest {
             navGraph = R.navigation.account_navigation
         )
 
-        Thread.sleep(1000)
         onView(withId(R.id.button_logout)).perform(click())
 
         onView(withId(R.id.button_logout)).check(matches(withEffectiveVisibility(Visibility.GONE)))
