@@ -20,6 +20,10 @@ class ProfileViewModel @Inject constructor(private val repository: IUserProfileR
     val loading: LiveData<Boolean>
         get() = _loading
 
+    private val _logoutLoading: MutableLiveData<Boolean> = MutableLiveData(false)
+    val logoutLoading: LiveData<Boolean>
+        get() = _logoutLoading
+
     private val _userProfile: MutableLiveData<UserProfile?> = MutableLiveData(null)
     val userProfile: LiveData<UserProfile?>
         get() = _userProfile
@@ -48,6 +52,7 @@ class ProfileViewModel @Inject constructor(private val repository: IUserProfileR
     }
 
     fun logout() {
+        _logoutLoading.value = true
         viewModelScope.launch {
             val result = repository.logout()
             if (result.succeeded) {
@@ -55,6 +60,7 @@ class ProfileViewModel @Inject constructor(private val repository: IUserProfileR
             } else {
                 _logoutSuccess.value = Event(false)
             }
+            _logoutLoading.value = false
         }
     }
 
