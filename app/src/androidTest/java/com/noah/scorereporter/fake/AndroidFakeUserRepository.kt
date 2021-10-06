@@ -21,7 +21,6 @@ class AndroidFakeUserRepository @Inject constructor(): IUserProfileRepository {
     }
 
     override suspend fun getProfile(): Result<UserProfile> {
-        delay(1000)
         return if (valid) {
             Result.Success(AndroidTestConstants.USER_PROFILE)
         } else {
