@@ -2,6 +2,7 @@ package com.noah.scorereporter.account.signup
 
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.noah.scorereporter.R
@@ -37,5 +38,15 @@ class SignUpFragmentTest {
         onView(withId(R.id.input_email)).check(matches(withHint(email)))
         onView(withId(R.id.input_password)).check(matches(withHint(password)))
         onView(withId(R.id.button_create)).check(matches(withText(create)))
+    }
+
+    @Test
+    fun testSignUpClick() {
+        launchFragmentInHiltContainer<SignUpFragment>()
+
+        onView(withId(R.id.button_create)).perform(click())
+
+        onView(withId(R.id.button_create)).check(matches(withEffectiveVisibility(Visibility.GONE)))
+        onView(withId(R.id.create_progress)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
     }
 }

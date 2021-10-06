@@ -4,7 +4,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="android.view.View"/>
 
+        <variable
+            name="viewModel"
+            type="com.noah.scorereporter.account.signup.SignUpViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -52,15 +56,28 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_create"
+        <LinearLayout
+            android:id="@+id/create_button_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/input_margin"
-            android:text="@string/sign_up"
+            android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@id/input_password"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
+            app:layout_constraintEnd_toEndOf="parent">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_create"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sign_up"
+                android:visibility="@{viewModel.loading ? View.GONE : View.VISIBLE}"/>
+            <ProgressBar
+                android:id="@+id/create_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:indeterminateTint="@color/primaryColor"
+                android:visibility="@{viewModel.loading ? View.VISIBLE : View.GONE}" />
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

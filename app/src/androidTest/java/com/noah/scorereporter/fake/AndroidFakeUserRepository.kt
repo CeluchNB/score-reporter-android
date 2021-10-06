@@ -34,6 +34,7 @@ class AndroidFakeUserRepository @Inject constructor(): IUserProfileRepository {
         email: String,
         password: String
     ): Result<UserProfile> {
+        delay(1000)
         return if (email != "invalid@email.com") {
             Result.Success(AndroidTestConstants.USER_PROFILE)
         } else {
