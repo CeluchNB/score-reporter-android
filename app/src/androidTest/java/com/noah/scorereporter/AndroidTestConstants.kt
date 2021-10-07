@@ -1,7 +1,7 @@
 package com.noah.scorereporter
 
 import com.noah.scorereporter.model.UserProfile
-import com.noah.scorereporter.network.model.User
+import com.noah.scorereporter.data.model.User
 
 object AndroidTestConstants {
 

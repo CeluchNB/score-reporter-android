@@ -1,4 +1,4 @@
-package com.noah.scorereporter.network.model
+package com.noah.scorereporter.data.model
 
 import com.noah.scorereporter.model.UserProfile
 

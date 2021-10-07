@@ -1,7 +1,7 @@
 package com.noah.scorereporter.account
 
 import com.noah.scorereporter.model.UserProfile
-import com.noah.scorereporter.network.Result
+import com.noah.scorereporter.data.network.Result
 
 interface IUserProfileRepository {
     suspend fun login(email: String, password: String) : Result<UserProfile>

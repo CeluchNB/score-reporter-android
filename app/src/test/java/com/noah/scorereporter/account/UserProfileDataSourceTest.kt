@@ -4,10 +4,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.noah.scorereporter.MainCoroutineRule
 import com.noah.scorereporter.TestConstants
 import com.noah.scorereporter.fake.MockUserClient
-import com.noah.scorereporter.network.Result
-import com.noah.scorereporter.network.UserService
-import com.noah.scorereporter.network.succeeded
-import dalvik.annotation.TestTarget
+import com.noah.scorereporter.data.network.Result
+import com.noah.scorereporter.data.network.UserService
+import com.noah.scorereporter.data.network.succeeded
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`

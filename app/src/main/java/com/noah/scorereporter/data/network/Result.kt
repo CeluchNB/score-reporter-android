@@ -1,4 +1,4 @@
-package com.noah.scorereporter.network
+package com.noah.scorereporter.data.network
 
 import java.lang.Exception
 

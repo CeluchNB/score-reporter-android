@@ -1,7 +1,7 @@
-package com.noah.scorereporter.network
+package com.noah.scorereporter.data.network
 
 import com.noah.scorereporter.model.UserProfile
-import com.noah.scorereporter.network.model.User
+import com.noah.scorereporter.data.model.User
 
 interface UserDataSource {
 

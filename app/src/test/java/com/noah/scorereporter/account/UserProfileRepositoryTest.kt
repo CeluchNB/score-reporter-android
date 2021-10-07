@@ -10,9 +10,9 @@ import com.noah.scorereporter.MainCoroutineRule
 import com.noah.scorereporter.TestConstants
 import com.noah.scorereporter.fake.FakeAndroidKeyStore
 import com.noah.scorereporter.fake.FakeUserDataSource
-import com.noah.scorereporter.network.Result
-import com.noah.scorereporter.network.UserDataSource
-import com.noah.scorereporter.network.succeeded
+import com.noah.scorereporter.data.network.Result
+import com.noah.scorereporter.data.network.UserDataSource
+import com.noah.scorereporter.data.network.succeeded
 import com.noah.scorereporter.util.Constants
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest

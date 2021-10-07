@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.noah.scorereporter.account.IUserProfileRepository
 import com.noah.scorereporter.model.UserProfile
-import com.noah.scorereporter.network.Result
-import com.noah.scorereporter.network.succeeded
+import com.noah.scorereporter.data.network.Result
+import com.noah.scorereporter.data.network.succeeded
 import com.noah.scorereporter.util.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

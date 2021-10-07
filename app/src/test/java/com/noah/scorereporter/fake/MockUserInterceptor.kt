@@ -39,6 +39,15 @@ class MockUserInterceptor(private val valid: Boolean) : Interceptor {
                     TestConstants.LOGIN_ERROR
                 }
             }
+            uri.contains(Regex("/team/.")) -> {
+                response = if (valid) {
+                    gson.toJson(
+                        TestConstants.TEAM_RESPONSE
+                    )
+                } else {
+                    TestConstants.TEAM_ERROR
+                }
+            }
         }
 
 

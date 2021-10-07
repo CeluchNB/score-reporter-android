@@ -2,9 +2,9 @@ package com.noah.scorereporter.account
 
 import android.content.SharedPreferences
 import com.noah.scorereporter.model.UserProfile
-import com.noah.scorereporter.network.Result
-import com.noah.scorereporter.network.UserDataSource
-import com.noah.scorereporter.network.succeeded
+import com.noah.scorereporter.data.network.Result
+import com.noah.scorereporter.data.network.UserDataSource
+import com.noah.scorereporter.data.network.succeeded
 import com.noah.scorereporter.util.Constants
 import javax.inject.Inject
 

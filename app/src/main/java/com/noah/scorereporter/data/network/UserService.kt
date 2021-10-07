@@ -1,9 +1,9 @@
-package com.noah.scorereporter.network
+package com.noah.scorereporter.data.network
 
 import com.noah.scorereporter.model.UserProfile
-import com.noah.scorereporter.network.model.LoginUser
-import com.noah.scorereporter.network.model.SignUpUser
-import com.noah.scorereporter.network.model.User
+import com.noah.scorereporter.data.model.LoginUser
+import com.noah.scorereporter.data.model.SignUpUser
+import com.noah.scorereporter.data.model.User
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
