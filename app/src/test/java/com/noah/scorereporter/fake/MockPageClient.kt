@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object MockPageClient {
     fun createValid() : PageService {
         return Retrofit.Builder()
-            .client(OkHttpClient.Builder().addInterceptor(MockUserInterceptor(true)).build())
+            .client(OkHttpClient.Builder().addInterceptor(MockPageInterceptor(true)).build())
             .baseUrl("https://score-reporter.herokuapp.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(PageService::class.java)
@@ -17,7 +17,7 @@ object MockPageClient {
 
     fun createInvalid(): PageService {
         return Retrofit.Builder()
-            .client(OkHttpClient.Builder().addInterceptor(MockUserInterceptor(false)).build())
+            .client(OkHttpClient.Builder().addInterceptor(MockPageInterceptor(false)).build())
             .baseUrl("https://score-reporter.herokuapp.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(PageService::class.java)

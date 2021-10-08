@@ -71,6 +71,8 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
 
     debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
 
@@ -81,6 +83,7 @@ dependencies {
     testImplementation "androidx.test:core-ktx:$androidX_test_core_version"
     testImplementation "androidx.arch.core:core-testing:$arch_testing_version"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
+    testImplementation "org.mockito:mockito-core:$mockito_version"
 
     // hilt testing
     testImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
