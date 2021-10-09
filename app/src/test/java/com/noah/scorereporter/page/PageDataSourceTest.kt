@@ -55,7 +55,7 @@ class PageDataSourceTest {
     fun `test invalid getTeamById`() = runBlocking {
         dataSource.service = invalidService
 
-        val result = dataSource.getTeamById("team_id")
+        val result = dataSource.getTeamById(TestConstants.TEAM_RESPONSE.id)
         assertThat(result.succeeded, `is`(false))
         result as Result.Error
 
@@ -65,7 +65,7 @@ class PageDataSourceTest {
     @Test
     fun `test valid followTeam`() = runBlocking {
         dataSource.service = validService
-        val result = dataSource.followTeam("team_id")
+        val result = dataSource.followTeam(TestConstants.TEAM_RESPONSE.id)
 
         assertThat(result.succeeded, `is`(true))
         result as Result.Success
@@ -81,7 +81,7 @@ class PageDataSourceTest {
     @Test
     fun `test invalid followTeam`() = runBlocking {
         dataSource.service = invalidService
-        val result = dataSource.followTeam("team_id")
+        val result = dataSource.followTeam(TestConstants.TEAM_RESPONSE.id)
 
         assertThat(result.succeeded, `is`(false))
         result as Result.Error

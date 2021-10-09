@@ -10,15 +10,27 @@ class MockPageInterceptor(private val valid: Boolean) : Interceptor {
         val uri = chain.request().url().uri().toString()
         var response = ""
 
-        when {
-            uri.contains(Regex("/team/.")) -> {
-                response = if (valid) {
+        response = when {
+            uri.endsWith("/team/${TestConstants.TEAM_RESPONSE.id}") -> {
+                if (valid) {
                     gson.toJson(
                         TestConstants.TEAM_RESPONSE
                     )
                 } else {
                     TestConstants.TEAM_ERROR
                 }
+            }
+            uri.endsWith("/follow") -> {
+                if (valid) {
+                    gson.toJson(
+                        TestConstants.TEAM_RESPONSE
+                    )
+                } else {
+                    TestConstants.TEAM_ERROR
+                }
+            }
+            else -> {
+                TestConstants.TEAM_ERROR
             }
         }
 
