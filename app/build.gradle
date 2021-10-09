@@ -43,6 +43,7 @@ android {
         unitTests {
             includeAndroidResources = false
         }
+        animationsDisabled = true
     }
 
     hilt {
@@ -97,8 +98,6 @@ dependencies {
     androidTestImplementation "androidx.arch.core:core-testing:$arch_testing_version"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:$espresso_version"
-    // androidTestImplementation "org.robolectric:robolectric:$robolectric_version"
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
     androidTestImplementation "androidx.navigation:navigation-testing:$navigation_version"
-
 }
