@@ -7,6 +7,8 @@ import com.noah.scorereporter.data.model.Team
 import com.noah.scorereporter.data.network.PageDataSource
 import com.noah.scorereporter.data.network.Result
 import com.noah.scorereporter.data.network.succeeded
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PageRepository @Inject
@@ -25,7 +27,11 @@ constructor(
         }
 
         return try {
-            return Result.Success(teamDao.getTeamById(id))
+            val team = teamDao.getTeamById(id)
+            team?.let {
+                return Result.Success(it)
+            }
+            return Result.Error(Exception("No team found"))
         } catch (exception: Exception) {
             Result.Error(exception)
         }
@@ -39,7 +45,11 @@ constructor(
         }
 
         return try {
-            return Result.Success(teamDao.getTeamById(id))
+            val team = teamDao.getTeamById(id)
+            team?.let {
+                return Result.Success(it)
+            }
+            return Result.Error(Exception("No team found"))
         } catch (exception: Exception) {
             Result.Error(exception)
         }

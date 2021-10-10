@@ -54,8 +54,8 @@ class TeamViewModel @Inject constructor(private val repository: IPageRepository)
                 } else {
                     _followSuccess.value = false
                 }
-                _loading.value = false
             }
+            _loading.value = false
         }
     }
 }

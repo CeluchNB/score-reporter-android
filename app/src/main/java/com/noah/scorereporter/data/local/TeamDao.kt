@@ -13,7 +13,7 @@ interface TeamDao {
     fun save(teams: List<Team>)
 
     @Query("SELECT * FROM team WHERE id = :id")
-    fun getTeamById(id: String): Team
+    fun getTeamById(id: String): Team?
 
     @Query("SELECT EXISTS(SELECT * FROM team WHERE id = :id)")
     fun hasTeam(id: String): Boolean

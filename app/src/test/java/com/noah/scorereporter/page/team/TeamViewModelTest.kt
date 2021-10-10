@@ -1,23 +1,35 @@
 package com.noah.scorereporter.page.team
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.noah.scorereporter.MainCoroutineRule
 import com.noah.scorereporter.TestConstants
 import com.noah.scorereporter.fake.FakePageRepository
 import com.noah.scorereporter.getOrAwaitValue
 import com.noah.scorereporter.pages.IPageRepository
 import com.noah.scorereporter.pages.team.TeamViewModel
+import kotlinx.coroutines.*
+import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.concurrent.TimeoutException
 
+@ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 class TeamViewModelTest {
 
     private lateinit var repository: IPageRepository
     private lateinit var viewModel: TeamViewModel
+
+    @get:Rule
+    val instantTaskRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val mainCoroutineRule = MainCoroutineRule()
 
     @Before
     fun setUp() {
@@ -26,7 +38,7 @@ class TeamViewModelTest {
     }
 
     @Test
-    fun `test valid fetch team`() {
+    fun `test valid fetch team`() = mainCoroutineRule.runBlockingTest {
         (repository as FakePageRepository).valid = true
         viewModel.id.value = TestConstants.TEAM_RESPONSE.id
         assertThat(viewModel.loading.getOrAwaitValue(), `is`(false))
@@ -34,7 +46,7 @@ class TeamViewModelTest {
     }
 
     @Test
-    fun `test invalid fetchTeam`() {
+    fun `test invalid fetchTeam`() = mainCoroutineRule.runBlockingTest {
         (repository as FakePageRepository).valid = false
         viewModel.id.value = TestConstants.TEAM_RESPONSE.id
         assertThat(viewModel.loading.getOrAwaitValue(), `is`(false))
@@ -46,7 +58,7 @@ class TeamViewModelTest {
     }
 
     @Test
-    fun `test valid follow`() {
+    fun `test valid follow`() = mainCoroutineRule.runBlockingTest {
         (repository as FakePageRepository).valid = true
         viewModel.id.value = TestConstants.TEAM_RESPONSE.id
         viewModel.follow()
