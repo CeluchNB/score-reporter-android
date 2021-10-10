@@ -7,9 +7,11 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.noah.scorereporter.account.UserProfileDataSource
 import com.noah.scorereporter.data.local.ReporterDatabase
+import com.noah.scorereporter.data.network.PageDataSource
 import com.noah.scorereporter.data.network.PageService
 import com.noah.scorereporter.data.network.UserDataSource
 import com.noah.scorereporter.data.network.UserService
+import com.noah.scorereporter.pages.PageDataSourceImpl
 import com.noah.scorereporter.util.Constants
 import dagger.Binds
 import dagger.Module
@@ -27,6 +29,9 @@ abstract class NetworkModule {
 
     @Binds
     abstract fun bindUserDataSource(dataSource: UserProfileDataSource) : UserDataSource
+
+    @Binds
+    abstract fun bindPageDataSource(dataSource: PageDataSourceImpl): PageDataSource
 
     companion object {
         @Provides
@@ -51,6 +56,11 @@ abstract class NetworkModule {
                 ReporterDatabase::class.java,
                 "reporter-database.db"
             ).build()
+
+        @Provides
+        @Singleton
+        fun provideTeamDao(database: ReporterDatabase) =
+            database.teamDao()
 
         @Provides
         fun provideMasterKey(@ApplicationContext context: Context): MasterKey =
