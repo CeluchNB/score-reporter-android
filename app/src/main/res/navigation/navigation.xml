@@ -7,10 +7,29 @@
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.noah.scorereporter.search.SearchFragment"
-        android:label="Search" />
+        android:label="Search" >
+        <action
+            android:id="@+id/action_searchFragment_to_teamFragment"
+            app:destination="@id/teamFragment">
+            <argument
+                android:name="teamId"
+                android:defaultValue="@null"
+                app:nullable="true" />
+        </action>
+    </fragment>
+
     <activity
         android:id="@+id/accountActivity"
         android:name="com.noah.scorereporter.account.AccountActivity"
         android:label="AccountActivity" />
+    <fragment
+        android:id="@+id/teamFragment"
+        android:name="com.noah.scorereporter.pages.team.TeamFragment"
+        android:label="TeamFragment">
+        <argument
+            android:name="teamId"
+            android:defaultValue="@null"
+            app:nullable="true" />
+    </fragment>
 
 </navigation>

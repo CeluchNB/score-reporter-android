@@ -14,7 +14,7 @@ data class Team(
     @PrimaryKey val id: String,
     val name: String,
     val founded: Date,
-    val ended: Date,
+    val ended: Date?,
     val owner: String,
     val followers: List<Follower>,
     val seasons: List<String>

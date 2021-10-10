@@ -2,10 +2,11 @@ package com.noah.scorereporter.pages.team
 
 import androidx.lifecycle.*
 import com.noah.scorereporter.data.model.Team
+import com.noah.scorereporter.data.network.Result
+import com.noah.scorereporter.data.network.succeeded
 import com.noah.scorereporter.pages.IPageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,16 +19,18 @@ class TeamViewModel @Inject constructor(private val repository: IPageRepository)
     val loading: LiveData<Boolean>
         get() = _loading
 
-    val team: MutableLiveData<Team>
-        get() = id.switchMap {
-            liveData {
-                _loading.value = true
-                repository.getTeamById(it).collect {
-                    emit(it)
-                    _loading.value = false
+    private val _team: MutableLiveData<Team> = id.switchMap {
+            liveData(Dispatchers.Default) {
+                val result = repository.getTeamById(it)
+                if (result.succeeded) {
+                    result as Result.Success
+                    emit(result.data)
                 }
             }
         } as MutableLiveData<Team>
+
+    val team: LiveData<Team>
+        get() = _team
 
     private val _followSuccess = MutableLiveData(false)
     val followSuccess: LiveData<Boolean>
@@ -43,13 +46,16 @@ class TeamViewModel @Inject constructor(private val repository: IPageRepository)
                     return@launch
                 }
 
-                repository.followTeam(it).take(1).collect {
-                    team.value = it
+                val result = repository.followTeam(it)
+                if (result.succeeded) {
+                    result as Result.Success
+                    _team.value = result.data
                     _followSuccess.value = true
-                    _loading.value = false
+                } else {
+                    _followSuccess.value = false
                 }
+                _loading.value = false
             }
-            _loading.value = false
         }
     }
 }

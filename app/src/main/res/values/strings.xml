@@ -15,4 +15,5 @@
     <string name="teams_caps">TEAMS</string>
     <string name="logout">logout</string>
     <string name="follow">follow</string>
+    <string name="dash">-</string>
 </resources>
