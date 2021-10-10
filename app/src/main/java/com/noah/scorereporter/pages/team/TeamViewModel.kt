@@ -1,33 +1,55 @@
 package com.noah.scorereporter.pages.team
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.noah.scorereporter.data.model.Team
 import com.noah.scorereporter.pages.IPageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class TeamViewModel @Inject constructor(private val repository: IPageRepository): ViewModel() {
 
-    private val _loading: LiveData<Boolean> = MutableLiveData(false)
+    val id = MutableLiveData<String>()
+
+    private val _loading = MutableLiveData(false)
     val loading: LiveData<Boolean>
         get() = _loading
 
-    private val _team: LiveData<Team?> = MutableLiveData(null)
-    val team: LiveData<Team?>
-        get() = _team
+    val team: MutableLiveData<Team>
+        get() = id.switchMap {
+            liveData {
+                _loading.value = true
+                repository.getTeamById(it).collect {
+                    emit(it)
+                    _loading.value = false
+                }
+            }
+        } as MutableLiveData<Team>
 
-    private val _followSuccess: LiveData<Boolean> = MutableLiveData(false)
+    private val _followSuccess = MutableLiveData(false)
     val followSuccess: LiveData<Boolean>
         get() = _followSuccess
 
     fun follow() {
+        _loading.value = true
+        viewModelScope.launch {
+            id.value?.let {
+                if (it.isEmpty()) {
+                    _followSuccess.value = false
+                    _loading.value = false
+                    return@launch
+                }
 
-    }
-
-    fun fetchTeam(id: String) {
-
+                repository.followTeam(it).take(1).collect {
+                    team.value = it
+                    _followSuccess.value = true
+                    _loading.value = false
+                }
+            }
+            _loading.value = false
+        }
     }
 }

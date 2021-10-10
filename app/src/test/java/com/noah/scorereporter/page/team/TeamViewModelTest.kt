@@ -1,5 +1,6 @@
 package com.noah.scorereporter.page.team
 
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.noah.scorereporter.TestConstants
 import com.noah.scorereporter.fake.FakePageRepository
 import com.noah.scorereporter.getOrAwaitValue
@@ -9,8 +10,10 @@ import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import java.util.concurrent.TimeoutException
 
+@RunWith(AndroidJUnit4::class)
 class TeamViewModelTest {
 
     private lateinit var repository: IPageRepository
@@ -23,9 +26,9 @@ class TeamViewModelTest {
     }
 
     @Test
-    fun `test valid fetchTeam`() {
+    fun `test valid fetch team`() {
         (repository as FakePageRepository).valid = true
-        viewModel.fetchTeam(TestConstants.TEAM_RESPONSE.id)
+        viewModel.id.value = TestConstants.TEAM_RESPONSE.id
         assertThat(viewModel.loading.getOrAwaitValue(), `is`(false))
         assertThat(viewModel.team.getOrAwaitValue(), `is`(TestConstants.TEAM_RESPONSE))
     }
@@ -33,7 +36,7 @@ class TeamViewModelTest {
     @Test
     fun `test invalid fetchTeam`() {
         (repository as FakePageRepository).valid = false
-        viewModel.fetchTeam(TestConstants.TEAM_RESPONSE.id)
+        viewModel.id.value = TestConstants.TEAM_RESPONSE.id
         assertThat(viewModel.loading.getOrAwaitValue(), `is`(false))
         try {
             viewModel.team.getOrAwaitValue()
@@ -45,16 +48,33 @@ class TeamViewModelTest {
     @Test
     fun `test valid follow`() {
         (repository as FakePageRepository).valid = true
+        viewModel.id.value = TestConstants.TEAM_RESPONSE.id
         viewModel.follow()
         assertThat(viewModel.loading.getOrAwaitValue(), `is`(false))
+        assertThat(viewModel.followSuccess.getOrAwaitValue(), `is`(true))
         assertThat(viewModel.team.getOrAwaitValue(), `is`(TestConstants.TEAM_RESPONSE))
     }
 
     @Test
     fun `test invalid follow`() {
         (repository as FakePageRepository).valid = false
+        viewModel.id.value = TestConstants.TEAM_RESPONSE.id
         viewModel.follow()
         assertThat(viewModel.loading.getOrAwaitValue(), `is`(false))
+        assertThat(viewModel.followSuccess.getOrAwaitValue(), `is`(false))
+        try {
+            viewModel.team.getOrAwaitValue()
+        } catch (exception: TimeoutException) {
+            assertThat(exception.message, `is`("LiveData value was never set."))
+        }
+    }
+
+    @Test
+    fun `test valid follow with no id`() {
+        (repository as FakePageRepository).valid = true
+        viewModel.follow()
+        assertThat(viewModel.loading.getOrAwaitValue(), `is`(false))
+        assertThat(viewModel.followSuccess.getOrAwaitValue(), `is`(false))
         try {
             viewModel.team.getOrAwaitValue()
         } catch (exception: TimeoutException) {
