@@ -118,8 +118,8 @@ class UserProfileDataSourceTest {
     fun `test unsuccessful logout`() = runBlocking {
         dataSource.service = invalidService
         val result = dataSource.logout("")
-        assertThat(result.succeeded, `is`(true))
-        result as Result.Success
-        assertThat(result.data, `is`(false))
+        assertThat(result.succeeded, `is`(false))
+        result as Result.Error
+        assertThat(result.exception.message, `is`(""))
     }
 }

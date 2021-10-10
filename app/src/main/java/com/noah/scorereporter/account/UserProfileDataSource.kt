@@ -44,7 +44,7 @@ class UserProfileDataSource @Inject constructor(): UserDataSource {
             if (response.code() == 200) {
                 Result.Success(true)
             } else {
-                Result.Success(false)
+                throw HttpException(response)
             }
         } catch (exception: HttpException) {
             Result.Error(Exception(exception.message()))
