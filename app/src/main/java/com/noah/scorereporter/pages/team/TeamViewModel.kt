@@ -2,11 +2,10 @@ package com.noah.scorereporter.pages.team
 
 import androidx.lifecycle.*
 import com.noah.scorereporter.data.model.Team
-import com.noah.scorereporter.data.network.Result
-import com.noah.scorereporter.data.network.succeeded
 import com.noah.scorereporter.pages.IPageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,12 +19,10 @@ class TeamViewModel @Inject constructor(private val repository: IPageRepository)
         get() = _loading
 
     private val _team: MutableLiveData<Team> = id.switchMap {
-            liveData(Dispatchers.Default) {
-                val result = repository.getTeamById(it)
-                if (result.succeeded) {
-                    result as Result.Success
-                    emit(result.data)
-                }
+        _loading.value = true
+            liveData(Dispatchers.IO) {
+                emitSource(repository.getTeamById(it).asLiveData())
+                _loading.postValue(false)
             }
         } as MutableLiveData<Team>
 
@@ -46,13 +43,9 @@ class TeamViewModel @Inject constructor(private val repository: IPageRepository)
                     return@launch
                 }
 
-                val result = repository.followTeam(it)
-                if (result.succeeded) {
-                    result as Result.Success
-                    _team.value = result.data
+                repository.followTeam(it).collect {
                     _followSuccess.value = true
-                } else {
-                    _followSuccess.value = false
+                    _team.value = it
                 }
             }
             _loading.value = false
