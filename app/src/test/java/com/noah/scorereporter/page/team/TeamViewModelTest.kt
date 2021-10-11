@@ -46,7 +46,7 @@ class TeamViewModelTest {
     }
 
     @Test
-    fun `test invalid fetchTeam`() = mainCoroutineRule.runBlockingTest {
+    fun `test invalid fetch team`() = mainCoroutineRule.runBlockingTest {
         (repository as FakePageRepository).valid = false
         viewModel.id.value = TestConstants.TEAM_RESPONSE.id
         assertThat(viewModel.loading.getOrAwaitValue(), `is`(false))

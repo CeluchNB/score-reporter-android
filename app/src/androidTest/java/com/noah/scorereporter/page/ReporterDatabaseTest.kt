@@ -67,9 +67,9 @@ class ReporterDatabaseTest {
 
     @Test
     fun testSaveAndGetTeamById() = runBlocking {
-        val job1 = async { teamDao.getTeamById("0") }
-        val job2 = async { teamDao.getTeamById("1") }
-        val job3 = async { teamDao.getTeamById("2") }
+        val job1 = async { teamDao.getTeamById("0").take(1).toList() }
+        val job2 = async { teamDao.getTeamById("1").take(1).toList() }
+        val job3 = async { teamDao.getTeamById("2").take(1).toList() }
 
         teamDao.save(listOf(team1, team2))
 
@@ -77,9 +77,9 @@ class ReporterDatabaseTest {
         val result2 = job2.await()
         val result3 = job3.await()
 
-        assertThat(result1, `is`(team1))
-        assertThat(result2, `is`(team2))
-        assertThat(result3, IsNull())
+        assertThat(result1[0], `is`(team1))
+        assertThat(result2[0], `is`(team2))
+        assertThat(result3[0], IsNull())
     }
 
     @Test

@@ -21,11 +21,11 @@
     <activity
         android:id="@+id/accountActivity"
         android:name="com.noah.scorereporter.account.AccountActivity"
-        android:label="AccountActivity" />
+        android:label="Account" />
     <fragment
         android:id="@+id/teamFragment"
         android:name="com.noah.scorereporter.pages.team.TeamFragment"
-        android:label="TeamFragment">
+        android:label="Team">
         <argument
             android:name="teamId"
             android:defaultValue="@null"
