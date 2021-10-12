@@ -2,5 +2,5 @@
 <resources>
     <dimen name="input_margin">24dp</dimen>
     <dimen name="profile_margin">50dp</dimen>
-    <dimen name="small_top_margin">5dp</dimen>
+    <dimen name="small_margin">5dp</dimen>
 </resources>
