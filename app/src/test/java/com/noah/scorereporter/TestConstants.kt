@@ -36,7 +36,7 @@ object TestConstants {
     const val TEAM_ERROR = "Unable to find team"
 
     val SEASON_RESPONSE = Season(
-        "season_id",
+        "season_id_1",
         Date(970891721000L),
         Date(1633579721000L),
         "user_1"

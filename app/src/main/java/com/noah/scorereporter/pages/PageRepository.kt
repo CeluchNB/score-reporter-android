@@ -7,6 +7,7 @@ import com.noah.scorereporter.data.network.PageDataSource
 import com.noah.scorereporter.data.network.Result
 import com.noah.scorereporter.data.network.succeeded
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class PageRepository @Inject
@@ -38,6 +39,14 @@ constructor(
     }
 
     override suspend fun getSeasonsOfTeam(ids: List<String>): Flow<List<Season>> {
-        TODO("Not Done yet")
+        val list = mutableListOf<Season>()
+        ids.forEach {
+            val result = remoteDataSource.getSeasonById(it)
+            if (result.succeeded) {
+                list.add((result as Result.Success).data)
+            }
+        }
+
+        return flow { emit(list) }
     }
 }

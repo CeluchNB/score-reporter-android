@@ -26,7 +26,11 @@ class FakePageDataSource : PageDataSource {
 
     override suspend fun getSeasonById(id: String): Result<Season> {
         return if (valid) {
-            Result.Success(TestConstants.SEASON_RESPONSE)
+            when {
+                id == TestConstants.SEASON_RESPONSE.id -> Result.Success(TestConstants.SEASON_RESPONSE)
+                id == TestConstants.SEASON_RESPONSE_2.id -> Result.Success(TestConstants.SEASON_RESPONSE_2)
+                else -> Result.Error(Exception(TestConstants.SEASON_ERROR))
+            }
         } else {
             Result.Error(Exception(TestConstants.SEASON_ERROR))
         }
