@@ -29,6 +29,15 @@ class MockPageInterceptor(private val valid: Boolean) : Interceptor {
                     TestConstants.TEAM_ERROR
                 }
             }
+            uri.endsWith("/season/${TestConstants.SEASON_RESPONSE.id}") -> {
+                if (valid) {
+                    gson.toJson(
+                        TestConstants.SEASON_RESPONSE
+                    )
+                } else {
+                    TestConstants.SEASON_ERROR
+                }
+            }
             else -> {
                 TestConstants.TEAM_ERROR
             }

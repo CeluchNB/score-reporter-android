@@ -1,5 +1,6 @@
 package com.noah.scorereporter
 
+import com.noah.scorereporter.data.model.Season
 import com.noah.scorereporter.data.model.Team
 import com.noah.scorereporter.model.UserProfile
 import com.noah.scorereporter.data.model.User
@@ -33,4 +34,13 @@ object TestConstants {
     )
 
     const val TEAM_ERROR = "Unable to find team"
+
+    val SEASON_RESPONSE = Season(
+        "season_id",
+        Date(970891721000L),
+        Date(1633579721000L),
+        "user_1"
+    )
+
+    const val SEASON_ERROR = "Unable to find season"
 }
