@@ -42,5 +42,12 @@ object TestConstants {
         "user_1"
     )
 
+    val SEASON_RESPONSE_2 = Season(
+        "season_id_2",
+        Date(972891761000L),
+        Date(1631579921000L),
+        "user_2"
+    )
+
     const val SEASON_ERROR = "Unable to find season"
 }

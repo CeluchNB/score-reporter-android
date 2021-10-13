@@ -108,4 +108,48 @@ class PageRepositoryTest {
             assertThat(exception.message, `is`("LiveData value was never set."))
         }
     }
+
+    @Test
+    fun `test getSeasonsOfTeam with valid source`() = mainCoroutineRule.runBlockingTest {
+        (remoteDataSource as FakePageDataSource).valid = true
+
+        val result = repository.getSeasonsOfTeam(
+            listOf(TestConstants.SEASON_RESPONSE.id, TestConstants.SEASON_RESPONSE_2.id)
+        ).asLiveData()
+
+        val list = result.getOrAwaitValue()
+        assertThat(list.size, `is`(2))
+        assertThat(list[0], `is`(TestConstants.SEASON_RESPONSE))
+        assertThat(list[1], `is`(TestConstants.SEASON_RESPONSE_2))
+    }
+
+    @Test
+    fun `test getSeasonsOfTeam with bad list`() = mainCoroutineRule.runBlockingTest {
+        (remoteDataSource as FakePageDataSource).valid = true
+
+        val result = repository.getSeasonsOfTeam(
+            listOf("bad_id_1", "bad_id_2")
+        ).asLiveData()
+
+        try {
+            result.getOrAwaitValue()
+        } catch (exception: TimeoutException) {
+            assertThat(exception.message, `is`("LiveData value was never set."))
+        }
+    }
+
+    @Test
+    fun `test getSeasonsOfTeam with invalid source`() = mainCoroutineRule.runBlockingTest {
+        (remoteDataSource as FakePageDataSource).valid = false
+
+        val result = repository.getSeasonsOfTeam(
+            listOf(TestConstants.SEASON_RESPONSE.id, TestConstants.SEASON_RESPONSE_2.id)
+        ).asLiveData()
+
+        try {
+            result.getOrAwaitValue()
+        } catch (exception: TimeoutException) {
+            assertThat(exception.message, `is`("LiveData value was never set."))
+        }
+    }
 }

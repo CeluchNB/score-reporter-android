@@ -29,11 +29,23 @@ class MockPageInterceptor(private val valid: Boolean) : Interceptor {
                     TestConstants.TEAM_ERROR
                 }
             }
-            uri.endsWith("/season/${TestConstants.SEASON_RESPONSE.id}") -> {
+            uri.matches(Regex("https://score-reporter.herokuapp.com/season/.+")) -> {
                 if (valid) {
-                    gson.toJson(
-                        TestConstants.SEASON_RESPONSE
-                    )
+                    when {
+                        uri.contains(TestConstants.SEASON_RESPONSE.id) -> {
+                            gson.toJson(
+                                TestConstants.SEASON_RESPONSE
+                            )
+                        }
+                        uri.contains(TestConstants.SEASON_RESPONSE_2.id) -> {
+                            gson.toJson(
+                                TestConstants.SEASON_RESPONSE_2
+                            )
+                        }
+                        else -> {
+                            TestConstants.SEASON_ERROR
+                        }
+                    }
                 } else {
                     TestConstants.SEASON_ERROR
                 }

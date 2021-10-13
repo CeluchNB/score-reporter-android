@@ -1,6 +1,7 @@
 package com.noah.scorereporter.pages
 
 import com.noah.scorereporter.data.local.TeamDao
+import com.noah.scorereporter.data.model.Season
 import com.noah.scorereporter.data.model.Team
 import com.noah.scorereporter.data.network.PageDataSource
 import com.noah.scorereporter.data.network.Result
@@ -34,5 +35,9 @@ constructor(
         }
 
         return teamDao.getTeamById(id)
+    }
+
+    override suspend fun getSeasonsOfTeam(ids: List<String>): Flow<List<Season>> {
+        TODO("Not Done yet")
     }
 }
