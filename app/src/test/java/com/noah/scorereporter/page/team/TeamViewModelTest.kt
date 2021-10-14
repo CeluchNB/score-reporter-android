@@ -15,7 +15,9 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.Timeout
 import org.junit.runner.RunWith
+import java.sql.Time
 import java.util.concurrent.TimeoutException
 
 @ExperimentalCoroutinesApi
@@ -52,6 +54,35 @@ class TeamViewModelTest {
         assertThat(viewModel.loading.getOrAwaitValue(), `is`(false))
         try {
             viewModel.team.getOrAwaitValue()
+        } catch (exception: TimeoutException) {
+            assertThat(exception.message, `is`("LiveData value was never set."))
+        }
+    }
+
+    @Test
+    fun `test valid get multiple seasons`() = mainCoroutineRule.runBlockingTest {
+        (repository as FakePageRepository).valid = true
+        viewModel.id.value = TestConstants.TEAM_RESPONSE.id
+        assertThat(viewModel.team.getOrAwaitValue(), `is`(TestConstants.TEAM_RESPONSE))
+        val seasons = viewModel.seasons.getOrAwaitValue()
+        assertThat(seasons.size, `is`(2))
+        assertThat(seasons[0], `is`(TestConstants.SEASON_RESPONSE))
+        assertThat(seasons[1], `is`(TestConstants.SEASON_RESPONSE_2))
+    }
+
+    @Test
+    fun `test invalid get multiple seasons`() = mainCoroutineRule.runBlockingTest {
+        (repository as FakePageRepository).valid = false
+        viewModel.id.value = TestConstants.TEAM_RESPONSE.id
+
+        try {
+            viewModel.team.getOrAwaitValue()
+        } catch (exception: TimeoutException) {
+            assertThat(exception.message, `is`("LiveData value was never set."))
+        }
+
+        try {
+            viewModel.seasons.getOrAwaitValue()
         } catch (exception: TimeoutException) {
             assertThat(exception.message, `is`("LiveData value was never set."))
         }

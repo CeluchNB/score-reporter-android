@@ -27,8 +27,18 @@ class FakePageRepository : IPageRepository {
     }
 
     override suspend fun getSeasonsOfTeam(ids: List<String>): Flow<List<Season>> {
+        val list = mutableListOf<Season>()
+
+        if (ids.contains(TestConstants.SEASON_RESPONSE.id)) {
+            list.add(TestConstants.SEASON_RESPONSE)
+        }
+
+        if (ids.contains(TestConstants.SEASON_RESPONSE_2.id)) {
+            list.add(TestConstants.SEASON_RESPONSE_2)
+        }
+
         return if (valid) {
-            flow { emit(listOf(TestConstants.SEASON_RESPONSE, TestConstants.SEASON_RESPONSE_2)) }
+            flow { emit(list) }
         } else {
             flow { }
         }
