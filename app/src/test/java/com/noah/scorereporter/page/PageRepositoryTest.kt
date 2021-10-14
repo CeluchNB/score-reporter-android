@@ -4,6 +4,7 @@ import androidx.lifecycle.asLiveData
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.noah.scorereporter.MainCoroutineRule
 import com.noah.scorereporter.TestConstants
+import com.noah.scorereporter.data.local.SeasonDao
 import com.noah.scorereporter.data.local.TeamDao
 import com.noah.scorereporter.data.network.PageDataSource
 import com.noah.scorereporter.fake.FakePageDataSource
@@ -29,6 +30,7 @@ class PageRepositoryTest {
     private lateinit var repository: IPageRepository
     private lateinit var remoteDataSource: PageDataSource
     private lateinit var teamDao: TeamDao
+    private lateinit var seasonDao: SeasonDao
 
     @get:Rule
     val mainCoroutineRule = MainCoroutineRule()
@@ -37,12 +39,24 @@ class PageRepositoryTest {
     fun setUp() {
         remoteDataSource = FakePageDataSource()
         teamDao = mock(TeamDao::class.java)
+        seasonDao = mock(SeasonDao::class.java)
+
         `when`(teamDao.getTeamById(TestConstants.TEAM_RESPONSE.id)).thenReturn(
             flow { emit(TestConstants.TEAM_RESPONSE) }
         )
         `when`(teamDao.getTeamById("id1")).thenReturn(flow { })
         `when`(teamDao.hasTeam(TestConstants.TEAM_RESPONSE.id)).thenReturn(true)
-        repository = PageRepository(remoteDataSource, teamDao)
+
+        `when`(seasonDao.getSeasonById(TestConstants.SEASON_RESPONSE.id)).thenReturn(
+            flow { emit (TestConstants.SEASON_RESPONSE) }
+        )
+        `when`(seasonDao.getSeasonById(TestConstants.SEASON_RESPONSE_2.id)).thenReturn(
+            flow { emit (TestConstants.SEASON_RESPONSE_2) }
+        )
+        `when`(seasonDao.hasSeason(TestConstants.SEASON_RESPONSE.id)).thenReturn(true)
+        `when`(seasonDao.hasSeason(TestConstants.SEASON_RESPONSE_2.id)).thenReturn(true)
+
+        repository = PageRepository(remoteDataSource, teamDao, seasonDao)
     }
 
     @Test
@@ -110,12 +124,18 @@ class PageRepositoryTest {
     }
 
     @Test
-    fun `test getSeasonsOfTeam with valid source`() = mainCoroutineRule.runBlockingTest {
+    fun `test getSeasonsOfTeam with presaved seasons`() = mainCoroutineRule.runBlockingTest {
         (remoteDataSource as FakePageDataSource).valid = true
 
         val result = repository.getSeasonsOfTeam(
             listOf(TestConstants.SEASON_RESPONSE.id, TestConstants.SEASON_RESPONSE_2.id)
         ).asLiveData()
+
+        verify(seasonDao, times(2)).hasSeason(TestConstants.SEASON_RESPONSE.id)
+        verify(seasonDao, times(2)).hasSeason(TestConstants.SEASON_RESPONSE_2.id)
+        verify(seasonDao, times(0)).save(listOf(TestConstants.SEASON_RESPONSE, TestConstants.SEASON_RESPONSE_2))
+        verify(seasonDao).getSeasonById(TestConstants.SEASON_RESPONSE.id)
+        verify(seasonDao).getSeasonById(TestConstants.SEASON_RESPONSE_2.id)
 
         val list = result.getOrAwaitValue()
         assertThat(list.size, `is`(2))
@@ -131,6 +151,12 @@ class PageRepositoryTest {
             listOf("bad_id_1", "bad_id_2")
         ).asLiveData()
 
+        verify(seasonDao, times(2)).hasSeason("bad_id_1")
+        verify(seasonDao, times(2)).hasSeason("bad_id_2")
+        verify(seasonDao).save(listOf())
+        verify(seasonDao, times(0)).getSeasonById("bad_id_1")
+        verify(seasonDao, times(0)).getSeasonById("bad_id_2")
+
         try {
             result.getOrAwaitValue()
         } catch (exception: TimeoutException) {
@@ -140,11 +166,19 @@ class PageRepositoryTest {
 
     @Test
     fun `test getSeasonsOfTeam with invalid source`() = mainCoroutineRule.runBlockingTest {
+        `when`(seasonDao.hasSeason(TestConstants.SEASON_RESPONSE.id)).thenReturn(false)
+        `when`(seasonDao.hasSeason(TestConstants.SEASON_RESPONSE_2.id)).thenReturn(false)
         (remoteDataSource as FakePageDataSource).valid = false
 
         val result = repository.getSeasonsOfTeam(
             listOf(TestConstants.SEASON_RESPONSE.id, TestConstants.SEASON_RESPONSE_2.id)
         ).asLiveData()
+
+        verify(seasonDao, times(2)).hasSeason(TestConstants.SEASON_RESPONSE.id)
+        verify(seasonDao, times(2)).hasSeason(TestConstants.SEASON_RESPONSE_2.id)
+        verify(seasonDao).save(listOf())
+        verify(seasonDao, times(0)).getSeasonById(TestConstants.SEASON_RESPONSE.id)
+        verify(seasonDao, times(0)).getSeasonById(TestConstants.SEASON_RESPONSE_2.id)
 
         try {
             result.getOrAwaitValue()
