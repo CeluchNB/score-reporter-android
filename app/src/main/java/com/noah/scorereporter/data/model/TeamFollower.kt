@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Follower(
+data class TeamFollower(
     val user: String,
     val role: Role
 ): Parcelable

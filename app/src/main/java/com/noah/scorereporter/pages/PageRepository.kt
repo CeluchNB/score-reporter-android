@@ -3,14 +3,14 @@ package com.noah.scorereporter.pages
 import com.noah.scorereporter.data.local.SeasonDao
 import com.noah.scorereporter.data.local.TeamDao
 import com.noah.scorereporter.data.local.UserDao
-import com.noah.scorereporter.data.model.Follower
 import com.noah.scorereporter.data.model.Season
 import com.noah.scorereporter.data.model.Team
+import com.noah.scorereporter.data.model.TeamFollower
 import com.noah.scorereporter.data.model.UserProfile
 import com.noah.scorereporter.data.network.PageDataSource
 import com.noah.scorereporter.data.network.Result
 import com.noah.scorereporter.data.network.succeeded
-import com.noah.scorereporter.pages.model.TeamFollower
+import com.noah.scorereporter.pages.model.Follower
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -78,11 +78,11 @@ constructor(
         return flow { emit(list) }
     }
 
-    override suspend fun getFollowersOfTeam(followers: List<Follower>): Flow<List<TeamFollower>> {
+    override suspend fun getFollowersOfTeam(teamFollowers: List<TeamFollower>): Flow<List<Follower>> {
         val newFollowers = mutableListOf<UserProfile>()
 
         coroutineScope {
-            followers.forEach {
+            teamFollowers.forEach {
                 launch {
                     if (!userDao.hasUser(it.user)) {
                         val result = remoteDataSource.getUserById(it.user)
@@ -96,17 +96,17 @@ constructor(
 
         userDao.save(newFollowers)
 
-        val teamFollowers = mutableListOf<TeamFollower>()
-        followers.forEach { follower ->
+        val followers = mutableListOf<Follower>()
+        teamFollowers.forEach { follower ->
             if (userDao.hasUser(follower.user)) {
                 userDao.getUserById(follower.user).take(1).collect { user ->
-                    teamFollowers.add(
-                        TeamFollower(user.firstName, user.lastName, user.email, follower.role)
+                    followers.add(
+                        Follower(user.firstName, user.lastName, user.email, follower.role)
                     )
                 }
             }
         }
 
-        return flow { emit(teamFollowers) }
+        return flow { emit(followers) }
     }
 }

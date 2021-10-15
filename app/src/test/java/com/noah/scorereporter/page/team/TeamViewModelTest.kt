@@ -15,9 +15,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.Timeout
 import org.junit.runner.RunWith
-import java.sql.Time
 import java.util.concurrent.TimeoutException
 
 @ExperimentalCoroutinesApi
@@ -55,7 +53,7 @@ class TeamViewModelTest {
         try {
             viewModel.team.getOrAwaitValue()
         } catch (exception: TimeoutException) {
-            assertThat(exception.message, `is`("LiveData value was never set."))
+            assertThat(exception.message, `is`(TestConstants.LIVE_DATA_ERROR))
         }
     }
 
@@ -64,6 +62,7 @@ class TeamViewModelTest {
         (repository as FakePageRepository).valid = true
         viewModel.id.value = TestConstants.TEAM_RESPONSE.id
         assertThat(viewModel.team.getOrAwaitValue(), `is`(TestConstants.TEAM_RESPONSE))
+
         val seasons = viewModel.seasons.getOrAwaitValue()
         assertThat(seasons.size, `is`(2))
         assertThat(seasons[0], `is`(TestConstants.SEASON_RESPONSE))
@@ -78,13 +77,43 @@ class TeamViewModelTest {
         try {
             viewModel.team.getOrAwaitValue()
         } catch (exception: TimeoutException) {
-            assertThat(exception.message, `is`("LiveData value was never set."))
+            assertThat(exception.message, `is`(TestConstants.LIVE_DATA_ERROR))
         }
 
         try {
             viewModel.seasons.getOrAwaitValue()
         } catch (exception: TimeoutException) {
-            assertThat(exception.message, `is`("LiveData value was never set."))
+            assertThat(exception.message, `is`(TestConstants.LIVE_DATA_ERROR))
+        }
+    }
+
+    @Test
+    fun `test valid get multiple followers`() = mainCoroutineRule.runBlockingTest {
+        (repository as FakePageRepository).valid = true
+        viewModel.id.value = TestConstants.TEAM_RESPONSE.id
+        assertThat(viewModel.team.getOrAwaitValue(), `is`(TestConstants.TEAM_RESPONSE))
+
+        val followers = viewModel.followers.getOrAwaitValue()
+        assertThat(followers.size, `is`(2))
+        assertThat(followers[0], `is`(TestConstants.FOLLOWER_1))
+        assertThat(followers[1], `is`(TestConstants.FOLLOWER_2))
+    }
+
+    @Test
+    fun `test invalid get multiple followers`() = mainCoroutineRule.runBlockingTest {
+        (repository as FakePageRepository).valid = false
+        viewModel.id.value = TestConstants.TEAM_RESPONSE.id
+
+        try {
+            viewModel.team.getOrAwaitValue()
+        } catch (exception: TimeoutException) {
+            assertThat(exception.message, `is`(TestConstants.LIVE_DATA_ERROR))
+        }
+
+        try {
+            viewModel.followers.getOrAwaitValue()
+        } catch (exception: TimeoutException) {
+            assertThat(exception.message, `is`(TestConstants.LIVE_DATA_ERROR))
         }
     }
 
@@ -108,7 +137,7 @@ class TeamViewModelTest {
         try {
             viewModel.team.getOrAwaitValue()
         } catch (exception: TimeoutException) {
-            assertThat(exception.message, `is`("LiveData value was never set."))
+            assertThat(exception.message, `is`(TestConstants.LIVE_DATA_ERROR))
         }
     }
 
@@ -121,7 +150,7 @@ class TeamViewModelTest {
         try {
             viewModel.team.getOrAwaitValue()
         } catch (exception: TimeoutException) {
-            assertThat(exception.message, `is`("LiveData value was never set."))
+            assertThat(exception.message, `is`(TestConstants.LIVE_DATA_ERROR))
         }
     }
 }

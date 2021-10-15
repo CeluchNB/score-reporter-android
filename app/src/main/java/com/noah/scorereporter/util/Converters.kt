@@ -3,9 +3,8 @@ package com.noah.scorereporter.util
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.noah.scorereporter.data.model.Follower
+import com.noah.scorereporter.data.model.TeamFollower
 import com.noah.scorereporter.data.model.TeamSeason
-import com.noah.scorereporter.data.model.UserProfile
 import java.util.*
 
 class Converters {
@@ -21,13 +20,13 @@ class Converters {
     }
 
     @TypeConverter
-    fun listOfFollowersToString(followers: List<Follower>?): String? {
-        return Gson().toJson(followers)
+    fun listOfFollowersToString(teamFollowers: List<TeamFollower>?): String? {
+        return Gson().toJson(teamFollowers)
     }
 
     @TypeConverter
-    fun stringToListOfFollowers(value: String?): List<Follower>? {
-        return Gson().fromJson(value, object : TypeToken<List<Follower>>() {}.type)
+    fun stringToListOfFollowers(value: String?): List<TeamFollower>? {
+        return Gson().fromJson(value, object : TypeToken<List<TeamFollower>>() {}.type)
     }
 
     @TypeConverter

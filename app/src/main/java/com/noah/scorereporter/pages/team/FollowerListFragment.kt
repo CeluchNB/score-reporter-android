@@ -1,7 +1,6 @@
 package com.noah.scorereporter.pages.team
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.OrientationHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.noah.scorereporter.R
-import com.noah.scorereporter.data.model.Follower
+import com.noah.scorereporter.data.model.TeamFollower
 import com.noah.scorereporter.data.model.Role
 
 class FollowerListFragment : Fragment() {
@@ -36,13 +35,13 @@ class FollowerListFragment : Fragment() {
             if (bundle.containsKey("FOLLOWERS")) {
                 // bundle.getParcelableArrayList<Follower>("FOLLOWERS")
                 val followers = listOf(
-                    Follower("Noah Celuch", Role.FAN),
-                    Follower("Amy Celuch", Role.COACH),
-                    Follower("Peyton Celuch", Role.PLAYER),
-                    Follower("Evan Celuch", Role.PLAYER),
-                    Follower("Henry Smith", Role.PLAYER),
-                    Follower("Simon Smith", Role.PLAYER),
-                    Follower("Arthur Smith", Role.PLAYER)
+                    TeamFollower("Noah Celuch", Role.FAN),
+                    TeamFollower("Amy Celuch", Role.COACH),
+                    TeamFollower("Peyton Celuch", Role.PLAYER),
+                    TeamFollower("Evan Celuch", Role.PLAYER),
+                    TeamFollower("Henry Smith", Role.PLAYER),
+                    TeamFollower("Simon Smith", Role.PLAYER),
+                    TeamFollower("Arthur Smith", Role.PLAYER)
                 )
                 followers?.let {
                     val followerAdapter = FollowerListAdapter(it)

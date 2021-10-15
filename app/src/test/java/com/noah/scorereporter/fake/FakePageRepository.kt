@@ -1,11 +1,12 @@
 package com.noah.scorereporter.fake
 
 import com.noah.scorereporter.TestConstants
-import com.noah.scorereporter.data.model.Follower
+import com.noah.scorereporter.data.model.Role
 import com.noah.scorereporter.data.model.Season
 import com.noah.scorereporter.data.model.Team
+import com.noah.scorereporter.data.model.TeamFollower
 import com.noah.scorereporter.pages.IPageRepository
-import com.noah.scorereporter.pages.model.TeamFollower
+import com.noah.scorereporter.pages.model.Follower
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -46,7 +47,37 @@ class FakePageRepository : IPageRepository {
         }
     }
 
-    override suspend fun getFollowersOfTeam(ids: List<Follower>): Flow<List<TeamFollower>> {
-        TODO("Not yet implemented")
+    override suspend fun getFollowersOfTeam(teamFollowers: List<TeamFollower>): Flow<List<Follower>> {
+        val list = mutableListOf<Follower>()
+
+        teamFollowers.forEach {
+            if (it.user == TestConstants.USER_PROFILE_1.id) {
+                list.add(
+                    Follower(
+                        TestConstants.USER_PROFILE_1.firstName,
+                        TestConstants.USER_PROFILE_1.lastName,
+                        TestConstants.USER_PROFILE_1.email,
+                        Role.COACH
+                    )
+                )
+            }
+
+            if (it.user == TestConstants.USER_PROFILE_2.id) {
+                list.add(
+                    Follower(
+                        TestConstants.USER_PROFILE_2.firstName,
+                        TestConstants.USER_PROFILE_2.lastName,
+                        TestConstants.USER_PROFILE_2.email,
+                        Role.PLAYER
+                    )
+                )
+            }
+        }
+
+        return if (valid) {
+            flow { emit(list) }
+        } else {
+            flow { }
+        }
     }
 }

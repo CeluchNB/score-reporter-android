@@ -6,7 +6,7 @@
     <data>
         <variable
             name="follower"
-            type="com.noah.scorereporter.data.model.Follower" />
+            type="com.noah.scorereporter.data.model.TeamFollower" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

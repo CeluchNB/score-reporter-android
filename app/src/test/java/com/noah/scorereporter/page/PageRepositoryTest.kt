@@ -7,14 +7,13 @@ import com.noah.scorereporter.TestConstants
 import com.noah.scorereporter.data.local.SeasonDao
 import com.noah.scorereporter.data.local.TeamDao
 import com.noah.scorereporter.data.local.UserDao
-import com.noah.scorereporter.data.model.Follower
 import com.noah.scorereporter.data.model.Role
 import com.noah.scorereporter.data.network.PageDataSource
 import com.noah.scorereporter.fake.FakePageDataSource
 import com.noah.scorereporter.getOrAwaitValue
 import com.noah.scorereporter.pages.IPageRepository
 import com.noah.scorereporter.pages.PageRepository
-import com.noah.scorereporter.pages.model.TeamFollower
+import com.noah.scorereporter.pages.model.Follower
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runBlockingTest
@@ -95,7 +94,7 @@ class PageRepositoryTest {
         try {
             result.getOrAwaitValue()
         } catch (exception: TimeoutException) {
-            assertThat(exception.message, `is`("LiveData value was never set."))
+            assertThat(exception.message, `is`(TestConstants.LIVE_DATA_ERROR))
         }
     }
 
@@ -134,7 +133,7 @@ class PageRepositoryTest {
         try {
             result.getOrAwaitValue()
         } catch (exception: TimeoutException) {
-            assertThat(exception.message, `is`("LiveData value was never set."))
+            assertThat(exception.message, `is`(TestConstants.LIVE_DATA_ERROR))
         }
     }
 
@@ -175,7 +174,7 @@ class PageRepositoryTest {
         try {
             result.getOrAwaitValue()
         } catch (exception: TimeoutException) {
-            assertThat(exception.message, `is`("LiveData value was never set."))
+            assertThat(exception.message, `is`(TestConstants.LIVE_DATA_ERROR))
         }
     }
 
@@ -198,7 +197,7 @@ class PageRepositoryTest {
         try {
             result.getOrAwaitValue()
         } catch (exception: TimeoutException) {
-            assertThat(exception.message, `is`("LiveData value was never set."))
+            assertThat(exception.message, `is`(TestConstants.LIVE_DATA_ERROR))
         }
     }
 
@@ -208,8 +207,8 @@ class PageRepositoryTest {
 
         val result = repository.getFollowersOfTeam(
             listOf(
-                Follower(TestConstants.USER_PROFILE_1.id, Role.COACH),
-                Follower(TestConstants.USER_PROFILE_2.id, Role.PLAYER)
+                com.noah.scorereporter.data.model.TeamFollower(TestConstants.USER_PROFILE_1.id, Role.COACH),
+                com.noah.scorereporter.data.model.TeamFollower(TestConstants.USER_PROFILE_2.id, Role.PLAYER)
             )
         ).asLiveData()
 
@@ -221,13 +220,15 @@ class PageRepositoryTest {
 
         val list = result.getOrAwaitValue()
         assertThat(list.size, `is`(2))
-        assertThat(list[0], `is`(TeamFollower(
+        assertThat(list[0], `is`(
+            Follower(
             TestConstants.USER_PROFILE_1.firstName,
             TestConstants.USER_PROFILE_1.lastName,
             TestConstants.USER_PROFILE_1.email,
             Role.COACH
-        )))
-        assertThat(list[1], `is`(TeamFollower(
+        )
+        ))
+        assertThat(list[1], `is`(Follower(
             TestConstants.USER_PROFILE_2.firstName,
             TestConstants.USER_PROFILE_2.lastName,
             TestConstants.USER_PROFILE_2.email,
@@ -241,8 +242,8 @@ class PageRepositoryTest {
 
         val result = repository.getFollowersOfTeam(
             listOf(
-                Follower("bad_id_1", Role.COACH),
-                Follower("bad_id_2", Role.PLAYER)
+                com.noah.scorereporter.data.model.TeamFollower("bad_id_1", Role.COACH),
+                com.noah.scorereporter.data.model.TeamFollower("bad_id_2", Role.PLAYER)
             )
         ).asLiveData()
 
@@ -255,7 +256,7 @@ class PageRepositoryTest {
         try {
             result.getOrAwaitValue()
         } catch (exception: TimeoutException) {
-            assertThat(exception.message, `is`("LiveData value was never set."))
+            assertThat(exception.message, `is`(TestConstants.LIVE_DATA_ERROR))
         }
     }
 
@@ -267,8 +268,8 @@ class PageRepositoryTest {
 
         val result = repository.getFollowersOfTeam(
             listOf(
-                Follower(TestConstants.USER_PROFILE_1.id, Role.COACH),
-                Follower(TestConstants.USER_PROFILE_2.id, Role.PLAYER)
+                com.noah.scorereporter.data.model.TeamFollower(TestConstants.USER_PROFILE_1.id, Role.COACH),
+                com.noah.scorereporter.data.model.TeamFollower(TestConstants.USER_PROFILE_2.id, Role.PLAYER)
             )
         ).asLiveData()
 
@@ -281,7 +282,7 @@ class PageRepositoryTest {
         try {
             result.getOrAwaitValue()
         } catch (exception: TimeoutException) {
-            assertThat(exception.message, `is`("LiveData value was never set."))
+            assertThat(exception.message, `is`(TestConstants.LIVE_DATA_ERROR))
         }
     }
 }
