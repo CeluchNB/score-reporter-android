@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="follower"
+            type="com.noah.scorereporter.data.model.Follower" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?android:attr/selectableItemBackground">
+         <com.google.android.material.textview.MaterialTextView
+             android:id="@+id/text_name"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:textColor="@color/primaryDarkColor"
+             android:textSize="18sp"
+             android:text="@{follower.user}"
+             app:layout_constraintStart_toStartOf="parent"
+             app:layout_constraintTop_toTopOf="parent"
+             tools:text="Noah Celuch"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/text_role"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primaryLightColor"
+            android:textSize="14sp"
+            android:text="@{follower.role.toString()}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_name"
+            tools:text="Coach" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

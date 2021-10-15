@@ -1,12 +1,12 @@
 package com.noah.scorereporter.account
 
 import com.noah.scorereporter.model.UserProfile
-import com.noah.scorereporter.network.Result
-import com.noah.scorereporter.network.UserDataSource
-import com.noah.scorereporter.network.UserService
-import com.noah.scorereporter.network.model.LoginUser
-import com.noah.scorereporter.network.model.SignUpUser
-import com.noah.scorereporter.network.model.User
+import com.noah.scorereporter.data.network.Result
+import com.noah.scorereporter.data.network.UserDataSource
+import com.noah.scorereporter.data.network.UserService
+import com.noah.scorereporter.data.model.LoginUser
+import com.noah.scorereporter.data.model.SignUpUser
+import com.noah.scorereporter.data.model.User
 import retrofit2.HttpException
 import retrofit2.Response
 import retrofit2.awaitResponse
@@ -44,7 +44,7 @@ class UserProfileDataSource @Inject constructor(): UserDataSource {
             if (response.code() == 200) {
                 Result.Success(true)
             } else {
-                Result.Success(false)
+                throw HttpException(response)
             }
         } catch (exception: HttpException) {
             Result.Error(Exception(exception.message()))

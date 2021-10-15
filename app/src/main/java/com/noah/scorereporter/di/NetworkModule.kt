@@ -2,11 +2,16 @@ package com.noah.scorereporter.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.room.Room
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.noah.scorereporter.account.UserProfileDataSource
-import com.noah.scorereporter.network.UserDataSource
-import com.noah.scorereporter.network.UserService
+import com.noah.scorereporter.data.local.ReporterDatabase
+import com.noah.scorereporter.data.network.PageDataSource
+import com.noah.scorereporter.data.network.PageService
+import com.noah.scorereporter.data.network.UserDataSource
+import com.noah.scorereporter.data.network.UserService
+import com.noah.scorereporter.pages.PageDataSourceImpl
 import com.noah.scorereporter.util.Constants
 import dagger.Binds
 import dagger.Module
@@ -16,6 +21,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -23,6 +29,9 @@ abstract class NetworkModule {
 
     @Binds
     abstract fun bindUserDataSource(dataSource: UserProfileDataSource) : UserDataSource
+
+    @Binds
+    abstract fun bindPageDataSource(dataSource: PageDataSourceImpl): PageDataSource
 
     companion object {
         @Provides
@@ -36,9 +45,33 @@ abstract class NetworkModule {
             retrofit.create(UserService::class.java)
 
         @Provides
-        fun provideMasterKey(@ApplicationContext context: Context): MasterKey = MasterKey.Builder(context)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
+        fun providePageService(retrofit: Retrofit): PageService =
+            retrofit.create(PageService::class.java)
+
+        @Provides
+        @Singleton
+        fun provideReporterDatabase(@ApplicationContext context: Context) =
+            Room.databaseBuilder(
+                context,
+                ReporterDatabase::class.java,
+                "reporter-database.db"
+            ).build()
+
+        @Provides
+        @Singleton
+        fun provideTeamDao(database: ReporterDatabase) =
+            database.teamDao()
+
+        @Provides
+        @Singleton
+        fun provideSeasonDao(database: ReporterDatabase) =
+            database.seasonDao()
+
+        @Provides
+        fun provideMasterKey(@ApplicationContext context: Context): MasterKey =
+            MasterKey.Builder(context)
+                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                .build()
 
         @Provides
         fun provideEncryptedSharedPreferences(@ApplicationContext context: Context, masterKey: MasterKey): SharedPreferences =

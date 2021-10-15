@@ -3,7 +3,7 @@ package com.noah.scorereporter.fake
 import com.noah.scorereporter.AndroidTestConstants
 import com.noah.scorereporter.account.IUserProfileRepository
 import com.noah.scorereporter.model.UserProfile
-import com.noah.scorereporter.network.Result
+import com.noah.scorereporter.data.network.Result
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 

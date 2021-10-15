@@ -2,9 +2,9 @@ package com.noah.scorereporter.fake
 
 import com.noah.scorereporter.TestConstants
 import com.noah.scorereporter.model.UserProfile
-import com.noah.scorereporter.network.Result
-import com.noah.scorereporter.network.UserDataSource
-import com.noah.scorereporter.network.model.User
+import com.noah.scorereporter.data.network.Result
+import com.noah.scorereporter.data.network.UserDataSource
+import com.noah.scorereporter.data.model.User
 
 class FakeUserDataSource : UserDataSource {
 

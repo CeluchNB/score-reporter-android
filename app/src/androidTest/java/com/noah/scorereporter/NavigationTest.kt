@@ -11,16 +11,11 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.noah.scorereporter.account.AccountActivity
-import com.noah.scorereporter.account.IUserProfileRepository
-import com.noah.scorereporter.fake.AndroidFakeUserRepository
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import javax.inject.Inject
 
 @MediumTest
 @RunWith(AndroidJUnit4::class)
@@ -37,14 +32,6 @@ class NavigationTest {
     @get:Rule
     var accountActivityRule: ActivityScenarioRule<AccountActivity>
         = ActivityScenarioRule(AccountActivity::class.java)
-
-    @Inject
-    lateinit var repository: IUserProfileRepository
-
-    @Before
-    fun setUp() {
-        hiltRule.inject()
-    }
 
     @Test
     fun testNavigateToAccount() {

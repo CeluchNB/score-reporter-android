@@ -83,4 +83,11 @@ class ProfileViewModelTest {
         val event = viewModel.logoutSuccess.getOrAwaitValue()
         assertThat(event.getContentIfNotHandled(), `is`(false))
     }
+
+    @Test
+    fun `test setUser`() {
+        assertThat(viewModel.userProfile.getOrAwaitValue(), IsNull())
+        viewModel.setUserProfile(TestConstants.USER_PROFILE)
+        assertThat(viewModel.userProfile.getOrAwaitValue(), `is`(TestConstants.USER_PROFILE))
+    }
 }

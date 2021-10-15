@@ -1,6 +1,6 @@
 package com.noah.scorereporter.fake
 
-import com.noah.scorereporter.network.UserService
+import com.noah.scorereporter.data.network.UserService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

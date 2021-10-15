@@ -3,7 +3,7 @@ package com.noah.scorereporter.fake
 import com.noah.scorereporter.TestConstants
 import com.noah.scorereporter.account.IUserProfileRepository
 import com.noah.scorereporter.model.UserProfile
-import com.noah.scorereporter.network.Result
+import com.noah.scorereporter.data.network.Result
 
 class FakeUserRepository : IUserProfileRepository {
 
