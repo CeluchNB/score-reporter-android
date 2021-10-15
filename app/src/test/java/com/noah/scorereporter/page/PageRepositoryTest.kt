@@ -6,11 +6,15 @@ import com.noah.scorereporter.MainCoroutineRule
 import com.noah.scorereporter.TestConstants
 import com.noah.scorereporter.data.local.SeasonDao
 import com.noah.scorereporter.data.local.TeamDao
+import com.noah.scorereporter.data.local.UserDao
+import com.noah.scorereporter.data.model.Follower
+import com.noah.scorereporter.data.model.Role
 import com.noah.scorereporter.data.network.PageDataSource
 import com.noah.scorereporter.fake.FakePageDataSource
 import com.noah.scorereporter.getOrAwaitValue
 import com.noah.scorereporter.pages.IPageRepository
 import com.noah.scorereporter.pages.PageRepository
+import com.noah.scorereporter.pages.model.TeamFollower
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runBlockingTest
@@ -31,6 +35,7 @@ class PageRepositoryTest {
     private lateinit var remoteDataSource: PageDataSource
     private lateinit var teamDao: TeamDao
     private lateinit var seasonDao: SeasonDao
+    private lateinit var userDao: UserDao
 
     @get:Rule
     val mainCoroutineRule = MainCoroutineRule()
@@ -40,6 +45,7 @@ class PageRepositoryTest {
         remoteDataSource = FakePageDataSource()
         teamDao = mock(TeamDao::class.java)
         seasonDao = mock(SeasonDao::class.java)
+        userDao = mock(UserDao::class.java)
 
         `when`(teamDao.getTeamById(TestConstants.TEAM_RESPONSE.id)).thenReturn(
             flow { emit(TestConstants.TEAM_RESPONSE) }
@@ -56,7 +62,16 @@ class PageRepositoryTest {
         `when`(seasonDao.hasSeason(TestConstants.SEASON_RESPONSE.id)).thenReturn(true)
         `when`(seasonDao.hasSeason(TestConstants.SEASON_RESPONSE_2.id)).thenReturn(true)
 
-        repository = PageRepository(remoteDataSource, teamDao, seasonDao)
+        `when`(userDao.getUserById(TestConstants.USER_PROFILE_1.id)).thenReturn(
+            flow { emit(TestConstants.USER_PROFILE_1) }
+        )
+        `when`(userDao.getUserById(TestConstants.USER_PROFILE_2.id)).thenReturn(
+            flow { emit(TestConstants.USER_PROFILE_2) }
+        )
+        `when`(userDao.hasUser(TestConstants.USER_PROFILE_1.id)).thenReturn(true)
+        `when`(userDao.hasUser(TestConstants.USER_PROFILE_2.id)).thenReturn(true)
+
+        repository = PageRepository(remoteDataSource, teamDao, seasonDao, userDao)
     }
 
     @Test
@@ -179,6 +194,89 @@ class PageRepositoryTest {
         verify(seasonDao).save(listOf())
         verify(seasonDao, times(0)).getSeasonById(TestConstants.SEASON_RESPONSE.id)
         verify(seasonDao, times(0)).getSeasonById(TestConstants.SEASON_RESPONSE_2.id)
+
+        try {
+            result.getOrAwaitValue()
+        } catch (exception: TimeoutException) {
+            assertThat(exception.message, `is`("LiveData value was never set."))
+        }
+    }
+
+    @Test
+    fun `test getFollowersOfTeam with presaved seasons`() = mainCoroutineRule.runBlockingTest {
+        (remoteDataSource as FakePageDataSource).valid = true
+
+        val result = repository.getFollowersOfTeam(
+            listOf(
+                Follower(TestConstants.USER_PROFILE_1.id, Role.COACH),
+                Follower(TestConstants.USER_PROFILE_2.id, Role.PLAYER)
+            )
+        ).asLiveData()
+
+        verify(userDao, times(2)).hasUser(TestConstants.USER_PROFILE_1.id)
+        verify(userDao, times(2)).hasUser(TestConstants.USER_PROFILE_2.id)
+        verify(userDao, times(0)).save(listOf(TestConstants.USER_PROFILE_1, TestConstants.USER_PROFILE_2))
+        verify(userDao).getUserById(TestConstants.USER_PROFILE_1.id)
+        verify(userDao).getUserById(TestConstants.USER_PROFILE_2.id)
+
+        val list = result.getOrAwaitValue()
+        assertThat(list.size, `is`(2))
+        assertThat(list[0], `is`(TeamFollower(
+            TestConstants.USER_PROFILE_1.firstName,
+            TestConstants.USER_PROFILE_1.lastName,
+            TestConstants.USER_PROFILE_1.email,
+            Role.COACH
+        )))
+        assertThat(list[1], `is`(TeamFollower(
+            TestConstants.USER_PROFILE_2.firstName,
+            TestConstants.USER_PROFILE_2.lastName,
+            TestConstants.USER_PROFILE_2.email,
+            Role.PLAYER
+        )))
+    }
+
+    @Test
+    fun `test getFollowersOfTeam with invalid list`() = mainCoroutineRule.runBlockingTest {
+        (remoteDataSource as FakePageDataSource).valid = true
+
+        val result = repository.getFollowersOfTeam(
+            listOf(
+                Follower("bad_id_1", Role.COACH),
+                Follower("bad_id_2", Role.PLAYER)
+            )
+        ).asLiveData()
+
+        verify(userDao, times(2)).hasUser("bad_id_1")
+        verify(userDao, times(2)).hasUser("bad_id_2")
+        verify(userDao).save(listOf())
+        verify(userDao, times(0)).getUserById("bad_id_1")
+        verify(userDao, times(0)).getUserById("bad_id_2")
+
+        try {
+            result.getOrAwaitValue()
+        } catch (exception: TimeoutException) {
+            assertThat(exception.message, `is`("LiveData value was never set."))
+        }
+    }
+
+    @Test
+    fun `test getFollowersOfTeam with invalid source`() = mainCoroutineRule.runBlockingTest {
+        `when`(userDao.hasUser(TestConstants.USER_PROFILE_1.id)).thenReturn(false)
+        `when`(userDao.hasUser(TestConstants.USER_PROFILE_2.id)).thenReturn(false)
+        (remoteDataSource as FakePageDataSource).valid = false
+
+        val result = repository.getFollowersOfTeam(
+            listOf(
+                Follower(TestConstants.USER_PROFILE_1.id, Role.COACH),
+                Follower(TestConstants.USER_PROFILE_2.id, Role.PLAYER)
+            )
+        ).asLiveData()
+
+        verify(userDao, times(2)).hasUser(TestConstants.USER_PROFILE_1.id)
+        verify(userDao, times(2)).hasUser(TestConstants.USER_PROFILE_2.id)
+        verify(userDao).save(listOf())
+        verify(userDao, times(0)).getUserById(TestConstants.USER_PROFILE_1.id)
+        verify(userDao, times(0)).getUserById(TestConstants.USER_PROFILE_2.id)
 
         try {
             result.getOrAwaitValue()

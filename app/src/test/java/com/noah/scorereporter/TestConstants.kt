@@ -11,7 +11,7 @@ object TestConstants {
 
     val USER_RESPONSE_1 = User(
         UserProfile(
-            "id",
+            "id1",
             "Bob",
             "Test",
             "email@email.com",
@@ -24,7 +24,7 @@ object TestConstants {
 
     val USER_RESPONSE_2 = User(
         UserProfile(
-            "id",
+            "id2",
             "First",
             "Last",
             "first@email.com",

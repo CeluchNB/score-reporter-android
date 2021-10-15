@@ -38,6 +38,14 @@ class FakePageDataSource : PageDataSource {
     }
 
     override suspend fun getUserById(id: String): Result<UserProfile> {
-        TODO("Not yet implemented")
+        return if (valid) {
+            when (id) {
+                TestConstants.USER_PROFILE_1.id -> Result.Success(TestConstants.USER_PROFILE_1)
+                TestConstants.USER_PROFILE_2.id -> Result.Success(TestConstants.USER_PROFILE_2)
+                else -> Result.Error(Exception(TestConstants.USER_ERROR))
+            }
+        } else {
+            Result.Error(Exception(TestConstants.USER_ERROR))
+        }
     }
 }

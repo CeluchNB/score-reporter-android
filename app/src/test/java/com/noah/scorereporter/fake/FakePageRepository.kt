@@ -1,9 +1,11 @@
 package com.noah.scorereporter.fake
 
 import com.noah.scorereporter.TestConstants
+import com.noah.scorereporter.data.model.Follower
 import com.noah.scorereporter.data.model.Season
 import com.noah.scorereporter.data.model.Team
 import com.noah.scorereporter.pages.IPageRepository
+import com.noah.scorereporter.pages.model.TeamFollower
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -42,5 +44,9 @@ class FakePageRepository : IPageRepository {
         } else {
             flow { }
         }
+    }
+
+    override suspend fun getFollowersOfTeam(ids: List<Follower>): Flow<List<TeamFollower>> {
+        TODO("Not yet implemented")
     }
 }

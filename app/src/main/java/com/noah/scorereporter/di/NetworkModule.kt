@@ -68,6 +68,11 @@ abstract class NetworkModule {
             database.seasonDao()
 
         @Provides
+        @Singleton
+        fun provideUserDao(database: ReporterDatabase) =
+            database.userDao()
+
+        @Provides
         fun provideMasterKey(@ApplicationContext context: Context): MasterKey =
             MasterKey.Builder(context)
                 .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
