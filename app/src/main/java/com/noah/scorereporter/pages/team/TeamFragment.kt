@@ -59,8 +59,6 @@ class TeamFragment : Fragment() {
         }
 
         viewModel.seasons.observe(viewLifecycleOwner) {
-            Log.d("Noah", it.size.toString())
-            if (it.isNotEmpty()) Log.d("Noah", it[0].id)
             pagerAdapter?.updateSeasonList(it)
         }
     }

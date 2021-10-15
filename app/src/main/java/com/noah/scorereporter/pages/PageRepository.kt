@@ -1,5 +1,6 @@
 package com.noah.scorereporter.pages
 
+import android.util.Log
 import com.noah.scorereporter.data.local.SeasonDao
 import com.noah.scorereporter.data.local.TeamDao
 import com.noah.scorereporter.data.model.Season
@@ -12,7 +13,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
+import kotlin.coroutines.suspendCoroutine
 
 class PageRepository @Inject
 constructor(
@@ -46,12 +50,14 @@ constructor(
     override suspend fun getSeasonsOfTeam(ids: List<String>): Flow<List<Season>> {
         val newSeasons = mutableListOf<Season>()
         // get all seasons we don't already have yet
-        ids.forEach { id ->
-            if (!seasonDao.hasSeason(id)) {
-                coroutineScope {
-                    val result = remoteDataSource.getSeasonById(id)
-                    if (result.succeeded) {
-                        newSeasons.add((result as Result.Success).data)
+        coroutineScope {
+            ids.forEach { id ->
+                launch {
+                    if (!seasonDao.hasSeason(id)) {
+                        val result = remoteDataSource.getSeasonById(id)
+                        if (result.succeeded) {
+                            newSeasons.add((result as Result.Success).data)
+                        }
                     }
                 }
             }
