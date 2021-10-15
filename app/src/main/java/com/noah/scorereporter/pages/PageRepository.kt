@@ -7,13 +7,11 @@ import com.noah.scorereporter.data.model.Team
 import com.noah.scorereporter.data.network.PageDataSource
 import com.noah.scorereporter.data.network.Result
 import com.noah.scorereporter.data.network.succeeded
-import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class PageRepository @Inject
@@ -64,12 +62,11 @@ constructor(
         val list = mutableListOf<Season>()
         ids.forEach { id ->
             if (seasonDao.hasSeason(id)) {
-                seasonDao.getSeasonById(id).collect { season ->
+                seasonDao.getSeasonById(id).take(1).collect { season ->
                     list.add(season)
                 }
             }
         }
-
         return flow { emit(list) }
     }
 }

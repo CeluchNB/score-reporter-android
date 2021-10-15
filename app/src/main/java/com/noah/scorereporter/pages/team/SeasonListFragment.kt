@@ -8,8 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.noah.scorereporter.R
+import com.noah.scorereporter.data.model.Season
 
 class SeasonListFragment : Fragment() {
+
+    private var seasonAdapter: SeasonListAdapter? = null
+    private lateinit var seasonList: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -22,21 +26,22 @@ class SeasonListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val seasonList = view.findViewById<RecyclerView>(R.id.list_season)
+        seasonList = view.findViewById(R.id.list_season)
         seasonList.layoutManager = GridLayoutManager(requireContext(), 4)
         seasonList.addItemDecoration(SeasonItemDecoration())
+    }
 
-        val bundle = arguments
-        if (bundle != null) {
-            if (bundle.containsKey("SEASONS")) {
-                val seasons = listOf("2024", "2015", "2016", "2017", "2018", "2019", "2020", "2021") // bundle.getStringArrayList("SEASONS")
-
-                seasons?.let {
-                    val seasonAdapter = SeasonListAdapter(seasons)
-                    seasonList.adapter = seasonAdapter
-                }
-            }
+    fun updateSeasonList(seasons: List<Season>) {
+        val dateList = seasons.map {
+            it.startDate
         }
 
+        if (seasonAdapter == null) {
+            seasonAdapter = SeasonListAdapter(dateList)
+        } else {
+            seasonAdapter?.list = dateList
+        }
+
+        seasonList.adapter = seasonAdapter
     }
 }

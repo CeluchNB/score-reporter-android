@@ -2,6 +2,7 @@ package com.noah.scorereporter.pages.team
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,7 +43,7 @@ class TeamFragment : Fragment() {
 
         viewModel.team.observe(viewLifecycleOwner) {
             if (pagerAdapter == null) {
-                pagerAdapter = TeamPagerAdapter(childFragmentManager, lifecycle, it)
+                pagerAdapter = TeamPagerAdapter(childFragmentManager, lifecycle)
                 binding.pagerFollowerSeason.adapter = pagerAdapter
 
                 TabLayoutMediator(binding.pagerTabLayout, binding.pagerFollowerSeason) { tab, position ->
@@ -55,6 +56,12 @@ class TeamFragment : Fragment() {
             } else {
                 pagerAdapter?.notifyDataSetChanged()
             }
+        }
+
+        viewModel.seasons.observe(viewLifecycleOwner) {
+            Log.d("Noah", it.size.toString())
+            if (it.isNotEmpty()) Log.d("Noah", it[0].id)
+            pagerAdapter?.updateSeasonList(it)
         }
     }
 }

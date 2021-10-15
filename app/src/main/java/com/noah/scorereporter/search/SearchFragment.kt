@@ -26,7 +26,7 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.buttonTeam.setOnClickListener {
-            val direction = SearchFragmentDirections.actionSearchFragmentToTeamFragment("61633d377188840015724998")
+            val direction = SearchFragmentDirections.actionSearchFragmentToTeamFragment("6168e32713d6980015dbf7a6")
             findNavController().navigate(direction)
         }
     }

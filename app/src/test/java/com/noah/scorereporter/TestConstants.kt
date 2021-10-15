@@ -2,6 +2,7 @@ package com.noah.scorereporter
 
 import com.noah.scorereporter.data.model.Season
 import com.noah.scorereporter.data.model.Team
+import com.noah.scorereporter.data.model.TeamSeason
 import com.noah.scorereporter.model.UserProfile
 import com.noah.scorereporter.data.model.User
 import java.time.Instant
@@ -46,7 +47,10 @@ object TestConstants {
         Date(1633579721000L),
         "user_1",
         listOf(),
-        listOf(SEASON_RESPONSE.id, SEASON_RESPONSE_2.id)
+        listOf(
+            TeamSeason("season_1", SEASON_RESPONSE.id),
+            TeamSeason("season_2", SEASON_RESPONSE_2.id)
+        )
     )
 
     const val TEAM_ERROR = "Unable to find team"

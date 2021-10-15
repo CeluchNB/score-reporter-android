@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="year"
-            type="String" />
+            name="date"
+            type="java.util.Date" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,7 +17,7 @@
             android:id="@+id/button_year"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{year}"
+            app:yearText="@{date}"
             android:textColor="@color/primaryLightColor"
             app:rippleColor="@color/secondaryLightColor"
             app:backgroundTint="#ffffff"

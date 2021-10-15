@@ -36,7 +36,7 @@ class TeamViewModel @Inject constructor(private val repository: IPageRepository)
 
     private val _seasons = _team.switchMap {
         liveData(Dispatchers.IO) {
-            emitSource(repository.getSeasonsOfTeam(it.seasons).asLiveData())
+            emitSource(repository.getSeasonsOfTeam(it.seasons.map { it.season }).asLiveData())
         }
     }
     val seasons: LiveData<List<Season>>
