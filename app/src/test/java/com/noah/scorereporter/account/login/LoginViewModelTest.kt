@@ -33,10 +33,10 @@ class LoginViewModelTest {
         val userProfile = viewModel.userProfile.getOrAwaitValue()
         assertThat(userProfile, `is`(notNullValue()))
 
-        assertThat(userProfile?.email, `is`(TestConstants.USER_PROFILE.email))
-        assertThat(userProfile?.firstName, `is`(TestConstants.USER_PROFILE.firstName))
-        assertThat(userProfile?.lastName, `is`(TestConstants.USER_PROFILE.lastName))
-        assertThat(userProfile?.teams?.entries, everyItem(IsIn(TestConstants.USER_PROFILE.teams.entries)))
+        assertThat(userProfile?.email, `is`(TestConstants.USER_PROFILE_1.email))
+        assertThat(userProfile?.firstName, `is`(TestConstants.USER_PROFILE_1.firstName))
+        assertThat(userProfile?.lastName, `is`(TestConstants.USER_PROFILE_1.lastName))
+        assertThat(userProfile?.teams?.entries, everyItem(IsIn(TestConstants.USER_PROFILE_1.teams.entries)))
 
         val loginError = viewModel.loginError.getOrAwaitValue()
         assertThat(loginError, IsNull())

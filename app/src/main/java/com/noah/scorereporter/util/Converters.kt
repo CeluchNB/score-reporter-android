@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.noah.scorereporter.data.model.Follower
 import com.noah.scorereporter.data.model.TeamSeason
+import com.noah.scorereporter.data.model.UserProfile
 import java.util.*
 
 class Converters {
@@ -45,7 +46,17 @@ class Converters {
     }
 
     @TypeConverter
-    fun stringToListOfTeamSeasons(value: String?) : List<TeamSeason>? {
+    fun stringToListOfTeamSeasons(value: String?): List<TeamSeason>? {
         return Gson().fromJson(value, object : TypeToken<List<TeamSeason>>() {}.type)
+    }
+
+    @TypeConverter
+    fun mapOfStringsToString(map: Map<String, String>): String? {
+        return Gson().toJson(map)
+    }
+
+    @TypeConverter
+    fun stringToMapOfStrings(value: String?): Map<String, String>? {
+        return Gson().fromJson(value, object : TypeToken<Map<String, String>>() {}.type)
     }
 }

@@ -43,10 +43,10 @@ class UserProfileDataSourceTest {
 
         assertThat(result, instanceOf(Result.Success::class.java))
         result as Result.Success
-        assertThat(result.data.user.email, `is`(TestConstants.USER_PROFILE.email))
-        assertThat(result.data.user.firstName, `is`(TestConstants.USER_PROFILE.firstName))
-        assertThat(result.data.user.lastName, `is`(TestConstants.USER_PROFILE.lastName))
-        assertThat(result.data.user.teams, `is`(TestConstants.USER_PROFILE.teams))
+        assertThat(result.data.user.email, `is`(TestConstants.USER_PROFILE_1.email))
+        assertThat(result.data.user.firstName, `is`(TestConstants.USER_PROFILE_1.firstName))
+        assertThat(result.data.user.lastName, `is`(TestConstants.USER_PROFILE_1.lastName))
+        assertThat(result.data.user.teams, `is`(TestConstants.USER_PROFILE_1.teams))
     }
 
     @Test
@@ -66,10 +66,10 @@ class UserProfileDataSourceTest {
 
         assertThat(result, instanceOf(Result.Success::class.java))
         result as Result.Success
-        assertThat(result.data.email, `is`(TestConstants.USER_PROFILE.email))
-        assertThat(result.data.firstName, `is`(TestConstants.USER_PROFILE.firstName))
-        assertThat(result.data.lastName, `is`(TestConstants.USER_PROFILE.lastName))
-        assertThat(result.data.teams, `is`(TestConstants.USER_PROFILE.teams))
+        assertThat(result.data.email, `is`(TestConstants.USER_PROFILE_1.email))
+        assertThat(result.data.firstName, `is`(TestConstants.USER_PROFILE_1.firstName))
+        assertThat(result.data.lastName, `is`(TestConstants.USER_PROFILE_1.lastName))
+        assertThat(result.data.teams, `is`(TestConstants.USER_PROFILE_1.teams))
     }
 
     @Test
@@ -89,10 +89,10 @@ class UserProfileDataSourceTest {
 
         assertThat(result, instanceOf(Result.Success::class.java))
         result as Result.Success
-        assertThat(result.data.user.email, `is`(TestConstants.USER_PROFILE.email))
-        assertThat(result.data.user.firstName, `is`(TestConstants.USER_PROFILE.firstName))
-        assertThat(result.data.user.lastName, `is`(TestConstants.USER_PROFILE.lastName))
-        assertThat(result.data.user.teams, `is`(TestConstants.USER_PROFILE.teams))
+        assertThat(result.data.user.email, `is`(TestConstants.USER_PROFILE_1.email))
+        assertThat(result.data.user.firstName, `is`(TestConstants.USER_PROFILE_1.firstName))
+        assertThat(result.data.user.lastName, `is`(TestConstants.USER_PROFILE_1.lastName))
+        assertThat(result.data.user.teams, `is`(TestConstants.USER_PROFILE_1.teams))
     }
 
     @Test

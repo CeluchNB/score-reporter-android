@@ -1,12 +1,13 @@
 package com.noah.scorereporter
 
-import com.noah.scorereporter.model.UserProfile
+import com.noah.scorereporter.data.model.UserProfile
 import com.noah.scorereporter.data.model.User
 
 object AndroidTestConstants {
 
     val USER_RESPONSE = User(
         UserProfile(
+            "id",
             "Bob",
             "Test",
             "email@email.com",

@@ -34,11 +34,11 @@ class ProfileViewModelTest {
         val userProfile = viewModel.userProfile.getOrAwaitValue()
         assertThat(userProfile, `is`(CoreMatchers.notNullValue()))
 
-        assertThat(userProfile?.email, `is`(TestConstants.USER_PROFILE.email))
-        assertThat(userProfile?.firstName, `is`(TestConstants.USER_PROFILE.firstName))
-        assertThat(userProfile?.lastName, `is`(TestConstants.USER_PROFILE.lastName))
+        assertThat(userProfile?.email, `is`(TestConstants.USER_PROFILE_1.email))
+        assertThat(userProfile?.firstName, `is`(TestConstants.USER_PROFILE_1.firstName))
+        assertThat(userProfile?.lastName, `is`(TestConstants.USER_PROFILE_1.lastName))
         assertThat(userProfile?.teams?.entries,
-            CoreMatchers.everyItem(IsIn(TestConstants.USER_PROFILE.teams.entries))
+            CoreMatchers.everyItem(IsIn(TestConstants.USER_PROFILE_1.teams.entries))
         )
 
         assertThat(viewModel.getProfileError.getOrAwaitValue(), `is`(false))
@@ -87,7 +87,7 @@ class ProfileViewModelTest {
     @Test
     fun `test setUser`() {
         assertThat(viewModel.userProfile.getOrAwaitValue(), IsNull())
-        viewModel.setUserProfile(TestConstants.USER_PROFILE)
-        assertThat(viewModel.userProfile.getOrAwaitValue(), `is`(TestConstants.USER_PROFILE))
+        viewModel.setUserProfile(TestConstants.USER_PROFILE_1)
+        assertThat(viewModel.userProfile.getOrAwaitValue(), `is`(TestConstants.USER_PROFILE_1))
     }
 }

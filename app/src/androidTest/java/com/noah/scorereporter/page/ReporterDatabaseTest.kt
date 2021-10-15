@@ -1,5 +1,6 @@
 package com.noah.scorereporter.page
 
+import androidx.lifecycle.asLiveData
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
@@ -7,8 +8,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.noah.scorereporter.data.local.ReporterDatabase
 import com.noah.scorereporter.data.local.SeasonDao
 import com.noah.scorereporter.data.local.TeamDao
+import com.noah.scorereporter.data.local.UserDao
 import com.noah.scorereporter.data.model.Season
 import com.noah.scorereporter.data.model.Team
+import com.noah.scorereporter.data.model.UserProfile
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.take
@@ -28,12 +31,15 @@ class ReporterDatabaseTest {
 
     private lateinit var teamDao: TeamDao
     private lateinit var seasonDao: SeasonDao
+    private lateinit var userDao: UserDao
     private lateinit var database: ReporterDatabase
 
     private lateinit var team1: Team
     private lateinit var team2: Team
     private lateinit var season1: Season
     private lateinit var season2: Season
+    private lateinit var user1: UserProfile
+    private lateinit var user2: UserProfile
 
     @Before
     fun setUp() {
@@ -44,6 +50,7 @@ class ReporterDatabaseTest {
 
         teamDao = database.teamDao()
         seasonDao = database.seasonDao()
+        userDao = database.userDao()
 
         team1 = Team(
             "0",
@@ -77,6 +84,22 @@ class ReporterDatabaseTest {
             Date(980891721000L),
             Date(1633579821000L),
             "user_2"
+        )
+
+        user1 = UserProfile(
+            "0",
+            "First1",
+            "Last1",
+            "first1@gmail.com",
+            mapOf()
+        )
+
+        user2 = UserProfile(
+            "1",
+            "First2",
+            "Last2",
+            "first2@gmail.com",
+            mapOf()
         )
     }
 
@@ -139,6 +162,36 @@ class ReporterDatabaseTest {
         val result1 = seasonDao.hasSeason(season1.id)
         val result2 = seasonDao.hasSeason(season2.id)
         val result3 = seasonDao.hasSeason("2")
+
+        assertThat(result1, `is`(true))
+        assertThat(result2, `is`(true))
+        assertThat(result3, `is`(false))
+    }
+
+    @Test
+    fun testSaveAndGetUserById() = runBlocking {
+        val job1 = async { userDao.getUserById("0").take(1).toList() }
+        val job2 = async { userDao.getUserById("1").take(1).toList() }
+        val job3 = async { userDao.getUserById("2").take(1).toList() }
+
+        userDao.save(listOf(user1, user2))
+
+        val result1 = job1.await()
+        val result2 = job2.await()
+        val result3 = job3.await()
+
+        assertThat(result1[0], `is`(user1))
+        assertThat(result2[0], `is`(user2))
+        assertThat(result3[0], IsNull())
+    }
+
+    @Test
+    fun testSaveAndHasUser() {
+        userDao.save(listOf(user1, user2))
+
+        val result1 = userDao.hasUser(user1.id)
+        val result2 = userDao.hasUser(user2.id)
+        val result3 = userDao.hasUser("2")
 
         assertThat(result1, `is`(true))
         assertThat(result2, `is`(true))

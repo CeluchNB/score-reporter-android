@@ -3,15 +3,15 @@ package com.noah.scorereporter
 import com.noah.scorereporter.data.model.Season
 import com.noah.scorereporter.data.model.Team
 import com.noah.scorereporter.data.model.TeamSeason
-import com.noah.scorereporter.model.UserProfile
+import com.noah.scorereporter.data.model.UserProfile
 import com.noah.scorereporter.data.model.User
-import java.time.Instant
 import java.util.*
 
 object TestConstants {
 
-    val USER_RESPONSE = User(
+    val USER_RESPONSE_1 = User(
         UserProfile(
+            "id",
             "Bob",
             "Test",
             "email@email.com",
@@ -20,9 +20,24 @@ object TestConstants {
         "jwt1"
     )
 
-    val USER_PROFILE = USER_RESPONSE.user
+    val USER_PROFILE_1 = USER_RESPONSE_1.user
+
+    val USER_RESPONSE_2 = User(
+        UserProfile(
+            "id",
+            "First",
+            "Last",
+            "first@email.com",
+            mapOf("team2" to "Player")
+        ),
+        "jwt2"
+    )
+
+    val USER_PROFILE_2 = USER_RESPONSE_2.user
 
     const val LOGIN_ERROR = "Invalid email or password"
+
+    const val USER_ERROR = "Unable to get user"
 
     val SEASON_RESPONSE = Season(
         "season_id_1",
