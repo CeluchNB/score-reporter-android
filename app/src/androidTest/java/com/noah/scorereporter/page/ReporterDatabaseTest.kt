@@ -91,7 +91,7 @@ class ReporterDatabaseTest {
             "First1",
             "Last1",
             "first1@gmail.com",
-            mapOf()
+            listOf()
         )
 
         user2 = UserProfile(
@@ -99,7 +99,7 @@ class ReporterDatabaseTest {
             "First2",
             "Last2",
             "first2@gmail.com",
-            mapOf()
+            listOf()
         )
     }
 

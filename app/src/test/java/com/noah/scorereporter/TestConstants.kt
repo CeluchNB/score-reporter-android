@@ -14,7 +14,10 @@ object TestConstants {
             "Bob",
             "Test",
             "email@email.com",
-            mapOf("team1" to "Player", "team2" to "Coach")
+            listOf(
+                UserTeam("team1", Role.COACH),
+                UserTeam("team2", Role.PLAYER)
+            )
         ),
         "jwt1"
     )
@@ -27,7 +30,9 @@ object TestConstants {
             "First",
             "Last",
             "first@email.com",
-            mapOf("team2" to "Player")
+            listOf(
+                UserTeam("team2", Role.COACH)
+            )
         ),
         "jwt2"
     )

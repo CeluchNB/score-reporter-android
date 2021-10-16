@@ -5,11 +5,12 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.noah.scorereporter.data.model.Season
+import com.noah.scorereporter.pages.model.Follower
 
 class TeamPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
-    private var seasonFragment: SeasonListFragment? = null
-    private var followerFragment: FollowerListFragment? = null
+    private lateinit var seasonFragment: SeasonListFragment
+    private var followerFragment: FollowerListFragment = FollowerListFragment()
 
     override fun getItemCount(): Int {
         return 2
@@ -19,20 +20,15 @@ class TeamPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
         return when (position) {
             0 -> {
                 seasonFragment = SeasonListFragment()
-                seasonFragment ?: SeasonListFragment()
+                seasonFragment
             }
             1 -> {
                 followerFragment = FollowerListFragment()
-                followerFragment ?: FollowerListFragment()
+                followerFragment
             }
             else -> {
                 FollowerListFragment()
             }
         }
     }
-
-    fun updateSeasonList(seasons: List<Season>) {
-        seasonFragment?.updateSeasonList(seasons)
-    }
-
 }

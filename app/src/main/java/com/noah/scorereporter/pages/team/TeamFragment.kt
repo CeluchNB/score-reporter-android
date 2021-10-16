@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.google.android.material.tabs.TabLayoutMediator
 import com.noah.scorereporter.databinding.FragmentTeamBinding
@@ -18,7 +19,7 @@ class TeamFragment : Fragment() {
     private lateinit var binding: FragmentTeamBinding
     private var pagerAdapter: TeamPagerAdapter? = null
 
-    private val viewModel: TeamViewModel by viewModels()
+    private val viewModel: TeamViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,10 +57,6 @@ class TeamFragment : Fragment() {
             } else {
                 pagerAdapter?.notifyDataSetChanged()
             }
-        }
-
-        viewModel.seasons.observe(viewLifecycleOwner) {
-            pagerAdapter?.updateSeasonList(it)
         }
     }
 }

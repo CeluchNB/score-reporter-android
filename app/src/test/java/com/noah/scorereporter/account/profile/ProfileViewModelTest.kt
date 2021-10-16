@@ -37,8 +37,7 @@ class ProfileViewModelTest {
         assertThat(userProfile?.email, `is`(TestConstants.USER_PROFILE_1.email))
         assertThat(userProfile?.firstName, `is`(TestConstants.USER_PROFILE_1.firstName))
         assertThat(userProfile?.lastName, `is`(TestConstants.USER_PROFILE_1.lastName))
-        assertThat(userProfile?.teams?.entries,
-            CoreMatchers.everyItem(IsIn(TestConstants.USER_PROFILE_1.teams.entries))
+        assertThat(userProfile?.teams, `is`(TestConstants.USER_PROFILE_1.teams)
         )
 
         assertThat(viewModel.getProfileError.getOrAwaitValue(), `is`(false))

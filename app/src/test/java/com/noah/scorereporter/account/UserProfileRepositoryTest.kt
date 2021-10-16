@@ -69,9 +69,7 @@ class UserProfileRepositoryTest {
         assertThat(result.data.email, `is`(TestConstants.USER_RESPONSE_1.user.email))
         assertThat(result.data.firstName, `is`(TestConstants.USER_RESPONSE_1.user.firstName))
         assertThat(result.data.lastName, `is`(TestConstants.USER_RESPONSE_1.user.lastName))
-        assertThat(result.data.teams.entries,
-            CoreMatchers.everyItem(IsIn(TestConstants.USER_RESPONSE_1.user.teams.entries))
-        )
+        assertThat(result.data.teams, `is`(TestConstants.USER_RESPONSE_1.user.teams))
 
         val jwt = sharedPrefs.getString(Constants.USER_TOKEN, "bad_token")
         assertThat(jwt, `is`(not("bad_token")))
@@ -100,9 +98,7 @@ class UserProfileRepositoryTest {
         assertThat(result.data.email, `is`(TestConstants.USER_RESPONSE_1.user.email))
         assertThat(result.data.firstName, `is`(TestConstants.USER_RESPONSE_1.user.firstName))
         assertThat(result.data.lastName, `is`(TestConstants.USER_RESPONSE_1.user.lastName))
-        assertThat(result.data.teams.entries,
-            CoreMatchers.everyItem(IsIn(TestConstants.USER_RESPONSE_1.user.teams.entries))
-        )
+        assertThat(result.data.teams, `is`(TestConstants.USER_RESPONSE_1.user.teams))
     }
 
     @Test

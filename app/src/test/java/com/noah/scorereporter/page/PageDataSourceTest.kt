@@ -48,7 +48,7 @@ class PageDataSourceTest {
         assertThat(team.owner, `is`(TestConstants.TEAM_RESPONSE.owner))
         assertThat(team.founded, `is`(TestConstants.TEAM_RESPONSE.founded))
         assertThat(team.ended, `is`(TestConstants.TEAM_RESPONSE.ended))
-        assertThat(team.teamFollowers, `is`(TestConstants.TEAM_RESPONSE.teamFollowers))
+        assertThat(team.followers, `is`(TestConstants.TEAM_RESPONSE.followers))
     }
 
     @Test
@@ -75,7 +75,7 @@ class PageDataSourceTest {
         assertThat(team.owner, `is`(TestConstants.TEAM_RESPONSE.owner))
         assertThat(team.founded, `is`(TestConstants.TEAM_RESPONSE.founded))
         assertThat(team.ended, `is`(TestConstants.TEAM_RESPONSE.ended))
-        assertThat(team.teamFollowers, `is`(TestConstants.TEAM_RESPONSE.teamFollowers))
+        assertThat(team.followers, `is`(TestConstants.TEAM_RESPONSE.followers))
     }
 
     @Test
