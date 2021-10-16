@@ -26,9 +26,9 @@ class SignUpViewModelTest {
     @Test
     fun `test signup with valid data`() {
         viewModel.signup(
-            TestConstants.USER_PROFILE.firstName,
-            TestConstants.USER_PROFILE.lastName,
-            TestConstants.USER_PROFILE.email,
+            TestConstants.USER_PROFILE_1.firstName,
+            TestConstants.USER_PROFILE_1.lastName,
+            TestConstants.USER_PROFILE_1.email,
             "Pass12!"
         )
 
@@ -37,9 +37,9 @@ class SignUpViewModelTest {
         val result = viewModel.user.getOrAwaitValue().getContentIfNotHandled()
 
         assertThat(result, `is`(notNullValue()))
-        assertThat(result?.firstName, `is`(TestConstants.USER_PROFILE.firstName))
-        assertThat(result?.lastName, `is`(TestConstants.USER_PROFILE.lastName))
-        assertThat(result?.email, `is`(TestConstants.USER_PROFILE.email))
+        assertThat(result?.firstName, `is`(TestConstants.USER_PROFILE_1.firstName))
+        assertThat(result?.lastName, `is`(TestConstants.USER_PROFILE_1.lastName))
+        assertThat(result?.email, `is`(TestConstants.USER_PROFILE_1.email))
 
         val error = viewModel.error.getOrAwaitValue()
         assertThat(error, `is`(nullValue()))

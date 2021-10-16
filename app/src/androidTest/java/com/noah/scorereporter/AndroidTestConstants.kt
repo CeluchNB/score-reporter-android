@@ -1,16 +1,22 @@
 package com.noah.scorereporter
 
-import com.noah.scorereporter.model.UserProfile
+import com.noah.scorereporter.data.model.Role
+import com.noah.scorereporter.data.model.UserProfile
 import com.noah.scorereporter.data.model.User
+import com.noah.scorereporter.data.model.UserTeam
 
 object AndroidTestConstants {
 
     val USER_RESPONSE = User(
         UserProfile(
+            "id",
             "Bob",
             "Test",
             "email@email.com",
-            mapOf("team1" to "Player", "team2" to "Coach")
+            listOf(
+                UserTeam("team1", Role.PLAYER),
+                UserTeam("team2", Role.COACH)
+            )
         ),
         "jwt1"
     )

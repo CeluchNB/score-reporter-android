@@ -5,15 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.noah.scorereporter.R
-import com.noah.scorereporter.data.model.Season
 
 class SeasonListFragment : Fragment() {
 
     private var seasonAdapter: SeasonListAdapter? = null
     private lateinit var seasonList: RecyclerView
+    private val viewModel: TeamViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,19 +30,17 @@ class SeasonListFragment : Fragment() {
         seasonList = view.findViewById(R.id.list_season)
         seasonList.layoutManager = GridLayoutManager(requireContext(), 4)
         seasonList.addItemDecoration(SeasonItemDecoration())
-    }
 
-    fun updateSeasonList(seasons: List<Season>) {
-        val dateList = seasons.map {
-            it.startDate
+        viewModel.seasons.observe(viewLifecycleOwner) { seasons ->
+            // TODO implement diff utils
+            if (seasonAdapter == null) {
+                seasonAdapter = SeasonListAdapter(seasons.map { it.startDate })
+                seasonList.adapter = seasonAdapter
+            } else {
+                seasonAdapter?.list = seasons.map { it.startDate }
+            }
+
+            seasonAdapter?.notifyDataSetChanged()
         }
-
-        if (seasonAdapter == null) {
-            seasonAdapter = SeasonListAdapter(dateList)
-        } else {
-            seasonAdapter?.list = dateList
-        }
-
-        seasonList.adapter = seasonAdapter
     }
 }

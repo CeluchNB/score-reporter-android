@@ -18,7 +18,7 @@
                 android:name="userProfile"
                 android:defaultValue="@null"
                 app:nullable="true"
-                app:argType="com.noah.scorereporter.model.UserProfile" />
+                app:argType="com.noah.scorereporter.data.model.UserProfile" />
         </action>
     </fragment>
 
@@ -33,7 +33,7 @@
                 android:name="userProfile"
                 android:defaultValue="@null"
                 app:nullable="true"
-                app:argType="com.noah.scorereporter.model.UserProfile" />
+                app:argType="com.noah.scorereporter.data.model.UserProfile" />
         </action>
     </fragment>
 
@@ -52,7 +52,7 @@
         <argument
             android:name="userProfile"
             android:defaultValue="@null"
-            app:argType="com.noah.scorereporter.model.UserProfile"
+            app:argType="com.noah.scorereporter.data.model.UserProfile"
             app:nullable="true" />
     </fragment>
 

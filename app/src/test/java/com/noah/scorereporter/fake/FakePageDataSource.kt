@@ -3,6 +3,7 @@ package com.noah.scorereporter.fake
 import com.noah.scorereporter.TestConstants
 import com.noah.scorereporter.data.model.Season
 import com.noah.scorereporter.data.model.Team
+import com.noah.scorereporter.data.model.UserProfile
 import com.noah.scorereporter.data.network.PageDataSource
 import com.noah.scorereporter.data.network.Result
 
@@ -26,13 +27,25 @@ class FakePageDataSource : PageDataSource {
 
     override suspend fun getSeasonById(id: String): Result<Season> {
         return if (valid) {
-            when {
-                id == TestConstants.SEASON_RESPONSE.id -> Result.Success(TestConstants.SEASON_RESPONSE)
-                id == TestConstants.SEASON_RESPONSE_2.id -> Result.Success(TestConstants.SEASON_RESPONSE_2)
+            when (id) {
+                TestConstants.SEASON_RESPONSE.id -> Result.Success(TestConstants.SEASON_RESPONSE)
+                TestConstants.SEASON_RESPONSE_2.id -> Result.Success(TestConstants.SEASON_RESPONSE_2)
                 else -> Result.Error(Exception(TestConstants.SEASON_ERROR))
             }
         } else {
             Result.Error(Exception(TestConstants.SEASON_ERROR))
+        }
+    }
+
+    override suspend fun getUserById(id: String): Result<UserProfile> {
+        return if (valid) {
+            when (id) {
+                TestConstants.USER_PROFILE_1.id -> Result.Success(TestConstants.USER_PROFILE_1)
+                TestConstants.USER_PROFILE_2.id -> Result.Success(TestConstants.USER_PROFILE_2)
+                else -> Result.Error(Exception(TestConstants.USER_ERROR))
+            }
+        } else {
+            Result.Error(Exception(TestConstants.USER_ERROR))
         }
     }
 }

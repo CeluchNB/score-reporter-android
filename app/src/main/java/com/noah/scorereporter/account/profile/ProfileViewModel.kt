@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.noah.scorereporter.account.IUserProfileRepository
-import com.noah.scorereporter.model.UserProfile
+import com.noah.scorereporter.data.model.UserProfile
 import com.noah.scorereporter.data.network.Result
 import com.noah.scorereporter.data.network.succeeded
 import com.noah.scorereporter.util.Event

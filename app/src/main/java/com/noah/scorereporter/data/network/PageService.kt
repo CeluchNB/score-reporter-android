@@ -2,6 +2,7 @@ package com.noah.scorereporter.data.network
 
 import com.noah.scorereporter.data.model.Season
 import com.noah.scorereporter.data.model.Team
+import com.noah.scorereporter.data.model.UserProfile
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.PATCH
@@ -16,4 +17,7 @@ interface PageService {
 
     @GET("/season/{id}")
     fun getSeasonById(@Path("id") id: String): Call<Season>
+
+    @GET("/user/{id}")
+    fun getUserById(@Path("id") id: String): Call<UserProfile>
 }

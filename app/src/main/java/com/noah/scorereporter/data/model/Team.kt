@@ -16,6 +16,6 @@ data class Team(
     val founded: Date,
     val ended: Date?,
     val owner: String,
-    val followers: List<Follower>,
+    val followers: List<TeamFollower>,
     val seasons: List<TeamSeason>
 ) : Parcelable

@@ -2,7 +2,7 @@ package com.noah.scorereporter.fake
 
 import com.noah.scorereporter.TestConstants
 import com.noah.scorereporter.account.IUserProfileRepository
-import com.noah.scorereporter.model.UserProfile
+import com.noah.scorereporter.data.model.UserProfile
 import com.noah.scorereporter.data.network.Result
 
 class FakeUserRepository : IUserProfileRepository {
@@ -11,7 +11,7 @@ class FakeUserRepository : IUserProfileRepository {
 
     override suspend fun login(email: String, password: String): Result<UserProfile> {
         return if (email == "email@email.com") {
-            Result.Success(TestConstants.USER_PROFILE)
+            Result.Success(TestConstants.USER_PROFILE_1)
         } else {
             Result.Error(Exception(TestConstants.LOGIN_ERROR))
         }
@@ -19,7 +19,7 @@ class FakeUserRepository : IUserProfileRepository {
 
     override suspend fun getProfile(): Result<UserProfile> {
         return if (valid) {
-            Result.Success(TestConstants.USER_PROFILE)
+            Result.Success(TestConstants.USER_PROFILE_1)
         } else {
             Result.Error(Exception("Error"))
         }
@@ -32,7 +32,7 @@ class FakeUserRepository : IUserProfileRepository {
         password: String
     ): Result<UserProfile> {
         return if (email != "invalid@email.com") {
-            Result.Success(TestConstants.USER_PROFILE)
+            Result.Success(TestConstants.USER_PROFILE_1)
         } else {
             Result.Error(Exception(TestConstants.LOGIN_ERROR))
         }

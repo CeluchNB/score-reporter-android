@@ -66,16 +66,14 @@ class UserProfileRepositoryTest {
         assertThat(result.succeeded, `is`(true))
 
         result as Result.Success
-        assertThat(result.data.email, `is`(TestConstants.USER_RESPONSE.user.email))
-        assertThat(result.data.firstName, `is`(TestConstants.USER_RESPONSE.user.firstName))
-        assertThat(result.data.lastName, `is`(TestConstants.USER_RESPONSE.user.lastName))
-        assertThat(result.data.teams.entries,
-            CoreMatchers.everyItem(IsIn(TestConstants.USER_RESPONSE.user.teams.entries))
-        )
+        assertThat(result.data.email, `is`(TestConstants.USER_RESPONSE_1.user.email))
+        assertThat(result.data.firstName, `is`(TestConstants.USER_RESPONSE_1.user.firstName))
+        assertThat(result.data.lastName, `is`(TestConstants.USER_RESPONSE_1.user.lastName))
+        assertThat(result.data.teams, `is`(TestConstants.USER_RESPONSE_1.user.teams))
 
         val jwt = sharedPrefs.getString(Constants.USER_TOKEN, "bad_token")
         assertThat(jwt, `is`(not("bad_token")))
-        assertThat(jwt, `is`(TestConstants.USER_RESPONSE.token))
+        assertThat(jwt, `is`(TestConstants.USER_RESPONSE_1.token))
     }
 
     @Test
@@ -97,12 +95,10 @@ class UserProfileRepositoryTest {
         assertThat(result.succeeded, `is`(true))
 
         result as Result.Success
-        assertThat(result.data.email, `is`(TestConstants.USER_RESPONSE.user.email))
-        assertThat(result.data.firstName, `is`(TestConstants.USER_RESPONSE.user.firstName))
-        assertThat(result.data.lastName, `is`(TestConstants.USER_RESPONSE.user.lastName))
-        assertThat(result.data.teams.entries,
-            CoreMatchers.everyItem(IsIn(TestConstants.USER_RESPONSE.user.teams.entries))
-        )
+        assertThat(result.data.email, `is`(TestConstants.USER_RESPONSE_1.user.email))
+        assertThat(result.data.firstName, `is`(TestConstants.USER_RESPONSE_1.user.firstName))
+        assertThat(result.data.lastName, `is`(TestConstants.USER_RESPONSE_1.user.lastName))
+        assertThat(result.data.teams, `is`(TestConstants.USER_RESPONSE_1.user.teams))
     }
 
     @Test
@@ -118,21 +114,21 @@ class UserProfileRepositoryTest {
     @Test
     fun `signUp with valid data`() = mainCoroutineRule.runBlockingTest {
         val result = repository.signUp(
-            TestConstants.USER_PROFILE.firstName,
-            TestConstants.USER_PROFILE.lastName,
-            TestConstants.USER_PROFILE.email,
+            TestConstants.USER_PROFILE_1.firstName,
+            TestConstants.USER_PROFILE_1.lastName,
+            TestConstants.USER_PROFILE_1.email,
             "Pass12!"
         )
         assertThat(result.succeeded, `is`(true))
 
         result as Result.Success
-        assertThat(result.data.firstName, `is`(TestConstants.USER_PROFILE.firstName))
-        assertThat(result.data.lastName, `is`(TestConstants.USER_PROFILE.lastName))
-        assertThat(result.data.email, `is`(TestConstants.USER_PROFILE.email))
+        assertThat(result.data.firstName, `is`(TestConstants.USER_PROFILE_1.firstName))
+        assertThat(result.data.lastName, `is`(TestConstants.USER_PROFILE_1.lastName))
+        assertThat(result.data.email, `is`(TestConstants.USER_PROFILE_1.email))
 
         val jwt = sharedPrefs.getString(Constants.USER_TOKEN, "bad_token")
         assertThat(jwt, `is`(not("bad_token")))
-        assertThat(jwt, `is`(TestConstants.USER_RESPONSE.token))
+        assertThat(jwt, `is`(TestConstants.USER_RESPONSE_1.token))
     }
 
     @Test
@@ -140,9 +136,9 @@ class UserProfileRepositoryTest {
         (dataSource as FakeUserDataSource).shouldReturnError = true
 
         val result = repository.signUp(
-            TestConstants.USER_PROFILE.firstName,
-            TestConstants.USER_PROFILE.lastName,
-            TestConstants.USER_PROFILE.email,
+            TestConstants.USER_PROFILE_1.firstName,
+            TestConstants.USER_PROFILE_1.lastName,
+            TestConstants.USER_PROFILE_1.email,
             "Pass12!"
         )
         assertThat(result.succeeded, `is`(false))

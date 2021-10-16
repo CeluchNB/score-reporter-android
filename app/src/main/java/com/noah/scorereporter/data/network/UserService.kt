@@ -1,6 +1,6 @@
 package com.noah.scorereporter.data.network
 
-import com.noah.scorereporter.model.UserProfile
+import com.noah.scorereporter.data.model.UserProfile
 import com.noah.scorereporter.data.model.LoginUser
 import com.noah.scorereporter.data.model.SignUpUser
 import com.noah.scorereporter.data.model.User

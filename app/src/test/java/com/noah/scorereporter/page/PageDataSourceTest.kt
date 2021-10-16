@@ -110,4 +110,26 @@ class PageDataSourceTest {
 
         assertThat(result.exception.message, `is`(TestConstants.SEASON_ERROR))
     }
+
+    @Test
+    fun `test valid getUserById`() = runBlocking {
+        dataSource.service = validService
+        val result = dataSource.getUserById(TestConstants.USER_PROFILE_1.id)
+
+        assertThat(result.succeeded, `is`(true))
+        result as Result.Success
+
+        assertThat(result.data, `is`(TestConstants.USER_PROFILE_1))
+    }
+
+    @Test
+    fun `test invalid getUserById`() = runBlocking {
+        dataSource.service = invalidService
+        val result = dataSource.getUserById("badid1")
+
+        assertThat(result.succeeded, `is`(false))
+        result as Result.Error
+
+        assertThat(result.exception.message, `is`(TestConstants.USER_ERROR))
+    }
 }

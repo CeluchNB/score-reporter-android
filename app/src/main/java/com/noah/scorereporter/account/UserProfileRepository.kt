@@ -1,7 +1,7 @@
 package com.noah.scorereporter.account
 
 import android.content.SharedPreferences
-import com.noah.scorereporter.model.UserProfile
+import com.noah.scorereporter.data.model.UserProfile
 import com.noah.scorereporter.data.network.Result
 import com.noah.scorereporter.data.network.UserDataSource
 import com.noah.scorereporter.data.network.succeeded

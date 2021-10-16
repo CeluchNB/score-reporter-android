@@ -3,7 +3,6 @@ package com.noah.scorereporter.fake
 import com.google.gson.Gson
 import com.noah.scorereporter.TestConstants
 import okhttp3.*
-import retrofit2.HttpException
 
 class MockUserInterceptor(private val valid: Boolean) : Interceptor {
 
@@ -16,7 +15,7 @@ class MockUserInterceptor(private val valid: Boolean) : Interceptor {
             uri.endsWith("login") -> {
                 response = if (valid) {
                     gson.toJson(
-                        TestConstants.USER_RESPONSE
+                        TestConstants.USER_RESPONSE_1
                     )
                 } else {
                     TestConstants.LOGIN_ERROR
@@ -25,7 +24,7 @@ class MockUserInterceptor(private val valid: Boolean) : Interceptor {
             uri.endsWith("profile") -> {
                 response = if (valid) {
                     gson.toJson(
-                        TestConstants.USER_RESPONSE.user
+                        TestConstants.USER_RESPONSE_1.user
                     )
                 } else {
                     TestConstants.LOGIN_ERROR
@@ -34,7 +33,7 @@ class MockUserInterceptor(private val valid: Boolean) : Interceptor {
             uri.endsWith("user") -> {
                 response = if (valid) {
                     gson.toJson(
-                        TestConstants.USER_RESPONSE
+                        TestConstants.USER_RESPONSE_1
                     )
                 } else {
                     TestConstants.LOGIN_ERROR

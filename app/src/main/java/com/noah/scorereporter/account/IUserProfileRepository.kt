@@ -1,6 +1,6 @@
 package com.noah.scorereporter.account
 
-import com.noah.scorereporter.model.UserProfile
+import com.noah.scorereporter.data.model.UserProfile
 import com.noah.scorereporter.data.network.Result
 
 interface IUserProfileRepository {

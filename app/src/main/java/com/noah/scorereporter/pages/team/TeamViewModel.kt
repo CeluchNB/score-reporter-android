@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.noah.scorereporter.data.model.Season
 import com.noah.scorereporter.data.model.Team
 import com.noah.scorereporter.pages.IPageRepository
+import com.noah.scorereporter.pages.model.Follower
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -41,6 +42,14 @@ class TeamViewModel @Inject constructor(private val repository: IPageRepository)
     }
     val seasons: LiveData<List<Season>>
         get() = _seasons
+
+    private val _followers = _team.switchMap {
+        liveData(Dispatchers.IO) {
+            emitSource(repository.getFollowersOfTeam(it.followers).asLiveData())
+        }
+    }
+    val followers: LiveData<List<Follower>>
+        get() = _followers
 
     fun follow() {
         _loading.value = true

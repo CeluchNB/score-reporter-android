@@ -6,7 +6,7 @@
     <data>
         <variable
             name="follower"
-            type="com.noah.scorereporter.data.model.Follower" />
+            type="com.noah.scorereporter.pages.model.Follower" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,7 +21,7 @@
              android:layout_height="wrap_content"
              android:textColor="@color/primaryDarkColor"
              android:textSize="18sp"
-             android:text="@{follower.user}"
+             android:text="@{follower.firstName + ` ` + follower.lastName}"
              app:layout_constraintStart_toStartOf="parent"
              app:layout_constraintTop_toTopOf="parent"
              tools:text="Noah Celuch"/>

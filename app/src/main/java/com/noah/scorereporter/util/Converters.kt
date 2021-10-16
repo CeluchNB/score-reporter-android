@@ -3,8 +3,9 @@ package com.noah.scorereporter.util
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.noah.scorereporter.data.model.Follower
+import com.noah.scorereporter.data.model.TeamFollower
 import com.noah.scorereporter.data.model.TeamSeason
+import com.noah.scorereporter.data.model.UserTeam
 import java.util.*
 
 class Converters {
@@ -20,13 +21,13 @@ class Converters {
     }
 
     @TypeConverter
-    fun listOfFollowersToString(followers: List<Follower>?): String? {
-        return Gson().toJson(followers)
+    fun listOfFollowersToString(teamFollowers: List<TeamFollower>?): String? {
+        return Gson().toJson(teamFollowers)
     }
 
     @TypeConverter
-    fun stringToListOfFollowers(value: String?): List<Follower>? {
-        return Gson().fromJson(value, object : TypeToken<List<Follower>>() {}.type)
+    fun stringToListOfFollowers(value: String?): List<TeamFollower>? {
+        return Gson().fromJson(value, object : TypeToken<List<TeamFollower>>() {}.type)
     }
 
     @TypeConverter
@@ -45,7 +46,27 @@ class Converters {
     }
 
     @TypeConverter
-    fun stringToListOfTeamSeasons(value: String?) : List<TeamSeason>? {
+    fun stringToListOfTeamSeasons(value: String?): List<TeamSeason>? {
         return Gson().fromJson(value, object : TypeToken<List<TeamSeason>>() {}.type)
+    }
+
+    @TypeConverter
+    fun mapOfStringsToString(map: Map<String, String>): String? {
+        return Gson().toJson(map)
+    }
+
+    @TypeConverter
+    fun stringToMapOfStrings(value: String?): Map<String, String>? {
+        return Gson().fromJson(value, object : TypeToken<Map<String, String>>() {}.type)
+    }
+
+    @TypeConverter
+    fun listOfUserTeamToString(seasons: List<UserTeam>?): String? {
+        return Gson().toJson(seasons)
+    }
+
+    @TypeConverter
+    fun stringToListOfUserTeams(value: String?): List<UserTeam>? {
+        return Gson().fromJson(value, object : TypeToken<List<UserTeam>>() {}.type)
     }
 }
