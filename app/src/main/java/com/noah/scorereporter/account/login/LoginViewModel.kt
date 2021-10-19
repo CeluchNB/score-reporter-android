@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.noah.scorereporter.account.IUserProfileRepository
 import com.noah.scorereporter.data.model.UserProfile
 import com.noah.scorereporter.data.network.Result
+import com.noah.scorereporter.data.network.UserNetworkError
 import com.noah.scorereporter.data.network.succeeded
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -26,16 +27,17 @@ class LoginViewModel @Inject constructor(private val repository: IUserProfileRep
 
 
     fun login(email: String, password: String) {
-        _loading.value = true
+
         viewModelScope.launch {
-            repository.login(email, password).let { result ->
-                if (result.succeeded) {
-                    _userProfile.value = (result as Result.Success).data
-                } else {
-                    _loginError.value = (result as Result.Error).exception.message
-                }
+            try {
+                _loading.value = true
+                val result = repository.login(email, password)
+                _userProfile.value = result
+            } catch (exception: UserNetworkError) {
+                _loginError.value = exception.message
+            } finally {
+                _loading.value = false
             }
-            _loading.value = false
         }
     }
 }

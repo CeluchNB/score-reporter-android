@@ -4,24 +4,25 @@ import com.noah.scorereporter.TestConstants
 import com.noah.scorereporter.account.IUserProfileRepository
 import com.noah.scorereporter.data.model.UserProfile
 import com.noah.scorereporter.data.network.Result
+import com.noah.scorereporter.data.network.UserNetworkError
 
 class FakeUserRepository : IUserProfileRepository {
 
     var valid = true
 
-    override suspend fun login(email: String, password: String): Result<UserProfile> {
+    override suspend fun login(email: String, password: String): UserProfile {
         return if (email == "email@email.com") {
-            Result.Success(TestConstants.USER_PROFILE_1)
+            TestConstants.USER_PROFILE_1
         } else {
-            Result.Error(Exception(TestConstants.LOGIN_ERROR))
+            throw UserNetworkError(TestConstants.LOGIN_ERROR, null)
         }
     }
 
-    override suspend fun getProfile(): Result<UserProfile> {
+    override suspend fun getProfile(): UserProfile {
         return if (valid) {
-            Result.Success(TestConstants.USER_PROFILE_1)
+            TestConstants.USER_PROFILE_1
         } else {
-            Result.Error(Exception("Error"))
+            throw UserNetworkError(TestConstants.LOGIN_ERROR, null)
         }
     }
 
@@ -30,19 +31,17 @@ class FakeUserRepository : IUserProfileRepository {
         lastName: String,
         email: String,
         password: String
-    ): Result<UserProfile> {
+    ): UserProfile {
         return if (email != "invalid@email.com") {
-            Result.Success(TestConstants.USER_PROFILE_1)
+            TestConstants.USER_PROFILE_1
         } else {
-            Result.Error(Exception(TestConstants.LOGIN_ERROR))
+            throw UserNetworkError(TestConstants.LOGIN_ERROR, null)
         }
     }
 
-    override suspend fun logout(): Result<Boolean> {
-        return if (valid) {
-            Result.Success(true)
-        } else {
-            Result.Error(Exception(TestConstants.LOGIN_ERROR))
+    override suspend fun logout() {
+        if (!valid) {
+            throw UserNetworkError(TestConstants.LOGIN_ERROR, null)
         }
     }
 

@@ -7,6 +7,7 @@ import com.noah.scorereporter.data.network.UserService
 import com.noah.scorereporter.data.model.LoginUser
 import com.noah.scorereporter.data.model.SignUpUser
 import com.noah.scorereporter.data.model.User
+import com.noah.scorereporter.data.network.UserNetworkError
 import retrofit2.HttpException
 import retrofit2.Response
 import retrofit2.awaitResponse
@@ -17,14 +18,20 @@ class UserProfileDataSource @Inject constructor(): UserDataSource {
     @Inject
     lateinit var service: UserService
 
-    override suspend fun login(email: String, password: String): Result<User> {
-        val response = service.login(LoginUser(email, password)).awaitResponse()
-        return unwrapUserResult(response)
+    override suspend fun login(email: String, password: String): User {
+        return try {
+            service.login(LoginUser(email, password))
+        } catch (throwable: Throwable) {
+            throw UserNetworkError("Unable to login user", throwable)
+        }
     }
 
-    override suspend fun getProfile(jwt: String): Result<UserProfile> {
-        val response = service.getProfile("Bearer $jwt").awaitResponse()
-        return unwrapUserResult(response)
+    override suspend fun getProfile(jwt: String): UserProfile {
+        return try {
+            service.getProfile("Bearer $jwt")
+        } catch (throwable: Throwable) {
+            throw UserNetworkError("Unable to get user profile", throwable)
+        }
     }
 
     override suspend fun signUp(
@@ -32,31 +39,19 @@ class UserProfileDataSource @Inject constructor(): UserDataSource {
         lastName: String,
         email: String,
         password: String
-    ): Result<User> {
-        val response = service.signup(SignUpUser(firstName, lastName, email, password)).awaitResponse()
-        return unwrapUserResult(response)
-    }
-
-    override suspend fun logout(jwt: String): Result<Boolean> {
+    ): User {
         return try {
-            val response = service.logout("Bearer $jwt").awaitResponse()
-
-            if (response.code() == 200) {
-                Result.Success(true)
-            } else {
-                throw HttpException(response)
-            }
-        } catch (exception: HttpException) {
-            Result.Error(Exception(exception.message()))
+            service.signup(SignUpUser(firstName, lastName, email, password))
+        } catch (throwable: Throwable) {
+            throw UserNetworkError("Unable to sign up", throwable)
         }
     }
 
-    private fun <T> unwrapUserResult(response: Response<T>): Result<T> {
-        if (response.isSuccessful) {
-            response.body()?.let {
-                return Result.Success(it)
-            }
+    override suspend fun logout(jwt: String) {
+        try {
+            service.logout("Bearer $jwt")
+        } catch (throwable: Throwable) {
+            throw UserNetworkError("Unable to logout", throwable)
         }
-        return Result.Error(Exception(response.message()))
     }
 }

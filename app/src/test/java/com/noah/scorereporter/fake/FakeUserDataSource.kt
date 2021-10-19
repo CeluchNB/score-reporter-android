@@ -5,24 +5,25 @@ import com.noah.scorereporter.data.model.UserProfile
 import com.noah.scorereporter.data.network.Result
 import com.noah.scorereporter.data.network.UserDataSource
 import com.noah.scorereporter.data.model.User
+import com.noah.scorereporter.data.network.UserNetworkError
 
 class FakeUserDataSource : UserDataSource {
 
     var shouldReturnError = false
 
-    override suspend fun login(email: String, password: String): Result<User> {
+    override suspend fun login(email: String, password: String): User {
         return if (email == "email@email.com") {
-            Result.Success(TestConstants.USER_RESPONSE_1)
+            TestConstants.USER_RESPONSE_1
         } else {
-            Result.Error(Exception(TestConstants.LOGIN_ERROR))
+            throw UserNetworkError(TestConstants.LOGIN_ERROR, null)
         }
     }
 
-    override suspend fun getProfile(jwt: String): Result<UserProfile> {
+    override suspend fun getProfile(jwt: String): UserProfile {
         return if (!shouldReturnError) {
-            Result.Success(TestConstants.USER_RESPONSE_1.user)
+            TestConstants.USER_RESPONSE_1.user
         } else {
-            Result.Error(Exception(TestConstants.LOGIN_ERROR))
+            throw UserNetworkError(TestConstants.LOGIN_ERROR, null)
         }
     }
 
@@ -31,19 +32,17 @@ class FakeUserDataSource : UserDataSource {
         lastName: String,
         email: String,
         password: String
-    ): Result<User> {
+    ): User {
         return if (!shouldReturnError) {
-            Result.Success(TestConstants.USER_RESPONSE_1)
+            TestConstants.USER_RESPONSE_1
         } else {
-            Result.Error(Exception(TestConstants.LOGIN_ERROR))
+            throw UserNetworkError(TestConstants.LOGIN_ERROR, null)
         }
     }
 
-    override suspend fun logout(jwt: String): Result<Boolean> {
-        return if (!shouldReturnError) {
-            return Result.Success(true)
-        } else {
-            Result.Error(java.lang.Exception(TestConstants.LOGIN_ERROR))
+    override suspend fun logout(jwt: String) {
+        if (shouldReturnError) {
+            throw UserNetworkError(TestConstants.LOGIN_ERROR, null)
         }
     }
 }

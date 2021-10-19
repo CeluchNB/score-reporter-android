@@ -5,8 +5,8 @@ import com.noah.scorereporter.MainCoroutineRule
 import com.noah.scorereporter.TestConstants
 import com.noah.scorereporter.fake.MockUserClient
 import com.noah.scorereporter.data.network.Result
+import com.noah.scorereporter.data.network.UserNetworkError
 import com.noah.scorereporter.data.network.UserService
-import com.noah.scorereporter.data.network.succeeded
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
@@ -26,8 +26,8 @@ class UserProfileDataSourceTest {
     private lateinit var validService: UserService
     private lateinit var invalidService: UserService
 
-    @get:Rule
-    val mainCoroutineRule = MainCoroutineRule()
+//    @get:Rule
+//    val mainCoroutineRule = MainCoroutineRule()
 
     @Before
     fun initializeDataSource() {
@@ -41,22 +41,16 @@ class UserProfileDataSourceTest {
         dataSource.service = validService
         val result = dataSource.login("amy@gmail.com", "Pass123!")
 
-        assertThat(result, instanceOf(Result.Success::class.java))
-        result as Result.Success
-        assertThat(result.data.user.email, `is`(TestConstants.USER_PROFILE_1.email))
-        assertThat(result.data.user.firstName, `is`(TestConstants.USER_PROFILE_1.firstName))
-        assertThat(result.data.user.lastName, `is`(TestConstants.USER_PROFILE_1.lastName))
-        assertThat(result.data.user.teams, `is`(TestConstants.USER_PROFILE_1.teams))
+        assertThat(result.user.email, `is`(TestConstants.USER_PROFILE_1.email))
+        assertThat(result.user.firstName, `is`(TestConstants.USER_PROFILE_1.firstName))
+        assertThat(result.user.lastName, `is`(TestConstants.USER_PROFILE_1.lastName))
+        assertThat(result.user.teams, `is`(TestConstants.USER_PROFILE_1.teams))
     }
 
-    @Test
+    @Test(expected = UserNetworkError::class)
     fun `test invalid login`() = runBlocking {
         dataSource.service = invalidService
         val result = dataSource.login("", "")
-
-        assertThat(result, instanceOf(Result.Error::class.java))
-        result as Result.Error
-        assertThat(result.exception.message, `is`(TestConstants.LOGIN_ERROR))
     }
 
     @Test
@@ -64,15 +58,13 @@ class UserProfileDataSourceTest {
         dataSource.service = validService
         val result = dataSource.getProfile("jwt")
 
-        assertThat(result, instanceOf(Result.Success::class.java))
-        result as Result.Success
-        assertThat(result.data.email, `is`(TestConstants.USER_PROFILE_1.email))
-        assertThat(result.data.firstName, `is`(TestConstants.USER_PROFILE_1.firstName))
-        assertThat(result.data.lastName, `is`(TestConstants.USER_PROFILE_1.lastName))
-        assertThat(result.data.teams, `is`(TestConstants.USER_PROFILE_1.teams))
+        assertThat(result.email, `is`(TestConstants.USER_PROFILE_1.email))
+        assertThat(result.firstName, `is`(TestConstants.USER_PROFILE_1.firstName))
+        assertThat(result.lastName, `is`(TestConstants.USER_PROFILE_1.lastName))
+        assertThat(result.teams, `is`(TestConstants.USER_PROFILE_1.teams))
     }
 
-    @Test
+    @Test(expected = UserNetworkError::class)
     fun `test invalid getProfile`() = runBlocking {
         dataSource.service = invalidService
         val result = dataSource.getProfile("jwt")
@@ -87,39 +79,27 @@ class UserProfileDataSourceTest {
         dataSource.service = validService
         val result = dataSource.signUp("", "", "", "")
 
-        assertThat(result, instanceOf(Result.Success::class.java))
-        result as Result.Success
-        assertThat(result.data.user.email, `is`(TestConstants.USER_PROFILE_1.email))
-        assertThat(result.data.user.firstName, `is`(TestConstants.USER_PROFILE_1.firstName))
-        assertThat(result.data.user.lastName, `is`(TestConstants.USER_PROFILE_1.lastName))
-        assertThat(result.data.user.teams, `is`(TestConstants.USER_PROFILE_1.teams))
+        assertThat(result.user.email, `is`(TestConstants.USER_PROFILE_1.email))
+        assertThat(result.user.firstName, `is`(TestConstants.USER_PROFILE_1.firstName))
+        assertThat(result.user.lastName, `is`(TestConstants.USER_PROFILE_1.lastName))
+        assertThat(result.user.teams, `is`(TestConstants.USER_PROFILE_1.teams))
     }
 
-    @Test
+    @Test(expected = UserNetworkError::class)
     fun `test invalid signUp`() = runBlocking {
         dataSource.service = invalidService
         val result = dataSource.signUp("", "", "", "")
-
-        assertThat(result, instanceOf(Result.Error::class.java))
-        result as Result.Error
-        assertThat(result.exception.message, `is`(TestConstants.LOGIN_ERROR))
     }
 
     @Test
     fun `test successful logout`() = runBlocking {
         dataSource.service = validService
-        val result = dataSource.logout("")
-        assertThat(result.succeeded, `is`(true))
-        result as Result.Success
-        assertThat(result.data, `is`(true))
+        dataSource.logout("")
     }
 
-    @Test
+    @Test(expected = UserNetworkError::class)
     fun `test unsuccessful logout`() = runBlocking {
         dataSource.service = invalidService
-        val result = dataSource.logout("")
-        assertThat(result.succeeded, `is`(false))
-        result as Result.Error
-        assertThat(result.exception.message, `is`(""))
+        dataSource.logout("")
     }
 }

@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import com.noah.scorereporter.data.model.UserProfile
 import com.noah.scorereporter.data.network.Result
 import com.noah.scorereporter.data.network.UserDataSource
+import com.noah.scorereporter.data.network.UserNetworkError
 import com.noah.scorereporter.data.network.succeeded
 import com.noah.scorereporter.util.Constants
 import javax.inject.Inject
@@ -13,27 +14,23 @@ class UserProfileRepository @Inject constructor(
     private val sharedPrefs: SharedPreferences
 ) : IUserProfileRepository {
 
-    override suspend fun login(email: String, password: String): Result<UserProfile> {
-        val result = userRemoteDataSource.login(email, password)
-
-        return if (result.succeeded) {
-            result as Result.Success
-            sharedPrefs.edit().putString(Constants.USER_TOKEN, result.data.token).apply()
-            Result.Success(result.data.user)
-        } else {
-            Result.Error((result as Result.Error).exception)
+    override suspend fun login(email: String, password: String): UserProfile {
+        return try {
+            val result = userRemoteDataSource.login(email, password)
+            sharedPrefs.edit().putString(Constants.USER_TOKEN, result.token).apply()
+            result.user
+        } catch (cause: Throwable) {
+            throw cause
         }
     }
 
-    override suspend fun getProfile(): Result<UserProfile> {
+    override suspend fun getProfile(): UserProfile {
         val jwt = sharedPrefs.getString(Constants.USER_TOKEN, "")
 
-        val result = userRemoteDataSource.getProfile(jwt ?: "")
-        return if (result.succeeded) {
-            result as Result.Success
-            Result.Success(result.data)
-        } else {
-            result as Result.Error
+        return try {
+            userRemoteDataSource.getProfile(jwt ?: "")
+        } catch (cause: Throwable) {
+            throw cause
         }
     }
 
@@ -42,25 +39,25 @@ class UserProfileRepository @Inject constructor(
         lastName: String,
         email: String,
         password: String
-    ): Result<UserProfile> {
-        val result = userRemoteDataSource.signUp(firstName, lastName, email, password)
+    ): UserProfile {
+        return try {
+            val result = userRemoteDataSource.signUp(firstName, lastName, email, password)
 
-        return if (result.succeeded) {
-            result as Result.Success
-            sharedPrefs.edit().putString(Constants.USER_TOKEN, result.data.token).apply()
-            Result.Success(result.data.user)
-        } else {
-            result as Result.Error
+            sharedPrefs.edit().putString(Constants.USER_TOKEN, result.token).apply()
+            result.user
+        } catch (cause: Throwable) {
+            throw cause
         }
     }
 
-    override suspend fun logout(): Result<Boolean> {
-        val jwt = sharedPrefs.getString(Constants.USER_TOKEN, "")
-        val result = userRemoteDataSource.logout(jwt ?: "")
-        if (result.succeeded) {
+    override suspend fun logout() {
+        try {
+            val jwt = sharedPrefs.getString(Constants.USER_TOKEN, "")
+            userRemoteDataSource.logout(jwt ?: "")
             sharedPrefs.edit().remove(Constants.USER_TOKEN).apply()
+        } catch (cause: Throwable) {
+            throw cause
         }
-        return result
     }
 
     override fun hasSavedToken(): Boolean {

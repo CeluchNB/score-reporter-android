@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.noah.scorereporter.account.IUserProfileRepository
 import com.noah.scorereporter.data.model.UserProfile
 import com.noah.scorereporter.data.network.Result
+import com.noah.scorereporter.data.network.UserNetworkError
 import com.noah.scorereporter.data.network.succeeded
 import com.noah.scorereporter.util.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,18 +30,18 @@ class SignUpViewModel @Inject constructor(private val repository: IUserProfileRe
         get () = _error
 
     fun signup(firstName: String, lastName: String, email: String, password: String) {
-        _loading.value = true
         viewModelScope.launch {
-            repository.signUp(firstName, lastName, email, password).let { result ->
-                if (result.succeeded) {
-                    _user.value = Event((result as Result.Success).data)
-                } else {
-                    _error.value = Event(
-                        (result as Result.Error).exception.message ?: "Unable to sign up"
-                    )
-                }
+            try {
+                _loading.value = true
+                val result = repository.signUp(firstName, lastName, email, password)
+                _user.value = Event(result)
+            } catch (exception: UserNetworkError) {
+                _error.value = Event(
+                    exception.message ?: "Unable to sign up"
+                )
+            } finally {
+                _loading.value = false
             }
-            _loading.value = false
         }
     }
 

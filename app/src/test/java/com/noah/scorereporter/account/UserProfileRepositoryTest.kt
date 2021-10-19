@@ -10,17 +10,14 @@ import com.noah.scorereporter.MainCoroutineRule
 import com.noah.scorereporter.TestConstants
 import com.noah.scorereporter.fake.FakeAndroidKeyStore
 import com.noah.scorereporter.fake.FakeUserDataSource
-import com.noah.scorereporter.data.network.Result
 import com.noah.scorereporter.data.network.UserDataSource
-import com.noah.scorereporter.data.network.succeeded
+import com.noah.scorereporter.data.network.UserNetworkError
 import com.noah.scorereporter.util.Constants
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.collection.IsIn
 import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Rule
@@ -63,26 +60,20 @@ class UserProfileRepositoryTest {
     @Test
     fun `login with valid email`() = mainCoroutineRule.runBlockingTest {
         val result = repository.login("email@email.com", "password")
-        assertThat(result.succeeded, `is`(true))
 
-        result as Result.Success
-        assertThat(result.data.email, `is`(TestConstants.USER_RESPONSE_1.user.email))
-        assertThat(result.data.firstName, `is`(TestConstants.USER_RESPONSE_1.user.firstName))
-        assertThat(result.data.lastName, `is`(TestConstants.USER_RESPONSE_1.user.lastName))
-        assertThat(result.data.teams, `is`(TestConstants.USER_RESPONSE_1.user.teams))
+        assertThat(result.email, `is`(TestConstants.USER_RESPONSE_1.user.email))
+        assertThat(result.firstName, `is`(TestConstants.USER_RESPONSE_1.user.firstName))
+        assertThat(result.lastName, `is`(TestConstants.USER_RESPONSE_1.user.lastName))
+        assertThat(result.teams, `is`(TestConstants.USER_RESPONSE_1.user.teams))
 
         val jwt = sharedPrefs.getString(Constants.USER_TOKEN, "bad_token")
         assertThat(jwt, `is`(not("bad_token")))
         assertThat(jwt, `is`(TestConstants.USER_RESPONSE_1.token))
     }
 
-    @Test
+    @Test(expected = UserNetworkError::class)
     fun `login with invalid email`() = mainCoroutineRule.runBlockingTest {
-        val result = repository.login("invalid@email.com", "password")
-        assertThat(result.succeeded, `is`(false))
-
-        result as Result.Error
-        assertThat(result.exception.message, `is`(TestConstants.LOGIN_ERROR))
+        repository.login("invalid@email.com", "password")
 
         val jwt = sharedPrefs.getString(Constants.USER_TOKEN, "bad_token")
         assertThat(jwt, `is`("bad_token"))
@@ -92,23 +83,16 @@ class UserProfileRepositoryTest {
     fun `getProfile with valid jwt`() = mainCoroutineRule.runBlockingTest {
         val result = repository.getProfile()
 
-        assertThat(result.succeeded, `is`(true))
-
-        result as Result.Success
-        assertThat(result.data.email, `is`(TestConstants.USER_RESPONSE_1.user.email))
-        assertThat(result.data.firstName, `is`(TestConstants.USER_RESPONSE_1.user.firstName))
-        assertThat(result.data.lastName, `is`(TestConstants.USER_RESPONSE_1.user.lastName))
-        assertThat(result.data.teams, `is`(TestConstants.USER_RESPONSE_1.user.teams))
+        assertThat(result.email, `is`(TestConstants.USER_RESPONSE_1.user.email))
+        assertThat(result.firstName, `is`(TestConstants.USER_RESPONSE_1.user.firstName))
+        assertThat(result.lastName, `is`(TestConstants.USER_RESPONSE_1.user.lastName))
+        assertThat(result.teams, `is`(TestConstants.USER_RESPONSE_1.user.teams))
     }
 
-    @Test
+    @Test(expected = UserNetworkError::class)
     fun `getProfile with invalid jwt`() = mainCoroutineRule.runBlockingTest {
         (dataSource as FakeUserDataSource).shouldReturnError = true
-        val result = repository.getProfile()
-        assertThat(result.succeeded, `is`(false))
-
-        result as Result.Error
-        assertThat(result.exception.message, `is`(TestConstants.LOGIN_ERROR))
+        repository.getProfile()
     }
 
     @Test
@@ -119,12 +103,10 @@ class UserProfileRepositoryTest {
             TestConstants.USER_PROFILE_1.email,
             "Pass12!"
         )
-        assertThat(result.succeeded, `is`(true))
 
-        result as Result.Success
-        assertThat(result.data.firstName, `is`(TestConstants.USER_PROFILE_1.firstName))
-        assertThat(result.data.lastName, `is`(TestConstants.USER_PROFILE_1.lastName))
-        assertThat(result.data.email, `is`(TestConstants.USER_PROFILE_1.email))
+        assertThat(result.firstName, `is`(TestConstants.USER_PROFILE_1.firstName))
+        assertThat(result.lastName, `is`(TestConstants.USER_PROFILE_1.lastName))
+        assertThat(result.email, `is`(TestConstants.USER_PROFILE_1.email))
 
         val jwt = sharedPrefs.getString(Constants.USER_TOKEN, "bad_token")
         assertThat(jwt, `is`(not("bad_token")))
@@ -135,15 +117,19 @@ class UserProfileRepositoryTest {
     fun `signUp with invalid data`() = mainCoroutineRule.runBlockingTest {
         (dataSource as FakeUserDataSource).shouldReturnError = true
 
-        val result = repository.signUp(
-            TestConstants.USER_PROFILE_1.firstName,
-            TestConstants.USER_PROFILE_1.lastName,
-            TestConstants.USER_PROFILE_1.email,
-            "Pass12!"
-        )
-        assertThat(result.succeeded, `is`(false))
-        val jwt = sharedPrefs.getString(Constants.USER_TOKEN, "bad_token")
-        assertThat(jwt, `is`("bad_token"))
+        try {
+            repository.signUp(
+                TestConstants.USER_PROFILE_1.firstName,
+                TestConstants.USER_PROFILE_1.lastName,
+                TestConstants.USER_PROFILE_1.email,
+                "Pass12!"
+            )
+        } catch (exception: UserNetworkError) {
+            assertThat(exception.message, `is`(TestConstants.LOGIN_ERROR))
+        } finally {
+            val jwt = sharedPrefs.getString(Constants.USER_TOKEN, "bad_token")
+            assertThat(jwt, `is`("bad_token"))
+        }
     }
 
     @Test
@@ -152,8 +138,7 @@ class UserProfileRepositoryTest {
         repository.login("email@email.com", "password")
         assertThat(sharedPrefs.contains(Constants.USER_TOKEN), `is`(true))
 
-        val result = repository.logout()
-        assertThat(result.succeeded, `is`(true))
+        repository.logout()
         assertThat(sharedPrefs.contains(Constants.USER_TOKEN), `is`(false))
     }
 
@@ -163,10 +148,13 @@ class UserProfileRepositoryTest {
         assertThat(sharedPrefs.contains(Constants.USER_TOKEN), `is`(true))
         (dataSource as FakeUserDataSource).shouldReturnError = true
 
-        val result = repository.logout()
-        assertThat(result.succeeded, `is`(false))
-        assertThat(sharedPrefs.contains(Constants.USER_TOKEN), `is`(true))
-
+        try {
+            repository.logout()
+        } catch (exception: UserNetworkError) {
+            assertThat(exception.message, `is`(TestConstants.LOGIN_ERROR))
+        } finally {
+            assertThat(sharedPrefs.contains(Constants.USER_TOKEN), `is`(true))
+        }
     }
 
     @Test
@@ -177,8 +165,7 @@ class UserProfileRepositoryTest {
 
     @Test
     fun `hasSavedToken with saved token`() = mainCoroutineRule.runBlockingTest {
-        val result = repository.login("email@email.com", "password")
-        assertThat(result.succeeded, `is`(true))
+        repository.login("email@email.com", "password")
 
         val value = repository.hasSavedToken()
         assertThat(value, `is`(true))
