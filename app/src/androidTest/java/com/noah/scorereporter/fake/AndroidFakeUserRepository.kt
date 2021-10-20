@@ -4,6 +4,7 @@ import com.noah.scorereporter.AndroidTestConstants
 import com.noah.scorereporter.account.IUserProfileRepository
 import com.noah.scorereporter.data.model.UserProfile
 import com.noah.scorereporter.data.network.Result
+import com.noah.scorereporter.data.network.UserNetworkError
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
@@ -11,20 +12,20 @@ class AndroidFakeUserRepository @Inject constructor(): IUserProfileRepository {
 
     var valid = true
 
-    override suspend fun login(email: String, password: String): Result<UserProfile> {
+    override suspend fun login(email: String, password: String): UserProfile {
         delay(1000)
         return if (email == "email@email.com") {
-            Result.Success(AndroidTestConstants.USER_PROFILE)
+            AndroidTestConstants.USER_PROFILE
         } else {
-            Result.Error(Exception(AndroidTestConstants.LOGIN_ERROR))
+            throw UserNetworkError(AndroidTestConstants.LOGIN_ERROR, Throwable())
         }
     }
 
-    override suspend fun getProfile(): Result<UserProfile> {
+    override suspend fun getProfile(): UserProfile {
         return if (valid) {
-            Result.Success(AndroidTestConstants.USER_PROFILE)
+            AndroidTestConstants.USER_PROFILE
         } else {
-            Result.Error(Exception("Error"))
+            throw UserNetworkError(AndroidTestConstants.LOGIN_ERROR, Throwable())
         }
     }
 
@@ -33,21 +34,19 @@ class AndroidFakeUserRepository @Inject constructor(): IUserProfileRepository {
         lastName: String,
         email: String,
         password: String
-    ): Result<UserProfile> {
+    ): UserProfile {
         delay(1000)
         return if (email != "invalid@email.com") {
-            Result.Success(AndroidTestConstants.USER_PROFILE)
+            AndroidTestConstants.USER_PROFILE
         } else {
-            Result.Error(Exception(AndroidTestConstants.LOGIN_ERROR))
+            throw UserNetworkError(AndroidTestConstants.LOGIN_ERROR, Throwable())
         }
     }
 
-    override suspend fun logout(): Result<Boolean> {
+    override suspend fun logout() {
         delay(1000)
-        return if (valid) {
-            Result.Success(true)
-        } else {
-            Result.Error(Exception(AndroidTestConstants.LOGIN_ERROR))
+       if (!valid) {
+           throw UserNetworkError(AndroidTestConstants.LOGIN_ERROR, Throwable())
         }
     }
 

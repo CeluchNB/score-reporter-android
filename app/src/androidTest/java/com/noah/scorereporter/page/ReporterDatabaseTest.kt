@@ -114,7 +114,7 @@ class ReporterDatabaseTest {
         val job2 = async { teamDao.getTeamById("1").take(1).toList() }
         val job3 = async { teamDao.getTeamById("2").take(1).toList() }
 
-        teamDao.save(listOf(team1, team2))
+        teamDao.save(team1, team2)
 
         val result1 = job1.await()
         val result2 = job2.await()
@@ -127,7 +127,7 @@ class ReporterDatabaseTest {
 
     @Test
     fun testSaveTeamAndHasTeam() {
-        teamDao.save(listOf(team1, team2))
+        teamDao.save(team1, team2)
 
         val result1 = teamDao.hasTeam("0")
         val result2 = teamDao.hasTeam("1")

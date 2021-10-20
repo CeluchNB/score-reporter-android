@@ -10,14 +10,14 @@ import retrofit2.http.Path
 
 interface PageService {
     @GET("/team/{id}")
-    fun getTeamById(@Path("id") id: String): Call<Team>
+    suspend fun getTeamById(@Path("id") id: String): Team
 
     @PATCH("/team/{id}/follow")
-    fun followTeam(@Path("id") id: String): Call<Team>
+    suspend fun followTeam(@Path("id") id: String): Team
 
     @GET("/season/{id}")
-    fun getSeasonById(@Path("id") id: String): Call<Season>
+    suspend fun getSeasonById(@Path("id") id: String): Season
 
     @GET("/user/{id}")
-    fun getUserById(@Path("id") id: String): Call<UserProfile>
+    suspend fun getUserById(@Path("id") id: String): UserProfile
 }

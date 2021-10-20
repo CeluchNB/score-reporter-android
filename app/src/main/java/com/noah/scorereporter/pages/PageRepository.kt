@@ -1,5 +1,6 @@
 package com.noah.scorereporter.pages
 
+import android.util.Log
 import com.noah.scorereporter.data.local.SeasonDao
 import com.noah.scorereporter.data.local.TeamDao
 import com.noah.scorereporter.data.local.UserDao
@@ -8,6 +9,7 @@ import com.noah.scorereporter.data.model.Team
 import com.noah.scorereporter.data.model.TeamFollower
 import com.noah.scorereporter.data.model.UserProfile
 import com.noah.scorereporter.data.network.PageDataSource
+import com.noah.scorereporter.data.network.PageNetworkError
 import com.noah.scorereporter.data.network.Result
 import com.noah.scorereporter.data.network.succeeded
 import com.noah.scorereporter.pages.model.Follower
@@ -29,10 +31,11 @@ constructor(
 
     override suspend fun getTeamById(id: String): Flow<Team> {
         if (!teamDao.hasTeam(id)) {
-            val result = remoteDataSource.getTeamById(id)
-            if (result.succeeded) {
-                result as Result.Success
-                teamDao.save(listOf(result.data))
+            try {
+                val result = remoteDataSource.getTeamById(id)
+                teamDao.save(result)
+            } catch (exception: PageNetworkError) {
+                throw exception
             }
         }
 
@@ -40,10 +43,11 @@ constructor(
     }
 
     override suspend fun followTeam(id: String): Flow<Team> {
-        val result = remoteDataSource.followTeam(id)
-        if (result.succeeded) {
-            result as Result.Success
-            teamDao.save(listOf(result.data))
+        try {
+            val result = remoteDataSource.followTeam(id)
+            teamDao.save(result)
+        } catch (exception: PageNetworkError) {
+            throw exception
         }
 
         return teamDao.getTeamById(id)
@@ -56,9 +60,11 @@ constructor(
             ids.forEach { id ->
                 launch {
                     if (!seasonDao.hasSeason(id)) {
-                        val result = remoteDataSource.getSeasonById(id)
-                        if (result.succeeded) {
-                            newSeasons.add((result as Result.Success).data)
+                        try {
+                            val result = remoteDataSource.getSeasonById(id)
+                            newSeasons.add(result)
+                        } catch (exception: PageNetworkError) {
+                            Log.e("Noah", exception.message ?: "")
                         }
                     }
                 }
@@ -85,9 +91,11 @@ constructor(
             teamFollowers.forEach {
                 launch {
                     if (!userDao.hasUser(it.user)) {
-                        val result = remoteDataSource.getUserById(it.user)
-                        if (result.succeeded) {
-                            newFollowers.add((result as Result.Success).data)
+                        try {
+                            val result = remoteDataSource.getUserById(it.user)
+                            newFollowers.add(result)
+                        } catch (exception: PageNetworkError) {
+                            Log.e("PageRepository", exception.message ?: "")
                         }
                     }
                 }
