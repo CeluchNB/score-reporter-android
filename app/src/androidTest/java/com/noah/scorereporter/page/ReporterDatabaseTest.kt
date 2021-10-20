@@ -1,6 +1,5 @@
 package com.noah.scorereporter.page
 
-import androidx.lifecycle.asLiveData
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
@@ -13,7 +12,6 @@ import com.noah.scorereporter.data.model.Season
 import com.noah.scorereporter.data.model.Team
 import com.noah.scorereporter.data.model.UserProfile
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
@@ -110,15 +108,11 @@ class ReporterDatabaseTest {
 
     @Test
     fun testSaveTeamAndGetTeamById() = runBlocking {
-        val job1 = async { teamDao.getTeamById("0").take(1).toList() }
-        val job2 = async { teamDao.getTeamById("1").take(1).toList() }
-        val job3 = async { teamDao.getTeamById("2").take(1).toList() }
-
         teamDao.save(team1, team2)
 
-        val result1 = job1.await()
-        val result2 = job2.await()
-        val result3 = job3.await()
+        val result1 = teamDao.getTeamById("0").take(1).toList()
+        val result2 = teamDao.getTeamById("1").take(1).toList()
+        val result3 = teamDao.getTeamById("2").take(1).toList()
 
         assertThat(result1[0], `is`(team1))
         assertThat(result2[0], `is`(team2))
@@ -126,7 +120,7 @@ class ReporterDatabaseTest {
     }
 
     @Test
-    fun testSaveTeamAndHasTeam() {
+    fun testSaveTeamAndHasTeam() = runBlocking {
         teamDao.save(team1, team2)
 
         val result1 = teamDao.hasTeam("0")
@@ -140,15 +134,10 @@ class ReporterDatabaseTest {
 
     @Test
     fun testSaveSeasonAndGetSeasonById() = runBlocking {
-        val job1 = async { seasonDao.getSeasonById("0").take(1).toList() }
-        val job2 = async { seasonDao.getSeasonById("1").take(1).toList() }
-        val job3 = async { seasonDao.getSeasonById("2").take(1).toList() }
-
         seasonDao.save(listOf(season1, season2))
-
-        val result1 = job1.await()
-        val result2 = job2.await()
-        val result3 = job3.await()
+        val result1 = seasonDao.getSeasonById("0").take(1).toList()
+        val result2 = seasonDao.getSeasonById("1").take(1).toList()
+        val result3 = seasonDao.getSeasonById("2").take(1).toList()
 
         assertThat(result1[0], `is`(season1))
         assertThat(result2[0], `is`(season2))
@@ -156,7 +145,7 @@ class ReporterDatabaseTest {
     }
 
     @Test
-    fun testSaveSeasonAndHasSeason() {
+    fun testSaveSeasonAndHasSeason() = runBlocking {
         seasonDao.save(listOf(season1, season2))
 
         val result1 = seasonDao.hasSeason(season1.id)
@@ -170,15 +159,11 @@ class ReporterDatabaseTest {
 
     @Test
     fun testSaveAndGetUserById() = runBlocking {
-        val job1 = async { userDao.getUserById("0").take(1).toList() }
-        val job2 = async { userDao.getUserById("1").take(1).toList() }
-        val job3 = async { userDao.getUserById("2").take(1).toList() }
-
         userDao.save(listOf(user1, user2))
 
-        val result1 = job1.await()
-        val result2 = job2.await()
-        val result3 = job3.await()
+        val result1 = userDao.getUserById("0").take(1).toList()
+        val result2 = userDao.getUserById("1").take(1).toList()
+        val result3 = userDao.getUserById("2").take(1).toList()
 
         assertThat(result1[0], `is`(user1))
         assertThat(result2[0], `is`(user2))
@@ -186,7 +171,7 @@ class ReporterDatabaseTest {
     }
 
     @Test
-    fun testSaveAndHasUser() {
+    fun testSaveAndHasUser() = runBlocking {
         userDao.save(listOf(user1, user2))
 
         val result1 = userDao.hasUser(user1.id)

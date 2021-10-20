@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 interface SeasonDao {
 
     @Insert(onConflict = REPLACE)
-    fun save(seasons: List<Season>)
+    suspend fun save(seasons: List<Season>)
 
     @Query("SELECT * FROM season WHERE id = :id")
     fun getSeasonById(id: String): Flow<Season>
