@@ -34,11 +34,12 @@ class TeamViewModelTest {
     @Before
     fun setUp() {
         repository = FakePageRepository()
-        viewModel = TeamViewModel(repository)
+        viewModel = TeamViewModel(repository, mainCoroutineRule.testDispatchers)
     }
 
     @Test
-    fun `test valid fetch team`() = mainCoroutineRule.runBlockingTest {
+    fun `test valid fetch team`() = mainCoroutineRule.dispatcher.runBlockingTest {
+        // flakey
         (repository as FakePageRepository).valid = true
         viewModel.id.value = TestConstants.TEAM_RESPONSE.id
         assertThat(viewModel.loading.getOrAwaitValue(), `is`(false))
@@ -46,7 +47,7 @@ class TeamViewModelTest {
     }
 
     @Test
-    fun `test invalid fetch team`() = mainCoroutineRule.runBlockingTest {
+    fun `test invalid fetch team`() = mainCoroutineRule.dispatcher.runBlockingTest {
         (repository as FakePageRepository).valid = false
         viewModel.id.value = TestConstants.TEAM_RESPONSE.id
         assertThat(viewModel.loading.getOrAwaitValue(), `is`(false))
@@ -58,7 +59,7 @@ class TeamViewModelTest {
     }
 
     @Test
-    fun `test valid get multiple seasons`() = mainCoroutineRule.runBlockingTest {
+    fun `test valid get multiple seasons`() = mainCoroutineRule.dispatcher.runBlockingTest {
         (repository as FakePageRepository).valid = true
         viewModel.id.value = TestConstants.TEAM_RESPONSE.id
         assertThat(viewModel.team.getOrAwaitValue(), `is`(TestConstants.TEAM_RESPONSE))
@@ -70,7 +71,7 @@ class TeamViewModelTest {
     }
 
     @Test
-    fun `test invalid get multiple seasons`() = mainCoroutineRule.runBlockingTest {
+    fun `test invalid get multiple seasons`() = mainCoroutineRule.dispatcher.runBlockingTest {
         (repository as FakePageRepository).valid = false
         viewModel.id.value = TestConstants.TEAM_RESPONSE.id
 
@@ -88,7 +89,8 @@ class TeamViewModelTest {
     }
 
     @Test
-    fun `test valid get multiple followers`() = mainCoroutineRule.runBlockingTest {
+    fun `test valid get multiple followers`() = mainCoroutineRule.dispatcher.runBlockingTest {
+        // flakey
         (repository as FakePageRepository).valid = true
         viewModel.id.value = TestConstants.TEAM_RESPONSE.id
         assertThat(viewModel.team.getOrAwaitValue(), `is`(TestConstants.TEAM_RESPONSE))
@@ -100,7 +102,7 @@ class TeamViewModelTest {
     }
 
     @Test
-    fun `test invalid get multiple followers`() = mainCoroutineRule.runBlockingTest {
+    fun `test invalid get multiple followers`() = mainCoroutineRule.dispatcher.runBlockingTest {
         (repository as FakePageRepository).valid = false
         viewModel.id.value = TestConstants.TEAM_RESPONSE.id
 
@@ -118,7 +120,7 @@ class TeamViewModelTest {
     }
 
     @Test
-    fun `test valid follow`() = mainCoroutineRule.runBlockingTest {
+    fun `test valid follow`() = mainCoroutineRule.dispatcher.runBlockingTest {
         (repository as FakePageRepository).valid = true
         viewModel.id.value = TestConstants.TEAM_RESPONSE.id
         viewModel.follow()
