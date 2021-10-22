@@ -54,6 +54,7 @@
                 style="@style/Theme.ScoreReporter.ProfileTitle"
                 tools:text="2000" />
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/dash_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/dash"
