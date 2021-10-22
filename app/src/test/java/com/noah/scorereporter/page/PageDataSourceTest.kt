@@ -41,7 +41,7 @@ class PageDataSourceTest {
     fun `test valid getTeamById`() = runBlocking {
         dataSource.service = validService
 
-        val result = dataSource.getTeamById("team_id")
+        val result = dataSource.getTeamById(TestConstants.TEAM_RESPONSE.id)
 
         assertThat(result.id, `is`(TestConstants.TEAM_RESPONSE.id))
         assertThat(result.owner, `is`(TestConstants.TEAM_RESPONSE.owner))
@@ -64,7 +64,7 @@ class PageDataSourceTest {
     @Test
     fun `test valid followTeam`() = runBlocking {
         dataSource.service = validService
-        val result = dataSource.followTeam(TestConstants.TEAM_RESPONSE.id)
+        val result = dataSource.followTeam("", TestConstants.TEAM_RESPONSE.id)
 
         assertThat(result.id, `is`(TestConstants.TEAM_RESPONSE.id))
         assertThat(result.owner, `is`(TestConstants.TEAM_RESPONSE.owner))
@@ -77,7 +77,7 @@ class PageDataSourceTest {
     fun `test invalid followTeam`() = runBlocking {
         dataSource.service = invalidService
         try {
-            val result = dataSource.followTeam(TestConstants.TEAM_RESPONSE.id)
+            val result = dataSource.followTeam("", TestConstants.TEAM_RESPONSE.id)
         } catch (exception: PageNetworkError) {
             assertThat(exception.message, `is`("Unable to follow team"))
         }

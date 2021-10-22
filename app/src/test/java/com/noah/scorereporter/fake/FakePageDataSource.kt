@@ -6,7 +6,6 @@ import com.noah.scorereporter.data.model.Team
 import com.noah.scorereporter.data.model.UserProfile
 import com.noah.scorereporter.data.network.PageDataSource
 import com.noah.scorereporter.data.network.PageNetworkError
-import com.noah.scorereporter.data.network.Result
 
 class FakePageDataSource : PageDataSource {
     var valid = true
@@ -18,7 +17,7 @@ class FakePageDataSource : PageDataSource {
         }
     }
 
-    override suspend fun followTeam(id: String): Team {
+    override suspend fun followTeam(jwt: String, id: String): Team {
         return if (valid) {
             TestConstants.TEAM_RESPONSE
         } else {

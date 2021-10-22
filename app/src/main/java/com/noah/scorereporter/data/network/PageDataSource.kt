@@ -7,7 +7,7 @@ import com.noah.scorereporter.data.model.UserProfile
 interface PageDataSource {
     suspend fun getTeamById(id: String): Team
 
-    suspend fun followTeam(id: String): Team
+    suspend fun followTeam(jwt: String, id: String): Team
 
     suspend fun getSeasonById(id: String): Season
 

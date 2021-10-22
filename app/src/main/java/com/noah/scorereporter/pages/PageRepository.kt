@@ -1,5 +1,6 @@
 package com.noah.scorereporter.pages
 
+import android.content.SharedPreferences
 import android.util.Log
 import com.noah.scorereporter.data.local.SeasonDao
 import com.noah.scorereporter.data.local.TeamDao
@@ -10,9 +11,10 @@ import com.noah.scorereporter.data.model.TeamFollower
 import com.noah.scorereporter.data.model.UserProfile
 import com.noah.scorereporter.data.network.PageDataSource
 import com.noah.scorereporter.data.network.PageNetworkError
-import com.noah.scorereporter.data.network.Result
-import com.noah.scorereporter.data.network.succeeded
+import com.noah.scorereporter.data.network.UserDataSource
+import com.noah.scorereporter.data.network.UserNetworkError
 import com.noah.scorereporter.pages.model.Follower
+import com.noah.scorereporter.util.Constants
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -24,6 +26,8 @@ import javax.inject.Inject
 class PageRepository @Inject
 constructor(
     private val remoteDataSource: PageDataSource,
+    private val userDataSource: UserDataSource,
+    private val sharedPrefs: SharedPreferences,
     private val teamDao: TeamDao,
     private val seasonDao: SeasonDao,
     private val userDao: UserDao
@@ -44,7 +48,8 @@ constructor(
 
     override suspend fun followTeam(id: String): Flow<Team> {
         try {
-            val result = remoteDataSource.followTeam(id)
+            val jwt = sharedPrefs.getString(Constants.USER_TOKEN, "")
+            val result = remoteDataSource.followTeam(jwt ?: "", id)
             teamDao.save(result)
         } catch (exception: PageNetworkError) {
             throw exception
@@ -116,5 +121,37 @@ constructor(
         }
 
         return flow { emit(followers) }
+    }
+
+    override suspend fun canFollow(id: String): Boolean {
+        val jwt = sharedPrefs.getString(Constants.USER_TOKEN, "")
+
+        if (jwt.isNullOrBlank()) {
+            return false
+        }
+
+        // val teams = userDao.getUserById()
+        var user: UserProfile? = null
+        coroutineScope {
+            launch {
+                user = try {
+                    userDataSource.getProfile(jwt)
+                } catch (exception: UserNetworkError) {
+                    null
+                }
+            }
+        }
+
+        if (user == null) {
+            return false
+        }
+
+        user?.teams?.forEach { team ->
+            if (team.team == id) {
+                return false
+            }
+        }
+
+        return true
     }
 }

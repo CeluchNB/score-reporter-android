@@ -6,8 +6,6 @@ import com.noah.scorereporter.data.model.UserProfile
 import com.noah.scorereporter.data.network.PageDataSource
 import com.noah.scorereporter.data.network.PageNetworkError
 import com.noah.scorereporter.data.network.PageService
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 class PageDataSourceImpl @Inject constructor(): PageDataSource {
@@ -21,9 +19,9 @@ class PageDataSourceImpl @Inject constructor(): PageDataSource {
         }
     }
 
-    override suspend fun followTeam(id: String): Team {
+    override suspend fun followTeam(jwt: String, id: String): Team {
         return getServiceResponse("Unable to follow team") {
-            service.followTeam(id)
+            service.followTeam(jwt, id)
         }
     }
 

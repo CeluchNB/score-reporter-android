@@ -80,4 +80,8 @@ class FakePageRepository : IPageRepository {
             flow { }
         }
     }
+
+    override suspend fun canFollow(id: String): Boolean {
+        return valid
+    }
 }

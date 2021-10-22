@@ -5,6 +5,7 @@ import com.noah.scorereporter.data.model.Team
 import com.noah.scorereporter.data.model.UserProfile
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.PATCH
 import retrofit2.http.Path
 
@@ -13,7 +14,7 @@ interface PageService {
     suspend fun getTeamById(@Path("id") id: String): Team
 
     @PATCH("/team/{id}/follow")
-    suspend fun followTeam(@Path("id") id: String): Team
+    suspend fun followTeam(@Header("Authorization") jwt: String, @Path("id") id: String): Team
 
     @GET("/season/{id}")
     suspend fun getSeasonById(@Path("id") id: String): Season

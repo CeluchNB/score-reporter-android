@@ -55,6 +55,12 @@ class TeamViewModel @Inject constructor(
     val followers: LiveData<List<Follower>>
         get() = _followers
 
+    val canFollow: LiveData<Boolean> = id.switchMap {
+        liveData(dispatchers.io()) {
+            emit(repository.canFollow(it))
+        }
+    }
+
     fun follow() {
         _loading.value = true
         viewModelScope.launch {

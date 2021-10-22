@@ -14,4 +14,6 @@ interface IPageRepository {
     suspend fun getSeasonsOfTeam(ids: List<String>): Flow<List<Season>>
 
     suspend fun getFollowersOfTeam(teamFollowers: List<TeamFollower>): Flow<List<Follower>>
+
+    suspend fun canFollow(id: String): Boolean
 }
