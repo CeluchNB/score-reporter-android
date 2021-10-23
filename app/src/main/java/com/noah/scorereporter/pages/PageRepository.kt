@@ -5,15 +5,11 @@ import android.util.Log
 import com.noah.scorereporter.data.local.SeasonDao
 import com.noah.scorereporter.data.local.TeamDao
 import com.noah.scorereporter.data.local.UserDao
-import com.noah.scorereporter.data.model.Season
-import com.noah.scorereporter.data.model.Team
-import com.noah.scorereporter.data.model.TeamFollower
-import com.noah.scorereporter.data.model.UserProfile
+import com.noah.scorereporter.data.model.*
 import com.noah.scorereporter.data.network.PageDataSource
 import com.noah.scorereporter.data.network.PageNetworkError
 import com.noah.scorereporter.data.network.UserDataSource
 import com.noah.scorereporter.data.network.UserNetworkError
-import com.noah.scorereporter.pages.model.Follower
 import com.noah.scorereporter.util.Constants
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -153,5 +149,13 @@ constructor(
         }
 
         return true
+    }
+
+    override suspend fun getSeasonById(id: String): Flow<Season> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getGamesOfSeason(ids: List<String>): Flow<List<Game>> {
+        TODO("Not yet implemented")
     }
 }

@@ -6,7 +6,7 @@ import com.noah.scorereporter.data.model.Team
 import com.noah.scorereporter.data.network.DispatcherProvider
 import com.noah.scorereporter.data.network.PageNetworkError
 import com.noah.scorereporter.pages.IPageRepository
-import com.noah.scorereporter.pages.model.Follower
+import com.noah.scorereporter.data.model.Follower
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch

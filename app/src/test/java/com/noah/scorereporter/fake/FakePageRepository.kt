@@ -1,12 +1,9 @@
 package com.noah.scorereporter.fake
 
 import com.noah.scorereporter.TestConstants
-import com.noah.scorereporter.data.model.Role
-import com.noah.scorereporter.data.model.Season
-import com.noah.scorereporter.data.model.Team
-import com.noah.scorereporter.data.model.TeamFollower
+import com.noah.scorereporter.data.model.*
+import com.noah.scorereporter.data.network.PageNetworkError
 import com.noah.scorereporter.pages.IPageRepository
-import com.noah.scorereporter.pages.model.Follower
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -83,5 +80,21 @@ class FakePageRepository : IPageRepository {
 
     override suspend fun canFollow(id: String): Boolean {
         return valid
+    }
+
+    override suspend fun getSeasonById(id: String): Flow<Season> {
+        return if (valid) {
+            flow { emit(TestConstants.SEASON_RESPONSE) }
+        } else {
+            flow { }
+        }
+    }
+
+    override suspend fun getGamesOfSeason(ids: List<String>): Flow<List<Game>> {
+        return if (valid) {
+            flow { emit(listOf(TestConstants.GAME_1, TestConstants.GAME_2)) }
+        } else {
+            flow { }
+        }
     }
 }

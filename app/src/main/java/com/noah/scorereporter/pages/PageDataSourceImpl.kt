@@ -1,5 +1,6 @@
 package com.noah.scorereporter.pages
 
+import com.noah.scorereporter.data.model.Game
 import com.noah.scorereporter.data.model.Season
 import com.noah.scorereporter.data.model.Team
 import com.noah.scorereporter.data.model.UserProfile
@@ -34,6 +35,12 @@ class PageDataSourceImpl @Inject constructor(): PageDataSource {
     override suspend fun getUserById(id: String): UserProfile {
         return getServiceResponse("Unable to get user") {
             service.getUserById(id)
+        }
+    }
+
+    override suspend fun getGameById(id: String): Game {
+        return getServiceResponse("Unable to get game") {
+            service.getGameById(id)
         }
     }
 

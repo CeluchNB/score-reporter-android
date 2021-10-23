@@ -1,5 +1,6 @@
 package com.noah.scorereporter.data.network
 
+import com.noah.scorereporter.data.model.Game
 import com.noah.scorereporter.data.model.Season
 import com.noah.scorereporter.data.model.Team
 import com.noah.scorereporter.data.model.UserProfile
@@ -21,4 +22,7 @@ interface PageService {
 
     @GET("/user/{id}")
     suspend fun getUserById(@Path("id") id: String): UserProfile
+
+    @GET("/game/{id}")
+    suspend fun getGameById(@Path("id") id: String): Game
 }

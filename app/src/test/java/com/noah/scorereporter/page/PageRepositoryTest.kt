@@ -22,7 +22,7 @@ import com.noah.scorereporter.fake.FakeUserDataSource
 import com.noah.scorereporter.getOrAwaitValue
 import com.noah.scorereporter.pages.IPageRepository
 import com.noah.scorereporter.pages.PageRepository
-import com.noah.scorereporter.pages.model.Follower
+import com.noah.scorereporter.data.model.Follower
 import com.noah.scorereporter.util.Constants
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
@@ -235,12 +235,14 @@ class PageRepositoryTest {
             Role.COACH
         )
         ))
-        assertThat(list[1], `is`(Follower(
+        assertThat(list[1], `is`(
+            Follower(
             TestConstants.USER_PROFILE_2.firstName,
             TestConstants.USER_PROFILE_2.lastName,
             TestConstants.USER_PROFILE_2.email,
             Role.PLAYER
-        )))
+        )
+        ))
     }
 
     @Test

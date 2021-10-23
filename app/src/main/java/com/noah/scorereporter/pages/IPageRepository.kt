@@ -1,9 +1,6 @@
 package com.noah.scorereporter.pages
 
-import com.noah.scorereporter.data.model.Season
-import com.noah.scorereporter.data.model.Team
-import com.noah.scorereporter.data.model.TeamFollower
-import com.noah.scorereporter.pages.model.Follower
+import com.noah.scorereporter.data.model.*
 import kotlinx.coroutines.flow.Flow
 
 interface IPageRepository {
@@ -16,4 +13,8 @@ interface IPageRepository {
     suspend fun getFollowersOfTeam(teamFollowers: List<TeamFollower>): Flow<List<Follower>>
 
     suspend fun canFollow(id: String): Boolean
+
+    suspend fun getSeasonById(id: String): Flow<Season>
+
+    suspend fun getGamesOfSeason(ids: List<String>): Flow<List<Game>>
 }

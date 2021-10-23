@@ -1,6 +1,7 @@
 package com.noah.scorereporter.fake
 
 import com.noah.scorereporter.TestConstants
+import com.noah.scorereporter.data.model.Game
 import com.noah.scorereporter.data.model.Season
 import com.noah.scorereporter.data.model.Team
 import com.noah.scorereporter.data.model.UserProfile
@@ -46,6 +47,18 @@ class FakePageDataSource : PageDataSource {
             }
         } else {
             throw PageNetworkError(TestConstants.USER_ERROR, Throwable())
+        }
+    }
+
+    override suspend fun getGameById(id: String): Game {
+        return if (valid) {
+            when (id) {
+                TestConstants.GAME_1.id -> TestConstants.GAME_1
+                TestConstants.GAME_2.id -> TestConstants.GAME_2
+                else -> throw PageNetworkError(TestConstants.GAME_ERROR, Throwable())
+            }
+        } else {
+            throw PageNetworkError(TestConstants.GAME_ERROR, Throwable())
         }
     }
 }

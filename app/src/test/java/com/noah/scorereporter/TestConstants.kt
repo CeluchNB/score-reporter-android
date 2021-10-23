@@ -1,7 +1,7 @@
 package com.noah.scorereporter
 
 import com.noah.scorereporter.data.model.*
-import com.noah.scorereporter.pages.model.Follower
+import com.noah.scorereporter.data.model.Follower
 import java.util.*
 
 object TestConstants {
@@ -60,7 +60,7 @@ object TestConstants {
     const val SEASON_ERROR = "Unable to find season"
 
     val TEAM_RESPONSE = Team(
-        "team1",
+        "team_1",
         "LA Dodgers",
         Date(970891721000L),
         Date(1633579721000L),
@@ -90,4 +90,26 @@ object TestConstants {
         USER_PROFILE_2.email,
         Role.PLAYER
     )
+
+    val GAME_1 = Game(
+        "game_1",
+        "season_1",
+        "team_1",
+        "team_2",
+        GameInnings(listOf(1,2,3), listOf(1,1,1)),
+        "team_1",
+        Date(970891721000L)
+    )
+
+    val GAME_2 = Game(
+        "game_2",
+        "season_2",
+        "team_2",
+        "team_1",
+        GameInnings(listOf(3,2,3), listOf(2,2,2)),
+        "team_1",
+        Date(970891721000L)
+    )
+
+    const val GAME_ERROR = "Unable to find game"
 }

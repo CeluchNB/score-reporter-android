@@ -69,6 +69,27 @@ class MockPageInterceptor(private val valid: Boolean) : Interceptor {
                     TestConstants.USER_ERROR
                 }
             }
+            uri.matches(Regex("https://score-reporter.herokuapp.com/game/.+")) -> {
+                if (valid) {
+                    when {
+                        uri.contains(TestConstants.GAME_1.id) -> {
+                            gson.toJson(
+                                TestConstants.GAME_1
+                            )
+                        }
+                        uri.contains(TestConstants.GAME_2.id) -> {
+                            gson.toJson(
+                                TestConstants.GAME_2
+                            )
+                        }
+                        else -> {
+                            TestConstants.GAME_ERROR
+                        }
+                    }
+                } else {
+                    TestConstants.GAME_ERROR
+                }
+            }
             else -> {
                 TestConstants.TEAM_ERROR
             }
