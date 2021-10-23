@@ -21,7 +21,7 @@ class PageDataSourceImpl @Inject constructor(): PageDataSource {
 
     override suspend fun followTeam(jwt: String, id: String): Team {
         return getServiceResponse("Unable to follow team") {
-            service.followTeam(jwt, id)
+            service.followTeam("Bearer $jwt", id)
         }
     }
 

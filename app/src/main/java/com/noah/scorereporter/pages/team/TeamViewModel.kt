@@ -4,10 +4,10 @@ import androidx.lifecycle.*
 import com.noah.scorereporter.data.model.Season
 import com.noah.scorereporter.data.model.Team
 import com.noah.scorereporter.data.network.DispatcherProvider
+import com.noah.scorereporter.data.network.PageNetworkError
 import com.noah.scorereporter.pages.IPageRepository
 import com.noah.scorereporter.pages.model.Follower
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -55,28 +55,31 @@ class TeamViewModel @Inject constructor(
     val followers: LiveData<List<Follower>>
         get() = _followers
 
-    val canFollow: LiveData<Boolean> = id.switchMap {
+    val canFollow: LiveData<Boolean> = team.switchMap {
         liveData(dispatchers.io()) {
-            emit(repository.canFollow(it))
+            emit(repository.canFollow(it.id))
         }
     }
 
     fun follow() {
         _loading.value = true
-        viewModelScope.launch {
-            id.value?.let {
-                if (it.isEmpty()) {
+        id.value?.let {
+            if (it.isEmpty()) {
+                _followSuccess.value = false
+                _loading.value = false
+                return
+            }
+            viewModelScope.launch {
+                try {
+                    repository.followTeam(it).collect { team ->
+                        _followSuccess.value = true
+                        _team.value = team
+                    }
+                } catch (exception: PageNetworkError) {
                     _followSuccess.value = false
-                    _loading.value = false
-                    return@launch
-                }
-
-                repository.followTeam(it).collect {
-                    _followSuccess.value = true
-                    _team.value = it
                 }
             }
-            _loading.value = false
         }
+        _loading.value = false
     }
 }
