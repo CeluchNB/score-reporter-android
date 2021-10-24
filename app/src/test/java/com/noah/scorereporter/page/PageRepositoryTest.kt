@@ -9,6 +9,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.noah.scorereporter.MainCoroutineRule
 import com.noah.scorereporter.TestConstants
+import com.noah.scorereporter.data.local.GameDao
 import com.noah.scorereporter.data.local.SeasonDao
 import com.noah.scorereporter.data.local.TeamDao
 import com.noah.scorereporter.data.local.UserDao
@@ -23,6 +24,7 @@ import com.noah.scorereporter.getOrAwaitValue
 import com.noah.scorereporter.pages.IPageRepository
 import com.noah.scorereporter.pages.PageRepository
 import com.noah.scorereporter.data.model.Follower
+import com.noah.scorereporter.data.model.TeamFollower
 import com.noah.scorereporter.util.Constants
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
@@ -42,11 +44,12 @@ import java.util.concurrent.TimeoutException
 class PageRepositoryTest {
 
     private lateinit var repository: IPageRepository
-    private lateinit var remoteDataSource: PageDataSource
+    private lateinit var pageDataSource: PageDataSource
     private lateinit var userDataSource: UserDataSource
     private lateinit var teamDao: TeamDao
     private lateinit var seasonDao: SeasonDao
     private lateinit var userDao: UserDao
+    private lateinit var gameDao: GameDao
     private lateinit var context: Context
     private lateinit var masterKey: MasterKey
     private lateinit var sharedPrefs: SharedPreferences
@@ -56,11 +59,12 @@ class PageRepositoryTest {
 
     @Before
     fun setUp() {
-        remoteDataSource = FakePageDataSource()
+        pageDataSource = FakePageDataSource()
         userDataSource = FakeUserDataSource()
         teamDao = mock(TeamDao::class.java)
         seasonDao = mock(SeasonDao::class.java)
         userDao = mock(UserDao::class.java)
+        gameDao = mock(GameDao::class.java)
 
         context = ApplicationProvider.getApplicationContext()
 
@@ -100,12 +104,30 @@ class PageRepositoryTest {
         `when`(userDao.hasUser(TestConstants.USER_PROFILE_1.id)).thenReturn(true)
         `when`(userDao.hasUser(TestConstants.USER_PROFILE_2.id)).thenReturn(true)
 
-        repository = PageRepository(remoteDataSource, userDataSource, sharedPrefs, teamDao, seasonDao, userDao)
+        `when`(gameDao.hasGame(TestConstants.GAME_1.id)).thenReturn(true)
+        `when`(gameDao.hasGame(TestConstants.GAME_2.id)).thenReturn(true)
+
+        `when`(gameDao.getGameById(TestConstants.GAME_1.id)).thenReturn(
+            flow { emit(TestConstants.GAME_1) }
+        )
+        `when`(gameDao.getGameById(TestConstants.GAME_2.id)).thenReturn(
+            flow { emit(TestConstants.GAME_2) }
+        )
+
+        repository = PageRepository(
+            pageDataSource,
+            userDataSource,
+            sharedPrefs,
+            teamDao,
+            seasonDao,
+            userDao,
+            gameDao
+        )
     }
 
     @Test
     fun `test getTeamById with existing user`() = mainCoroutineRule.runBlockingTest {
-        (remoteDataSource as FakePageDataSource).valid = true
+        (pageDataSource as FakePageDataSource).valid = true
         val result = repository.getTeamById(TestConstants.TEAM_RESPONSE.id).asLiveData()
         verify(teamDao).hasTeam(TestConstants.TEAM_RESPONSE.id)
         // verify(teamDao, times(0)).save(TestConstants.TEAM_RESPONSE)
@@ -115,13 +137,13 @@ class PageRepositoryTest {
 
     @Test(expected = PageNetworkError::class)
     fun `test getTeamById with user not found`() = mainCoroutineRule.runBlockingTest {
-        (remoteDataSource as FakePageDataSource).valid = false
+        (pageDataSource as FakePageDataSource).valid = false
         repository.getTeamById("id1").asLiveData()
     }
 
     @Test
     fun `test getTeamById after adding user`() = mainCoroutineRule.runBlockingTest {
-        (remoteDataSource as FakePageDataSource).valid = true
+        (pageDataSource as FakePageDataSource).valid = true
         `when`(teamDao.getTeamById("id2")).thenReturn(flow { emit(TestConstants.TEAM_RESPONSE) })
 
         val result = repository.getTeamById("id2").asLiveData()
@@ -133,7 +155,7 @@ class PageRepositoryTest {
 
     @Test
     fun `test followTeam with existing user`() = mainCoroutineRule.runBlockingTest {
-        (remoteDataSource as FakePageDataSource).valid = true
+        (pageDataSource as FakePageDataSource).valid = true
 
         val result = repository.followTeam(TestConstants.TEAM_RESPONSE.id).asLiveData()
         verify(teamDao).getTeamById(TestConstants.TEAM_RESPONSE.id)
@@ -143,13 +165,13 @@ class PageRepositoryTest {
 
     @Test(expected = PageNetworkError::class)
     fun `test followTeam with non existent user`() = mainCoroutineRule.runBlockingTest {
-        (remoteDataSource as FakePageDataSource).valid = false
+        (pageDataSource as FakePageDataSource).valid = false
         repository.followTeam("id1").asLiveData()
     }
 
     @Test
     fun `test getSeasonsOfTeam with presaved seasons`() = mainCoroutineRule.runBlockingTest {
-        (remoteDataSource as FakePageDataSource).valid = true
+        (pageDataSource as FakePageDataSource).valid = true
 
         val result = repository.getSeasonsOfTeam(
             listOf(TestConstants.SEASON_RESPONSE.id, TestConstants.SEASON_RESPONSE_2.id)
@@ -157,7 +179,7 @@ class PageRepositoryTest {
 
         verify(seasonDao, times(2)).hasSeason(TestConstants.SEASON_RESPONSE.id)
         verify(seasonDao, times(2)).hasSeason(TestConstants.SEASON_RESPONSE_2.id)
-        verify(seasonDao, times(0)).save(listOf(TestConstants.SEASON_RESPONSE, TestConstants.SEASON_RESPONSE_2))
+        verify(seasonDao, times(0)).save(TestConstants.SEASON_RESPONSE, TestConstants.SEASON_RESPONSE_2)
         verify(seasonDao).getSeasonById(TestConstants.SEASON_RESPONSE.id)
         verify(seasonDao).getSeasonById(TestConstants.SEASON_RESPONSE_2.id)
 
@@ -169,7 +191,7 @@ class PageRepositoryTest {
 
     @Test
     fun `test getSeasonsOfTeam with bad list`() = mainCoroutineRule.runBlockingTest {
-        (remoteDataSource as FakePageDataSource).valid = true
+        (pageDataSource as FakePageDataSource).valid = true
 
         val result = repository.getSeasonsOfTeam(
             listOf("bad_id_1", "bad_id_2")
@@ -191,7 +213,7 @@ class PageRepositoryTest {
     fun `test getSeasonsOfTeam with invalid source`() = mainCoroutineRule.runBlockingTest {
         `when`(seasonDao.hasSeason(TestConstants.SEASON_RESPONSE.id)).thenReturn(false)
         `when`(seasonDao.hasSeason(TestConstants.SEASON_RESPONSE_2.id)).thenReturn(false)
-        (remoteDataSource as FakePageDataSource).valid = false
+        (pageDataSource as FakePageDataSource).valid = false
 
         val result = repository.getSeasonsOfTeam(
             listOf(TestConstants.SEASON_RESPONSE.id, TestConstants.SEASON_RESPONSE_2.id)
@@ -211,12 +233,12 @@ class PageRepositoryTest {
 
     @Test
     fun `test getFollowersOfTeam with presaved seasons`() = mainCoroutineRule.runBlockingTest {
-        (remoteDataSource as FakePageDataSource).valid = true
+        (pageDataSource as FakePageDataSource).valid = true
 
         val result = repository.getFollowersOfTeam(
             listOf(
-                com.noah.scorereporter.data.model.TeamFollower(TestConstants.USER_PROFILE_1.id, Role.COACH),
-                com.noah.scorereporter.data.model.TeamFollower(TestConstants.USER_PROFILE_2.id, Role.PLAYER)
+                TeamFollower(TestConstants.USER_PROFILE_1.id, Role.COACH),
+                TeamFollower(TestConstants.USER_PROFILE_2.id, Role.PLAYER)
             )
         ).asLiveData()
 
@@ -247,12 +269,12 @@ class PageRepositoryTest {
 
     @Test
     fun `test getFollowersOfTeam with invalid list`() = mainCoroutineRule.runBlockingTest {
-        (remoteDataSource as FakePageDataSource).valid = true
+        (pageDataSource as FakePageDataSource).valid = true
 
         val result = repository.getFollowersOfTeam(
             listOf(
-                com.noah.scorereporter.data.model.TeamFollower("bad_id_1", Role.COACH),
-                com.noah.scorereporter.data.model.TeamFollower("bad_id_2", Role.PLAYER)
+                TeamFollower("bad_id_1", Role.COACH),
+                TeamFollower("bad_id_2", Role.PLAYER)
             )
         ).asLiveData()
 
@@ -272,12 +294,12 @@ class PageRepositoryTest {
     fun `test getFollowersOfTeam with invalid source`() = mainCoroutineRule.runBlockingTest {
         `when`(userDao.hasUser(TestConstants.USER_PROFILE_1.id)).thenReturn(false)
         `when`(userDao.hasUser(TestConstants.USER_PROFILE_2.id)).thenReturn(false)
-        (remoteDataSource as FakePageDataSource).valid = false
+        (pageDataSource as FakePageDataSource).valid = false
 
         val result = repository.getFollowersOfTeam(
             listOf(
-                com.noah.scorereporter.data.model.TeamFollower(TestConstants.USER_PROFILE_1.id, Role.COACH),
-                com.noah.scorereporter.data.model.TeamFollower(TestConstants.USER_PROFILE_2.id, Role.PLAYER)
+                TeamFollower(TestConstants.USER_PROFILE_1.id, Role.COACH),
+                TeamFollower(TestConstants.USER_PROFILE_2.id, Role.PLAYER)
             )
         ).asLiveData()
 
@@ -322,6 +344,89 @@ class PageRepositoryTest {
         sharedPrefs.edit().putString(Constants.USER_TOKEN, "jwt").commit()
         val result = repository.canFollow("bad_team")
         assertThat(result, `is`(true))
+    }
+
+    @Test
+    fun `test getSeasonById with season in room`() = mainCoroutineRule.runBlockingTest {
+        (pageDataSource as FakePageDataSource).valid = true
+        val result = repository.getSeasonById(TestConstants.SEASON_RESPONSE.id).asLiveData()
+        verify(seasonDao).hasSeason(TestConstants.SEASON_RESPONSE.id)
+        verify(seasonDao, times(0)).save(TestConstants.SEASON_RESPONSE)
+        verify(seasonDao).getSeasonById(TestConstants.SEASON_RESPONSE.id)
+        assertThat(result.getOrAwaitValue(), `is`(TestConstants.SEASON_RESPONSE))
+    }
+
+    @Test
+    fun `test getSeasonById with season in backend`() = mainCoroutineRule.runBlockingTest {
+        (pageDataSource as FakePageDataSource).valid = true
+        `when`(seasonDao.hasSeason(TestConstants.SEASON_RESPONSE_2.id)).thenReturn(false)
+        val result = repository.getSeasonById(TestConstants.SEASON_RESPONSE_2.id).asLiveData()
+        verify(seasonDao).hasSeason(TestConstants.SEASON_RESPONSE_2.id)
+        // verify(seasonDao).save(TestConstants.SEASON_RESPONSE_2)
+        verify(seasonDao).getSeasonById(TestConstants.SEASON_RESPONSE_2.id)
+
+        assertThat(result.getOrAwaitValue(), `is`(TestConstants.SEASON_RESPONSE_2))
+    }
+
+    @Test(expected = PageNetworkError::class)
+    fun `test getSeasonById with nonexistent season`() = mainCoroutineRule.runBlockingTest {
+        (pageDataSource as FakePageDataSource).valid = true
+        val result = repository.getSeasonById("badid1")
+    }
+
+    @Test(expected = PageNetworkError::class)
+    fun `test getSeasonById with invalid source`() = mainCoroutineRule.runBlockingTest {
+        (pageDataSource as FakePageDataSource).valid = false
+        val result = repository.getSeasonById("badid1")
+    }
+
+    @Test
+    fun `test getGamesOfSeason with presaved games`() = mainCoroutineRule.runBlockingTest {
+        (pageDataSource as FakePageDataSource).valid = true
+        val result = repository.getGamesOfSeason(listOf(TestConstants.GAME_1.id, TestConstants.GAME_2.id)).asLiveData()
+        verify(gameDao).hasGame(TestConstants.GAME_1.id)
+        verify(gameDao).hasGame(TestConstants.GAME_2.id)
+        verify(gameDao).getGameById(TestConstants.GAME_1.id)
+        verify(gameDao).getGameById(TestConstants.GAME_2.id)
+
+        val list = result.getOrAwaitValue()
+        assertThat(list.size, `is`(2))
+        assertThat(list, `is`(listOf(TestConstants.GAME_1, TestConstants.GAME_2)))
+    }
+
+    @Test
+    fun `test getGamesOfSeason with valid data source`() = mainCoroutineRule.runBlockingTest {
+        (pageDataSource as FakePageDataSource).valid = true
+        `when`(gameDao.hasGame(TestConstants.GAME_1.id)).thenReturn(false)
+        `when`(gameDao.hasGame(TestConstants.GAME_2.id)).thenReturn(false)
+        val result = repository.getGamesOfSeason(listOf(TestConstants.GAME_1.id, TestConstants.GAME_2.id)).asLiveData()
+        verify(gameDao).hasGame(TestConstants.GAME_1.id)
+        verify(gameDao).hasGame(TestConstants.GAME_2.id)
+        verify(gameDao).getGameById(TestConstants.GAME_1.id)
+        verify(gameDao).getGameById(TestConstants.GAME_2.id)
+
+        val list = result.getOrAwaitValue()
+        assertThat(list.size, `is`(2))
+        assertThat(list, `is`(listOf(TestConstants.GAME_1, TestConstants.GAME_2)))
+    }
+
+    @Test
+    fun `test getGamesOfSeason with invalid data source`() = mainCoroutineRule.runBlockingTest {
+        (pageDataSource as FakePageDataSource).valid = false
+        `when`(gameDao.hasGame(TestConstants.GAME_1.id)).thenReturn(false)
+        `when`(gameDao.hasGame(TestConstants.GAME_2.id)).thenReturn(false)
+
+        val result = repository.getGamesOfSeason(listOf(TestConstants.GAME_1.id, TestConstants.GAME_2.id)).asLiveData()
+        verify(gameDao).hasGame(TestConstants.GAME_1.id)
+        verify(gameDao).hasGame(TestConstants.GAME_2.id)
+        verify(gameDao).getGameById(TestConstants.GAME_1.id)
+        verify(gameDao).getGameById(TestConstants.GAME_2.id)
+
+        try {
+            result.getOrAwaitValue()
+        } catch (exception: TimeoutException) {
+            assertThat(exception.message, `is`(TestConstants.LIVE_DATA_ERROR))
+        }
     }
 
     companion object {

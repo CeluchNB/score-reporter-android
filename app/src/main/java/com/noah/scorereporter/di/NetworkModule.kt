@@ -73,6 +73,11 @@ abstract class NetworkModule {
             database.userDao()
 
         @Provides
+        @Singleton
+        fun provideGameDao(database: ReporterDatabase) =
+            database.gameDao()
+
+        @Provides
         fun provideMasterKey(@ApplicationContext context: Context): MasterKey =
             MasterKey.Builder(context)
                 .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)

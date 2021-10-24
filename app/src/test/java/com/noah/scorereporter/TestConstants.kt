@@ -15,8 +15,8 @@ object TestConstants {
             "Test",
             "email@email.com",
             listOf(
-                UserTeam("team1", Role.COACH),
-                UserTeam("team2", Role.PLAYER)
+                UserTeam("team_1", Role.COACH),
+                UserTeam("team_2", Role.PLAYER)
             )
         ),
         "jwt1"
@@ -31,7 +31,7 @@ object TestConstants {
             "Last",
             "first@email.com",
             listOf(
-                UserTeam("team2", Role.COACH)
+                UserTeam("team_2", Role.COACH)
             )
         ),
         "jwt2"
@@ -47,14 +47,16 @@ object TestConstants {
         "season_id_1",
         Date(970891721000L),
         Date(1633579721000L),
-        "user_1"
+        "user_1",
+        listOf()
     )
 
     val SEASON_RESPONSE_2 = Season(
         "season_id_2",
         Date(972891761000L),
         Date(1631579921000L),
-        "user_2"
+        "user_2",
+        listOf()
     )
 
     const val SEASON_ERROR = "Unable to find season"

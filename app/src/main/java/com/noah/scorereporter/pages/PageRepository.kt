@@ -2,6 +2,7 @@ package com.noah.scorereporter.pages
 
 import android.content.SharedPreferences
 import android.util.Log
+import com.noah.scorereporter.data.local.GameDao
 import com.noah.scorereporter.data.local.SeasonDao
 import com.noah.scorereporter.data.local.TeamDao
 import com.noah.scorereporter.data.local.UserDao
@@ -21,18 +22,19 @@ import javax.inject.Inject
 
 class PageRepository @Inject
 constructor(
-    private val remoteDataSource: PageDataSource,
+    private val pageDataSource: PageDataSource,
     private val userDataSource: UserDataSource,
     private val sharedPrefs: SharedPreferences,
     private val teamDao: TeamDao,
     private val seasonDao: SeasonDao,
-    private val userDao: UserDao
+    private val userDao: UserDao,
+    private val gameDao: GameDao
 ) : IPageRepository {
 
     override suspend fun getTeamById(id: String): Flow<Team> {
         if (!teamDao.hasTeam(id)) {
             try {
-                val result = remoteDataSource.getTeamById(id)
+                val result = pageDataSource.getTeamById(id)
                 teamDao.save(result)
             } catch (exception: PageNetworkError) {
                 throw exception
@@ -45,7 +47,7 @@ constructor(
     override suspend fun followTeam(id: String): Flow<Team> {
         try {
             val jwt = sharedPrefs.getString(Constants.USER_TOKEN, "")
-            val result = remoteDataSource.followTeam(jwt ?: "", id)
+            val result = pageDataSource.followTeam(jwt ?: "", id)
             teamDao.save(result)
         } catch (exception: PageNetworkError) {
             throw exception
@@ -62,17 +64,17 @@ constructor(
                 launch {
                     if (!seasonDao.hasSeason(id)) {
                         try {
-                            val result = remoteDataSource.getSeasonById(id)
+                            val result = pageDataSource.getSeasonById(id)
                             newSeasons.add(result)
                         } catch (exception: PageNetworkError) {
-                            Log.e("Noah", exception.message ?: "")
+                            Log.e("PageRepository", exception.message ?: "")
                         }
                     }
                 }
             }
         }
 
-        seasonDao.save(newSeasons)
+        seasonDao.save(*newSeasons.toTypedArray())
 
         val list = mutableListOf<Season>()
         ids.forEach { id ->
@@ -93,7 +95,7 @@ constructor(
                 launch {
                     if (!userDao.hasUser(it.user)) {
                         try {
-                            val result = remoteDataSource.getUserById(it.user)
+                            val result = pageDataSource.getUserById(it.user)
                             newFollowers.add(result)
                         } catch (exception: PageNetworkError) {
                             Log.e("PageRepository", exception.message ?: "")
@@ -152,10 +154,43 @@ constructor(
     }
 
     override suspend fun getSeasonById(id: String): Flow<Season> {
-        TODO("Not yet implemented")
+        if (!seasonDao.hasSeason(id)) {
+            try {
+                val result = pageDataSource.getSeasonById(id)
+                seasonDao.save(result)
+            } catch (exception: PageNetworkError) {
+                throw exception
+            }
+        }
+        return seasonDao.getSeasonById(id)
     }
 
     override suspend fun getGamesOfSeason(ids: List<String>): Flow<List<Game>> {
-        TODO("Not yet implemented")
+        val newGames = mutableListOf<Game>()
+
+        coroutineScope {
+            ids.forEach {
+                if (!gameDao.hasGame(it)) {
+                    launch {
+                        try {
+                            val game = pageDataSource.getGameById(it)
+                            newGames.add(game)
+                        } catch (exception: PageNetworkError) {
+                            Log.e("PageRepository", exception.message ?: "")
+                        }
+                    }
+                }
+            }
+        }
+
+        gameDao.save(*newGames.toTypedArray())
+
+        val games = mutableListOf<Game>()
+        ids.forEach {
+            gameDao.getGameById(it).take(1).collect { game ->
+                games.add(game)
+            }
+        }
+        return flow { emit(games) }
     }
 }

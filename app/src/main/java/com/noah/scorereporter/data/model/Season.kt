@@ -14,5 +14,6 @@ data class Season(
     @SerializedName("_id") val id: String,
     val startDate: Date,
     val endDate: Date?,
-    val owner: String
+    val owner: String,
+    val games: List<SeasonGame>
 ) : Parcelable
