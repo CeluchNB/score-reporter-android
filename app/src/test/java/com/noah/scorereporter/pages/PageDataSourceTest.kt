@@ -1,4 +1,4 @@
-package com.noah.scorereporter.page
+package com.noah.scorereporter.pages
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.noah.scorereporter.MainCoroutineRule

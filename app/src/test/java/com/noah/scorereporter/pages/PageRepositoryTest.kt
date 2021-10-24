@@ -1,4 +1,4 @@
-package com.noah.scorereporter.page
+package com.noah.scorereporter.pages
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -21,8 +21,6 @@ import com.noah.scorereporter.fake.FakeAndroidKeyStore
 import com.noah.scorereporter.fake.FakePageDataSource
 import com.noah.scorereporter.fake.FakeUserDataSource
 import com.noah.scorereporter.getOrAwaitValue
-import com.noah.scorereporter.pages.IPageRepository
-import com.noah.scorereporter.pages.PageRepository
 import com.noah.scorereporter.data.model.Follower
 import com.noah.scorereporter.data.model.TeamFollower
 import com.noah.scorereporter.util.Constants

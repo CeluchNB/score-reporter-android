@@ -1,4 +1,4 @@
-package com.noah.scorereporter.page.team
+package com.noah.scorereporter.pages.team
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
