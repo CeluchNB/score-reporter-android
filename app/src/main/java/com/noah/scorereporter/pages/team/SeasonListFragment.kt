@@ -1,5 +1,6 @@
 package com.noah.scorereporter.pages.team
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,12 +10,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.noah.scorereporter.R
+import com.noah.scorereporter.util.ListOnClickListener
 
 class SeasonListFragment : Fragment() {
 
     private var seasonAdapter: SeasonListAdapter? = null
     private lateinit var seasonList: RecyclerView
     private val viewModel: TeamViewModel by activityViewModels()
+    var listener: ListOnClickListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,6 +27,7 @@ class SeasonListFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_season_list, container, false)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -34,7 +38,7 @@ class SeasonListFragment : Fragment() {
         viewModel.seasons.observe(viewLifecycleOwner) { seasons ->
             // TODO implement diff utils
             if (seasonAdapter == null) {
-                seasonAdapter = SeasonListAdapter(seasons.map { it.startDate })
+                seasonAdapter = SeasonListAdapter(seasons.map { it.startDate }, listener)
                 seasonList.adapter = seasonAdapter
             } else {
                 seasonAdapter?.list = seasons.map { it.startDate }

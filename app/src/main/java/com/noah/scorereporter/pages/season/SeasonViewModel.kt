@@ -3,6 +3,7 @@ package com.noah.scorereporter.pages.season
 import androidx.lifecycle.*
 import com.noah.scorereporter.data.model.Game
 import com.noah.scorereporter.data.model.Season
+import com.noah.scorereporter.data.model.Team
 import com.noah.scorereporter.data.network.DispatcherProvider
 import com.noah.scorereporter.pages.IPageRepository
 import com.noah.scorereporter.pages.PageRepository
@@ -15,6 +16,8 @@ class SeasonViewModel @Inject constructor(
     private val dispatchers: DispatcherProvider
 ): ViewModel() {
     val id: MutableLiveData<String> = MutableLiveData()
+
+    val team: MutableLiveData<Team> = MutableLiveData()
 
     private val _season: LiveData<Season> = id.switchMap {
         liveData(dispatchers.io()) {
