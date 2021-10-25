@@ -11,10 +11,10 @@ class MockPageInterceptor(private val valid: Boolean) : Interceptor {
         var response = ""
 
         response = when {
-            uri.endsWith("/team/${TestConstants.TEAM_RESPONSE.id}") -> {
+            uri.endsWith("/team/${TestConstants.TEAM_RESPONSE_1.id}") -> {
                 if (valid) {
                     gson.toJson(
-                        TestConstants.TEAM_RESPONSE
+                        TestConstants.TEAM_RESPONSE_1
                     )
                 } else {
                     TestConstants.TEAM_ERROR
@@ -23,7 +23,7 @@ class MockPageInterceptor(private val valid: Boolean) : Interceptor {
             uri.endsWith("/follow") -> {
                 if (valid) {
                     gson.toJson(
-                        TestConstants.TEAM_RESPONSE
+                        TestConstants.TEAM_RESPONSE_1
                     )
                 } else {
                     TestConstants.TEAM_ERROR
@@ -67,6 +67,27 @@ class MockPageInterceptor(private val valid: Boolean) : Interceptor {
                     }
                 } else {
                     TestConstants.USER_ERROR
+                }
+            }
+            uri.matches(Regex("https://score-reporter.herokuapp.com/game/.+")) -> {
+                if (valid) {
+                    when {
+                        uri.contains(TestConstants.GAME_1.id) -> {
+                            gson.toJson(
+                                TestConstants.GAME_1
+                            )
+                        }
+                        uri.contains(TestConstants.GAME_2.id) -> {
+                            gson.toJson(
+                                TestConstants.GAME_2
+                            )
+                        }
+                        else -> {
+                            TestConstants.GAME_ERROR
+                        }
+                    }
+                } else {
+                    TestConstants.GAME_ERROR
                 }
             }
             else -> {

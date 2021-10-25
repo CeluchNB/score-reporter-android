@@ -9,11 +9,13 @@ import java.util.*
 
 @Entity
 @Parcelize
-data class Season(
+data class Game(
     @PrimaryKey
     @SerializedName("_id") val id: String,
-    val startDate: Date,
-    val endDate: Date?,
-    val owner: String,
-    val games: List<SeasonGame>
+    val season: String,
+    val awayTeam: String,
+    val homeTeam: String,
+    val innings: GameInnings,
+    val winner: String,
+    val date: Date
 ) : Parcelable

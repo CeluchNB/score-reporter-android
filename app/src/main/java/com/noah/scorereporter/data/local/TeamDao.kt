@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 interface TeamDao {
 
     @Insert( onConflict = REPLACE )
-    fun save(teams: List<Team>)
+    suspend fun save(vararg team: Team)
 
     @Query("SELECT * FROM team WHERE id = :id")
     fun getTeamById(id: String): Flow<Team>

@@ -1,6 +1,4 @@
-package com.noah.scorereporter.pages.model
-
-import com.noah.scorereporter.data.model.Role
+package com.noah.scorereporter.data.model
 
 data class Follower(
     val firstName: String,

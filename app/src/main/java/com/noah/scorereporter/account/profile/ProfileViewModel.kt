@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.noah.scorereporter.account.IUserProfileRepository
 import com.noah.scorereporter.data.model.UserProfile
 import com.noah.scorereporter.data.network.Result
+import com.noah.scorereporter.data.network.UserNetworkError
 import com.noah.scorereporter.data.network.succeeded
 import com.noah.scorereporter.util.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,30 +38,32 @@ class ProfileViewModel @Inject constructor(private val repository: IUserProfileR
         get() = _logoutSuccess
 
     fun fetchUserProfile() {
-        _loading.value = true
         viewModelScope.launch {
-            repository.getProfile().let { result ->
-                if (result.succeeded) {
-                    _userProfile.value = (result as Result.Success).data
-                } else {
-                    _getProfileError.value = true
-                    _userProfile.value = null
-                }
+            try {
+                _loading.value = true
+                val result = repository.getProfile()
+                _userProfile.value = result
+            } catch (exception: UserNetworkError) {
+                _getProfileError.value = true
+                _userProfile.value = null
+            } finally {
+                _loading.value = false
             }
-            _loading.value = false
         }
     }
 
     fun logout() {
-        _logoutLoading.value = true
+
         viewModelScope.launch {
-            val result = repository.logout()
-            if (result.succeeded) {
-                _logoutSuccess.value = Event((result as Result.Success).data)
-            } else {
+            try {
+                _logoutLoading.value = true
+                val result = repository.logout()
+                _logoutSuccess.value = Event(true)
+            } catch (exception: UserNetworkError) {
                 _logoutSuccess.value = Event(false)
+            } finally {
+                _logoutLoading.value = false
             }
-            _logoutLoading.value = false
         }
     }
 

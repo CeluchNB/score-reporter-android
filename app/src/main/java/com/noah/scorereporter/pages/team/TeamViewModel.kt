@@ -3,16 +3,20 @@ package com.noah.scorereporter.pages.team
 import androidx.lifecycle.*
 import com.noah.scorereporter.data.model.Season
 import com.noah.scorereporter.data.model.Team
+import com.noah.scorereporter.data.network.DispatcherProvider
+import com.noah.scorereporter.data.network.PageNetworkError
 import com.noah.scorereporter.pages.IPageRepository
-import com.noah.scorereporter.pages.model.Follower
+import com.noah.scorereporter.data.model.Follower
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TeamViewModel @Inject constructor(private val repository: IPageRepository): ViewModel() {
+class TeamViewModel @Inject constructor(
+    private val repository: IPageRepository,
+    private val dispatchers: DispatcherProvider
+): ViewModel() {
 
     val id = MutableLiveData<String>()
 
@@ -22,7 +26,7 @@ class TeamViewModel @Inject constructor(private val repository: IPageRepository)
 
     private val _team: MutableLiveData<Team> = id.switchMap {
         _loading.value = true
-            liveData(Dispatchers.IO) {
+            liveData(dispatchers.io()) {
                 emitSource(repository.getTeamById(it).asLiveData())
                 _loading.postValue(false)
             }
@@ -36,7 +40,7 @@ class TeamViewModel @Inject constructor(private val repository: IPageRepository)
         get() = _followSuccess
 
     private val _seasons = _team.switchMap {
-        liveData(Dispatchers.IO) {
+        liveData(dispatchers.io()) {
             emitSource(repository.getSeasonsOfTeam(it.seasons.map { it.season }).asLiveData())
         }
     }
@@ -44,29 +48,38 @@ class TeamViewModel @Inject constructor(private val repository: IPageRepository)
         get() = _seasons
 
     private val _followers = _team.switchMap {
-        liveData(Dispatchers.IO) {
+        liveData(dispatchers.io()) {
             emitSource(repository.getFollowersOfTeam(it.followers).asLiveData())
         }
     }
     val followers: LiveData<List<Follower>>
         get() = _followers
 
+    val canFollow: LiveData<Boolean> = team.switchMap {
+        liveData(dispatchers.io()) {
+            emit(repository.canFollow(it.id))
+        }
+    }
+
     fun follow() {
         _loading.value = true
-        viewModelScope.launch {
-            id.value?.let {
-                if (it.isEmpty()) {
+        id.value?.let {
+            if (it.isEmpty()) {
+                _followSuccess.value = false
+                _loading.value = false
+                return
+            }
+            viewModelScope.launch {
+                try {
+                    repository.followTeam(it).collect { team ->
+                        _followSuccess.value = true
+                        _team.value = team
+                    }
+                } catch (exception: PageNetworkError) {
                     _followSuccess.value = false
-                    _loading.value = false
-                    return@launch
-                }
-
-                repository.followTeam(it).collect {
-                    _followSuccess.value = true
-                    _team.value = it
                 }
             }
-            _loading.value = false
         }
+        _loading.value = false
     }
 }

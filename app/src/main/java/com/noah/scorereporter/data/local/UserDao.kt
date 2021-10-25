@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface UserDao {
     @Insert(onConflict = REPLACE)
-    fun save(users: List<UserProfile>)
+    suspend fun save(users: List<UserProfile>)
 
     @Query("SELECT * FROM userprofile WHERE id = :id")
     fun getUserById(id: String): Flow<UserProfile>

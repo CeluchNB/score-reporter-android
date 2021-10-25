@@ -3,9 +3,8 @@ package com.noah.scorereporter.pages.team
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.noah.scorereporter.data.model.TeamFollower
 import com.noah.scorereporter.databinding.ItemTeamBinding
-import com.noah.scorereporter.pages.model.Follower
+import com.noah.scorereporter.data.model.Follower
 
 class FollowerListAdapter(var list: List<Follower>) : RecyclerView.Adapter<FollowerListAdapter.ViewHolder>() {
 

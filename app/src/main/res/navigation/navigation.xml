@@ -30,6 +30,34 @@
             android:name="teamId"
             android:defaultValue="@null"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_teamFragment_to_seasonFragment"
+            app:destination="@id/seasonFragment">
+            <argument
+                android:name="seasonId"
+                android:defaultValue="@null"
+                app:nullable="true" />
+
+            <argument
+                android:name="team"
+                android:defaultValue="@null"
+                app:argType="com.noah.scorereporter.data.model.Team"
+                app:nullable="true" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/seasonFragment"
+        android:name="com.noah.scorereporter.pages.season.SeasonFragment"
+        android:label="Season">
+        <argument
+            android:name="seasonId"
+            android:defaultValue="@null"
+            app:nullable="true" />
+        <argument
+            android:name="team"
+            android:defaultValue="@null"
+            app:argType="com.noah.scorereporter.data.model.Team"
+            app:nullable="true" />
     </fragment>
 
 </navigation>

@@ -6,7 +6,7 @@
     <data>
         <variable
             name="follower"
-            type="com.noah.scorereporter.pages.model.Follower" />
+            type="com.noah.scorereporter.data.model.Follower" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,8 +19,7 @@
              android:id="@+id/text_name"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
-             android:textColor="@color/primaryDarkColor"
-             android:textSize="18sp"
+             style="@style/Theme.ScoreReporter.ItemHeader"
              android:text="@{follower.firstName + ` ` + follower.lastName}"
              app:layout_constraintStart_toStartOf="parent"
              app:layout_constraintTop_toTopOf="parent"
@@ -30,8 +29,7 @@
             android:id="@+id/text_role"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/primaryLightColor"
-            android:textSize="14sp"
+            style="@style/Theme.ScoreReporter.ItemSubheader"
             android:text="@{follower.role.toString()}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_name"

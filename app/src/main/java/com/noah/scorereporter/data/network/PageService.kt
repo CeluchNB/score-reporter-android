@@ -1,23 +1,28 @@
 package com.noah.scorereporter.data.network
 
+import com.noah.scorereporter.data.model.Game
 import com.noah.scorereporter.data.model.Season
 import com.noah.scorereporter.data.model.Team
 import com.noah.scorereporter.data.model.UserProfile
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.PATCH
 import retrofit2.http.Path
 
 interface PageService {
     @GET("/team/{id}")
-    fun getTeamById(@Path("id") id: String): Call<Team>
+    suspend fun getTeamById(@Path("id") id: String): Team
 
     @PATCH("/team/{id}/follow")
-    fun followTeam(@Path("id") id: String): Call<Team>
+    suspend fun followTeam(@Header("Authorization") jwt: String, @Path("id") id: String): Team
 
     @GET("/season/{id}")
-    fun getSeasonById(@Path("id") id: String): Call<Season>
+    suspend fun getSeasonById(@Path("id") id: String): Season
 
     @GET("/user/{id}")
-    fun getUserById(@Path("id") id: String): Call<UserProfile>
+    suspend fun getUserById(@Path("id") id: String): UserProfile
+
+    @GET("/game/{id}")
+    suspend fun getGameById(@Path("id") id: String): Game
 }

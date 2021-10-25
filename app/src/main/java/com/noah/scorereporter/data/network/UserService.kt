@@ -13,14 +13,14 @@ import retrofit2.http.POST
 
 interface UserService {
     @POST("/user/login")
-    fun login(@Body user: LoginUser): Call<User>
+    suspend fun login(@Body user: LoginUser): User
 
     @GET("/user/profile")
-    fun getProfile(@Header("Authorization") jwt: String): Call<UserProfile>
+    suspend fun getProfile(@Header("Authorization") jwt: String): UserProfile
 
     @POST("/user")
-    fun signup(@Body user: SignUpUser): Call<User>
+    suspend fun signup(@Body user: SignUpUser): User
 
     @POST("/user/logout")
-    fun logout(@Header("Authorization") jwt: String): Call<ResponseBody>
+    suspend fun logout(@Header("Authorization") jwt: String): ResponseBody
 }

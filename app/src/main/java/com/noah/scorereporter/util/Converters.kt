@@ -3,9 +3,7 @@ package com.noah.scorereporter.util
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.noah.scorereporter.data.model.TeamFollower
-import com.noah.scorereporter.data.model.TeamSeason
-import com.noah.scorereporter.data.model.UserTeam
+import com.noah.scorereporter.data.model.*
 import java.util.*
 
 class Converters {
@@ -68,5 +66,25 @@ class Converters {
     @TypeConverter
     fun stringToListOfUserTeams(value: String?): List<UserTeam>? {
         return Gson().fromJson(value, object : TypeToken<List<UserTeam>>() {}.type)
+    }
+
+    @TypeConverter
+    fun listOfSeasonGameToString(games: List<SeasonGame>?): String? {
+        return Gson().toJson(games)
+    }
+
+    @TypeConverter
+    fun stringToListOfSeasonGames(value: String?) : List<SeasonGame>? {
+        return Gson().fromJson(value, object : TypeToken<List<SeasonGame>>() {}.type)
+    }
+
+    @TypeConverter
+    fun gameInningToString(innings: GameInnings?) : String? {
+        return Gson().toJson(innings)
+    }
+
+    @TypeConverter
+    fun stringToGameInnings(value: String?): GameInnings? {
+        return Gson().fromJson(value, object : TypeToken<GameInnings>() {}.type)
     }
 }
