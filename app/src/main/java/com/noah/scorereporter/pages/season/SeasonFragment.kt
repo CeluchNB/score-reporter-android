@@ -49,7 +49,7 @@ class SeasonFragment : Fragment() {
             Log.d("Noah", "$it")
         }
 
-        viewModel.games.observe(viewLifecycleOwner) {
+        viewModel.gameList.observe(viewLifecycleOwner) {
             Log.d("Noah", "games: $it")
             adapter = GameListAdapter(it)
             binding.listGames.adapter = adapter

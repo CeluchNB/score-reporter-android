@@ -6,7 +6,7 @@
     <data>
         <variable
             name="game"
-            type="com.noah.scorereporter.data.model.Game" />
+            type="com.noah.scorereporter.data.model.GameListItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/small_margin"
-            android:text="@{game.homeTeam}"
+            android:text="@{game.homeTeam.name}"
             style="@style/Theme.ScoreReporter.ItemHeader"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/small_margin"
-            android:text="3"
+            android:text="@{String.valueOf(game.homeScore)}"
             style="@style/Theme.ScoreReporter.ItemSubheader"
             app:layout_constraintStart_toEndOf="@id/home_text"
             app:layout_constraintTop_toTopOf="@id/home_text"
@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/small_margin"
-            android:text="@{game.awayTeam}"
+            android:text="@{game.awayTeam.name}"
             style="@style/Theme.ScoreReporter.ItemHeader"
             app:layout_constraintTop_toBottomOf="@id/home_text"
             app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/small_margin"
-            android:text="5"
+            android:text="@{String.valueOf(game.awayScore)}"
             style="@style/Theme.ScoreReporter.ItemSubheader"
             app:layout_constraintStart_toEndOf="@id/away_text"
             app:layout_constraintTop_toTopOf="@id/away_text"
