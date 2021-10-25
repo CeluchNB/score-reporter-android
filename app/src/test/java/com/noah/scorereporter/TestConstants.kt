@@ -61,7 +61,7 @@ object TestConstants {
 
     const val SEASON_ERROR = "Unable to find season"
 
-    val TEAM_RESPONSE = Team(
+    val TEAM_RESPONSE_1 = Team(
         "team_1",
         "LA Dodgers",
         Date(970891721000L),
@@ -74,6 +74,21 @@ object TestConstants {
         listOf(
             TeamSeason("season_1", SEASON_RESPONSE.id),
             TeamSeason("season_2", SEASON_RESPONSE_2.id)
+        )
+    )
+
+    val TEAM_RESPONSE_2 = Team(
+        "team_2",
+        "Atlanta Braves",
+        Date(970891721000L),
+        Date(1633579721000L),
+        "user_2",
+        listOf(
+            TeamFollower(USER_PROFILE_2.id, Role.COACH),
+            TeamFollower(USER_PROFILE_1.id, Role.PLAYER)
+        ),
+        listOf(
+            TeamSeason("season_1", SEASON_RESPONSE.id)
         )
     )
 
@@ -98,8 +113,8 @@ object TestConstants {
         "season_1",
         "team_1",
         "team_2",
-        GameInnings(listOf(1,2,3), listOf(1,1,1)),
-        "team_1",
+        GameInnings(listOf(1,2,1), listOf(1,2,2)),
+        "team_2",
         Date(970891721000L)
     )
 
@@ -108,9 +123,25 @@ object TestConstants {
         "season_2",
         "team_2",
         "team_1",
-        GameInnings(listOf(3,2,3), listOf(2,2,2)),
-        "team_1",
+        GameInnings(listOf(4,2,2), listOf(2,1,0)),
+        "team_2",
         Date(970891721000L)
+    )
+
+    val GAME_ITEM_1 = GameListItem(
+        TEAM_RESPONSE_1,
+        TEAM_RESPONSE_2,
+        4,
+        5,
+        TeamStatus.HOME
+    )
+
+    val GAME_ITEM_2 = GameListItem(
+        TEAM_RESPONSE_2,
+        TEAM_RESPONSE_1,
+        8,
+        3,
+        TeamStatus.AWAY
     )
 
     const val GAME_ERROR = "Unable to find game"

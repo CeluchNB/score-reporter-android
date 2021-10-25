@@ -78,11 +78,15 @@ class PageRepositoryTest {
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
 
-        `when`(teamDao.getTeamById(TestConstants.TEAM_RESPONSE.id)).thenReturn(
-            flow { emit(TestConstants.TEAM_RESPONSE) }
+        `when`(teamDao.getTeamById(TestConstants.TEAM_RESPONSE_1.id)).thenReturn(
+            flow { emit(TestConstants.TEAM_RESPONSE_1) }
+        )
+        `when`(teamDao.getTeamById(TestConstants.TEAM_RESPONSE_2.id)).thenReturn(
+            flow { emit(TestConstants.TEAM_RESPONSE_2) }
         )
         `when`(teamDao.getTeamById("id1")).thenReturn(flow { })
-        `when`(teamDao.hasTeam(TestConstants.TEAM_RESPONSE.id)).thenReturn(true)
+        `when`(teamDao.hasTeam(TestConstants.TEAM_RESPONSE_1.id)).thenReturn(true)
+        `when`(teamDao.hasTeam(TestConstants.TEAM_RESPONSE_2.id)).thenReturn(true)
 
         `when`(seasonDao.getSeasonById(TestConstants.SEASON_RESPONSE.id)).thenReturn(
             flow { emit (TestConstants.SEASON_RESPONSE) }
@@ -126,11 +130,10 @@ class PageRepositoryTest {
     @Test
     fun `test getTeamById with existing user`() = mainCoroutineRule.runBlockingTest {
         (pageDataSource as FakePageDataSource).valid = true
-        val result = repository.getTeamById(TestConstants.TEAM_RESPONSE.id).asLiveData()
-        verify(teamDao).hasTeam(TestConstants.TEAM_RESPONSE.id)
-        // verify(teamDao, times(0)).save(TestConstants.TEAM_RESPONSE)
-        verify(teamDao).getTeamById(TestConstants.TEAM_RESPONSE.id)
-        assertThat(result.getOrAwaitValue(), `is`(TestConstants.TEAM_RESPONSE))
+        val result = repository.getTeamById(TestConstants.TEAM_RESPONSE_1.id).asLiveData()
+        verify(teamDao).hasTeam(TestConstants.TEAM_RESPONSE_1.id)
+        verify(teamDao).getTeamById(TestConstants.TEAM_RESPONSE_1.id)
+        assertThat(result.getOrAwaitValue(), `is`(TestConstants.TEAM_RESPONSE_1))
     }
 
     @Test(expected = PageNetworkError::class)
@@ -142,23 +145,23 @@ class PageRepositoryTest {
     @Test
     fun `test getTeamById after adding user`() = mainCoroutineRule.runBlockingTest {
         (pageDataSource as FakePageDataSource).valid = true
-        `when`(teamDao.getTeamById("id2")).thenReturn(flow { emit(TestConstants.TEAM_RESPONSE) })
+        `when`(teamDao.getTeamById("id2")).thenReturn(flow { emit(TestConstants.TEAM_RESPONSE_2) })
 
         val result = repository.getTeamById("id2").asLiveData()
         verify(teamDao).hasTeam("id2")
         verify(teamDao).getTeamById("id2")
 
-        assertThat(result.getOrAwaitValue(), `is`(TestConstants.TEAM_RESPONSE))
+        assertThat(result.getOrAwaitValue(), `is`(TestConstants.TEAM_RESPONSE_2))
     }
 
     @Test
     fun `test followTeam with existing user`() = mainCoroutineRule.runBlockingTest {
         (pageDataSource as FakePageDataSource).valid = true
 
-        val result = repository.followTeam(TestConstants.TEAM_RESPONSE.id).asLiveData()
-        verify(teamDao).getTeamById(TestConstants.TEAM_RESPONSE.id)
+        val result = repository.followTeam(TestConstants.TEAM_RESPONSE_1.id).asLiveData()
+        verify(teamDao).getTeamById(TestConstants.TEAM_RESPONSE_1.id)
 
-        assertThat(result.getOrAwaitValue(), `is`(TestConstants.TEAM_RESPONSE))
+        assertThat(result.getOrAwaitValue(), `is`(TestConstants.TEAM_RESPONSE_1))
     }
 
     @Test(expected = PageNetworkError::class)
@@ -316,7 +319,7 @@ class PageRepositoryTest {
     @Test
     fun `test canFollow without valid jwt`() = mainCoroutineRule.runBlockingTest {
         (userDataSource as FakeUserDataSource).shouldReturnError = false
-        val result = repository.canFollow(TestConstants.TEAM_RESPONSE.id)
+        val result = repository.canFollow(TestConstants.TEAM_RESPONSE_1.id)
         assertThat(result, `is`(false))
     }
 
@@ -324,7 +327,7 @@ class PageRepositoryTest {
     fun `test canFollow with valid jwt and team`() = mainCoroutineRule.runBlockingTest {
         (userDataSource as FakeUserDataSource).shouldReturnError = false
         sharedPrefs.edit().putString(Constants.USER_TOKEN, "jwt").commit()
-        val result = repository.canFollow(TestConstants.TEAM_RESPONSE.id)
+        val result = repository.canFollow(TestConstants.TEAM_RESPONSE_1.id)
         assertThat(result, `is`(false))
     }
 
@@ -332,7 +335,7 @@ class PageRepositoryTest {
     fun `test canFollow with invalid user`() = mainCoroutineRule.runBlockingTest {
         (userDataSource as FakeUserDataSource).shouldReturnError = true
         sharedPrefs.edit().putString(Constants.USER_TOKEN, "jwt").commit()
-        val result = repository.canFollow(TestConstants.TEAM_RESPONSE.id)
+        val result = repository.canFollow(TestConstants.TEAM_RESPONSE_1.id)
         assertThat(result, `is`(false))
     }
 
@@ -419,6 +422,60 @@ class PageRepositoryTest {
         verify(gameDao).hasGame(TestConstants.GAME_2.id)
         verify(gameDao).getGameById(TestConstants.GAME_1.id)
         verify(gameDao).getGameById(TestConstants.GAME_2.id)
+
+        try {
+            result.getOrAwaitValue()
+        } catch (exception: TimeoutException) {
+            assertThat(exception.message, `is`(TestConstants.LIVE_DATA_ERROR))
+        }
+    }
+
+    @Test
+    fun `test getGameListItems with valid data source`() = mainCoroutineRule.runBlockingTest {
+        (pageDataSource as FakePageDataSource).valid = true
+
+        val result = repository.getGameListItems(listOf(TestConstants.GAME_1, TestConstants.GAME_2)).asLiveData()
+        verify(teamDao, times(4)).hasTeam(TestConstants.TEAM_RESPONSE_1.id)
+        verify(teamDao, times(4)).hasTeam(TestConstants.TEAM_RESPONSE_2.id)
+        verify(teamDao, times(2)).getTeamById(TestConstants.TEAM_RESPONSE_1.id)
+        verify(teamDao, times(2)).getTeamById(TestConstants.TEAM_RESPONSE_2.id)
+
+        val list = result.getOrAwaitValue()
+        assertThat(list.size, `is`(2))
+        assertThat(list[0], `is`(TestConstants.GAME_ITEM_1))
+        assertThat(list[1], `is`(TestConstants.GAME_ITEM_2))
+    }
+
+    @Test
+    fun `test getGameListItems without saved games`() = mainCoroutineRule.runBlockingTest {
+        (pageDataSource as FakePageDataSource).valid = true
+        `when`(teamDao.hasTeam(TestConstants.GAME_1.id)).thenReturn(false)
+        `when`(teamDao.hasTeam(TestConstants.GAME_1.id)).thenReturn(false)
+
+        val result = repository.getGameListItems(listOf(TestConstants.GAME_1, TestConstants.GAME_2)).asLiveData()
+        verify(teamDao, times(4)).hasTeam(TestConstants.TEAM_RESPONSE_1.id)
+        verify(teamDao, times(4)).hasTeam(TestConstants.TEAM_RESPONSE_2.id)
+        verify(teamDao, times(2)).getTeamById(TestConstants.TEAM_RESPONSE_1.id)
+        verify(teamDao, times(2)).getTeamById(TestConstants.TEAM_RESPONSE_2.id)
+
+        val list = result.getOrAwaitValue()
+        assertThat(list.size, `is`(2))
+        assertThat(list[0], `is`(TestConstants.GAME_ITEM_1))
+        assertThat(list[1], `is`(TestConstants.GAME_ITEM_2))
+    }
+
+    @Test
+    fun `test getGamesListItems with invalid data source`() = mainCoroutineRule.runBlockingTest {
+        (pageDataSource as FakePageDataSource).valid = false
+
+        `when`(teamDao.hasTeam(TestConstants.GAME_1.id)).thenReturn(false)
+        `when`(teamDao.hasTeam(TestConstants.GAME_1.id)).thenReturn(false)
+
+        val result = repository.getGameListItems(listOf(TestConstants.GAME_1, TestConstants.GAME_2)).asLiveData()
+        verify(teamDao, times(4)).hasTeam(TestConstants.TEAM_RESPONSE_1.id)
+        verify(teamDao, times(4)).hasTeam(TestConstants.TEAM_RESPONSE_2.id)
+        verify(teamDao, times(2)).getTeamById(TestConstants.TEAM_RESPONSE_1.id)
+        verify(teamDao, times(2)).getTeamById(TestConstants.TEAM_RESPONSE_2.id)
 
         try {
             result.getOrAwaitValue()

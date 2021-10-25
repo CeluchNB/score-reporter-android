@@ -6,7 +6,6 @@ import com.noah.scorereporter.TestConstants
 import com.noah.scorereporter.data.network.PageNetworkError
 import com.noah.scorereporter.data.network.PageService
 import com.noah.scorereporter.fake.MockPageClient
-import com.noah.scorereporter.pages.PageDataSourceImpl
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
@@ -38,13 +37,13 @@ class PageDataSourceTest {
     fun `test valid getTeamById`() = runBlocking {
         dataSource.service = validService
 
-        val result = dataSource.getTeamById(TestConstants.TEAM_RESPONSE.id)
+        val result = dataSource.getTeamById(TestConstants.TEAM_RESPONSE_1.id)
 
-        assertThat(result.id, `is`(TestConstants.TEAM_RESPONSE.id))
-        assertThat(result.owner, `is`(TestConstants.TEAM_RESPONSE.owner))
-        assertThat(result.founded, `is`(TestConstants.TEAM_RESPONSE.founded))
-        assertThat(result.ended, `is`(TestConstants.TEAM_RESPONSE.ended))
-        assertThat(result.followers, `is`(TestConstants.TEAM_RESPONSE.followers))
+        assertThat(result.id, `is`(TestConstants.TEAM_RESPONSE_1.id))
+        assertThat(result.owner, `is`(TestConstants.TEAM_RESPONSE_1.owner))
+        assertThat(result.founded, `is`(TestConstants.TEAM_RESPONSE_1.founded))
+        assertThat(result.ended, `is`(TestConstants.TEAM_RESPONSE_1.ended))
+        assertThat(result.followers, `is`(TestConstants.TEAM_RESPONSE_1.followers))
     }
 
     @Test
@@ -52,7 +51,7 @@ class PageDataSourceTest {
         dataSource.service = invalidService
 
         try {
-            val result = dataSource.getTeamById(TestConstants.TEAM_RESPONSE.id)
+            val result = dataSource.getTeamById(TestConstants.TEAM_RESPONSE_1.id)
         } catch (exception: PageNetworkError) {
             assertThat(exception.message, `is`("Unable to get team"))
         }
@@ -61,20 +60,20 @@ class PageDataSourceTest {
     @Test
     fun `test valid followTeam`() = runBlocking {
         dataSource.service = validService
-        val result = dataSource.followTeam("", TestConstants.TEAM_RESPONSE.id)
+        val result = dataSource.followTeam("", TestConstants.TEAM_RESPONSE_1.id)
 
-        assertThat(result.id, `is`(TestConstants.TEAM_RESPONSE.id))
-        assertThat(result.owner, `is`(TestConstants.TEAM_RESPONSE.owner))
-        assertThat(result.founded, `is`(TestConstants.TEAM_RESPONSE.founded))
-        assertThat(result.ended, `is`(TestConstants.TEAM_RESPONSE.ended))
-        assertThat(result.followers, `is`(TestConstants.TEAM_RESPONSE.followers))
+        assertThat(result.id, `is`(TestConstants.TEAM_RESPONSE_1.id))
+        assertThat(result.owner, `is`(TestConstants.TEAM_RESPONSE_1.owner))
+        assertThat(result.founded, `is`(TestConstants.TEAM_RESPONSE_1.founded))
+        assertThat(result.ended, `is`(TestConstants.TEAM_RESPONSE_1.ended))
+        assertThat(result.followers, `is`(TestConstants.TEAM_RESPONSE_1.followers))
     }
 
     @Test
     fun `test invalid followTeam`() = runBlocking {
         dataSource.service = invalidService
         try {
-            val result = dataSource.followTeam("", TestConstants.TEAM_RESPONSE.id)
+            val result = dataSource.followTeam("", TestConstants.TEAM_RESPONSE_1.id)
         } catch (exception: PageNetworkError) {
             assertThat(exception.message, `is`("Unable to follow team"))
         }

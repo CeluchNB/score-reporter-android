@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" >
+
+    <data>
+        <variable
+            name="game"
+            type="com.noah.scorereporter.data.model.Game" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/home_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/small_margin"
+            android:text="@{game.homeTeam}"
+            style="@style/Theme.ScoreReporter.ItemHeader"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Atlanta Braves" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/home_score_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/small_margin"
+            android:text="3"
+            style="@style/Theme.ScoreReporter.ItemSubheader"
+            app:layout_constraintStart_toEndOf="@id/home_text"
+            app:layout_constraintTop_toTopOf="@id/home_text"
+            tools:text="3 "/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/away_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/small_margin"
+            android:text="@{game.awayTeam}"
+            style="@style/Theme.ScoreReporter.ItemHeader"
+            app:layout_constraintTop_toBottomOf="@id/home_text"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="PGH Pirates" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/away_score_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/small_margin"
+            android:text="5"
+            style="@style/Theme.ScoreReporter.ItemSubheader"
+            app:layout_constraintStart_toEndOf="@id/away_text"
+            app:layout_constraintTop_toTopOf="@id/away_text"
+            tools:text="5"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/date_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/small_margin"
+            style="@style/Theme.ScoreReporter.ItemSubheader"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/away_text"
+            tools:text="October 24, 2021"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

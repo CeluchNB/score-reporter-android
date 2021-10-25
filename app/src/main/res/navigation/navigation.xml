@@ -48,7 +48,7 @@
     <fragment
         android:id="@+id/seasonFragment"
         android:name="com.noah.scorereporter.pages.season.SeasonFragment"
-        android:label="SeasonFragment">
+        android:label="Season">
         <argument
             android:name="seasonId"
             android:defaultValue="@null"

@@ -2,6 +2,7 @@ package com.noah.scorereporter.pages.season
 
 import androidx.lifecycle.*
 import com.noah.scorereporter.data.model.Game
+import com.noah.scorereporter.data.model.GameListItem
 import com.noah.scorereporter.data.model.Season
 import com.noah.scorereporter.data.model.Team
 import com.noah.scorereporter.data.network.DispatcherProvider
@@ -24,13 +25,22 @@ class SeasonViewModel @Inject constructor(
             emitSource(repository.getSeasonById(it).asLiveData())
         }
     }
-
     val season: LiveData<Season>
         get() = _season
 
-    val games: LiveData<List<Game>> = season.switchMap { s ->
+    private val _games: LiveData<List<Game>> = season.switchMap { s ->
         liveData(dispatchers.io()) {
             emitSource(repository.getGamesOfSeason(s.games.map { it.game }).asLiveData())
         }
     }
+    val games: LiveData<List<Game>>
+        get() = _games
+
+    private val _gameList: LiveData<List<GameListItem>> = games.switchMap {
+        liveData(dispatchers.io()) {
+            emitSource(repository.getGameListItems(it).asLiveData())
+        }
+    }
+    val gameList: LiveData<List<GameListItem>>
+        get() = _gameList
 }

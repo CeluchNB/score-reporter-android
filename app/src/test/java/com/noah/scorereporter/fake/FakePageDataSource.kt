@@ -12,7 +12,12 @@ class FakePageDataSource : PageDataSource {
     var valid = true
     override suspend fun getTeamById(id: String): Team {
         return if (valid) {
-            TestConstants.TEAM_RESPONSE
+            when (id) {
+                TestConstants.TEAM_RESPONSE_1.id -> TestConstants.TEAM_RESPONSE_1
+                TestConstants.TEAM_RESPONSE_2.id -> TestConstants.TEAM_RESPONSE_2
+                "id2" -> TestConstants.TEAM_RESPONSE_2
+                else -> throw PageNetworkError(TestConstants.TEAM_ERROR, Throwable())
+            }
         } else {
             throw PageNetworkError(TestConstants.TEAM_ERROR, Throwable())
         }
@@ -20,7 +25,11 @@ class FakePageDataSource : PageDataSource {
 
     override suspend fun followTeam(jwt: String, id: String): Team {
         return if (valid) {
-            TestConstants.TEAM_RESPONSE
+            when (id) {
+                TestConstants.TEAM_RESPONSE_1.id -> TestConstants.TEAM_RESPONSE_1
+                TestConstants.TEAM_RESPONSE_2.id -> TestConstants.TEAM_RESPONSE_2
+                else -> throw PageNetworkError(TestConstants.TEAM_ERROR, Throwable())
+            }
         } else {
             throw PageNetworkError(TestConstants.TEAM_ERROR, Throwable())
         }

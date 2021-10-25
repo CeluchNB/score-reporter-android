@@ -13,10 +13,7 @@ import com.noah.scorereporter.data.network.UserDataSource
 import com.noah.scorereporter.data.network.UserNetworkError
 import com.noah.scorereporter.util.Constants
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -192,5 +189,64 @@ constructor(
             }
         }
         return flow { emit(games) }
+    }
+
+    override suspend fun getGameListItems(games: List<Game>): Flow<List<GameListItem>> {
+        val newTeams = mutableListOf<Team>()
+
+        coroutineScope {
+            games.forEach { game ->
+                if (!teamDao.hasTeam(game.awayTeam)) {
+                    launch {
+                        try {
+                            val team = pageDataSource.getTeamById(game.awayTeam)
+                            newTeams.add(team)
+                        } catch (exception: PageNetworkError) {
+                            Log.e("PageRepository", exception.message ?: "")
+                        }
+                    }
+                }
+
+                if (!teamDao.hasTeam(game.homeTeam)) {
+                    launch {
+                        try {
+                            val team = pageDataSource.getTeamById(game.homeTeam)
+                            newTeams.add(team)
+                        } catch (exception: PageNetworkError) {
+                            Log.e("PageRepository", exception.message ?: "")
+                        }
+                    }
+                }
+            }
+        }
+
+        teamDao.save(*newTeams.toTypedArray())
+
+        val listItems = mutableListOf<GameListItem>()
+
+        games.forEach { game ->
+            if (teamDao.hasTeam(game.awayTeam) && teamDao.hasTeam(game.homeTeam)) {
+                val awayTeam = teamDao.getTeamById(game.awayTeam)
+                val homeTeam = teamDao.getTeamById(game.homeTeam)
+
+                lateinit var away: Team
+                lateinit var home: Team
+
+                awayTeam.take(1).collect { away = it }
+                homeTeam.take(1).collect { home = it }
+
+                val gameListItem = GameListItem(
+                    away,
+                    home,
+                    game.innings.away.sum(),
+                    game.innings.home.sum(),
+                    if (game.winner == away.id) TeamStatus.AWAY else TeamStatus.HOME
+                )
+
+                listItems.add(gameListItem)
+            }
+        }
+
+        return flow { emit(listItems) }
     }
 }

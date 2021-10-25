@@ -80,4 +80,24 @@ class SeasonViewModelTest {
             assertThat(exception.message, `is`(TestConstants.LIVE_DATA_ERROR))
         }
     }
+
+    @Test
+    fun `test game list item change with valid repository`() = mainCoroutineRule.runBlockingTest {
+        (repository as FakePageRepository).valid = true
+        viewModel.id.value = TestConstants.SEASON_RESPONSE.id
+
+        val result = viewModel.gameList.getOrAwaitValue()
+        assertThat(result, `is`(listOf(TestConstants.GAME_ITEM_1, TestConstants.GAME_ITEM_2)))
+    }
+
+    @Test
+    fun `test game list item change with invalid repository`() = mainCoroutineRule.runBlockingTest {
+        (repository as FakePageRepository).valid = false
+        viewModel.id.value = TestConstants.SEASON_RESPONSE.id
+        try {
+            val result = viewModel.gameList.getOrAwaitValue()
+        } catch (exception: TimeoutException) {
+            assertThat(exception.message, `is`(TestConstants.LIVE_DATA_ERROR))
+        }
+    }
 }

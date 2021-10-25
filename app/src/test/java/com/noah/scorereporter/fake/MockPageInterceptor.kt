@@ -11,10 +11,10 @@ class MockPageInterceptor(private val valid: Boolean) : Interceptor {
         var response = ""
 
         response = when {
-            uri.endsWith("/team/${TestConstants.TEAM_RESPONSE.id}") -> {
+            uri.endsWith("/team/${TestConstants.TEAM_RESPONSE_1.id}") -> {
                 if (valid) {
                     gson.toJson(
-                        TestConstants.TEAM_RESPONSE
+                        TestConstants.TEAM_RESPONSE_1
                     )
                 } else {
                     TestConstants.TEAM_ERROR
@@ -23,7 +23,7 @@ class MockPageInterceptor(private val valid: Boolean) : Interceptor {
             uri.endsWith("/follow") -> {
                 if (valid) {
                     gson.toJson(
-                        TestConstants.TEAM_RESPONSE
+                        TestConstants.TEAM_RESPONSE_1
                     )
                 } else {
                     TestConstants.TEAM_ERROR
