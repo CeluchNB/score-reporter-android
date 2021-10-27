@@ -99,7 +99,19 @@ class FakePageRepository : IPageRepository {
 
     override suspend fun getGameListItems(games: List<Game>): Flow<List<GameListItem>> {
         return if (valid) {
-            flow { emit(listOf(TestConstants.GAME_ITEM_1, TestConstants.GAME_ITEM_2)) }
+            flow { emit(listOf(TestConstants.GAME_LIST_ITEM_1, TestConstants.GAME_LIST_ITEM_2)) }
+        } else {
+            flow { }
+        }
+    }
+
+    override suspend fun getGame(id: String): Flow<GameItem> {
+        return if (valid) {
+            when {
+                id.equals(TestConstants.GAME_1) -> flow { emit(TestConstants.GAME_ITEM_1) }
+                id.equals(TestConstants.GAME_2) -> flow { emit(TestConstants.GAME_ITEM_2) }
+                else -> flow { }
+            }
         } else {
             flow { }
         }

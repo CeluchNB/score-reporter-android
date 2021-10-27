@@ -128,7 +128,7 @@ object TestConstants {
         Date(970891721000L)
     )
 
-    val GAME_ITEM_1 = GameListItem(
+    val GAME_LIST_ITEM_1 = GameListItem(
         TEAM_RESPONSE_1,
         TEAM_RESPONSE_2,
         4,
@@ -136,12 +136,30 @@ object TestConstants {
         TeamStatus.HOME
     )
 
-    val GAME_ITEM_2 = GameListItem(
+    val GAME_LIST_ITEM_2 = GameListItem(
         TEAM_RESPONSE_2,
         TEAM_RESPONSE_1,
         8,
         3,
         TeamStatus.AWAY
+    )
+
+    val GAME_ITEM_1 = GameItem(
+        TEAM_RESPONSE_1,
+        TEAM_RESPONSE_2,
+        SEASON_RESPONSE,
+        GameInnings(listOf(0, 1, 2), listOf(2, 1, 2)),
+        TeamStatus.HOME,
+        Date(970891721000L)
+    )
+
+    val GAME_ITEM_2 = GameItem(
+        TEAM_RESPONSE_2,
+        TEAM_RESPONSE_1,
+        SEASON_RESPONSE_2,
+        GameInnings(listOf(2, 2, 2), listOf(0, 0, 0)),
+        TeamStatus.AWAY,
+        Date(1631579921000L)
     )
 
     const val GAME_ERROR = "Unable to find game"

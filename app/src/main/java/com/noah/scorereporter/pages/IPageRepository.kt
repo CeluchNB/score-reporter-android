@@ -19,4 +19,6 @@ interface IPageRepository {
     suspend fun getGamesOfSeason(ids: List<String>): Flow<List<Game>>
 
     suspend fun getGameListItems(games: List<Game>): Flow<List<GameListItem>>
+
+    suspend fun getGame(id: String): Flow<GameItem>
 }

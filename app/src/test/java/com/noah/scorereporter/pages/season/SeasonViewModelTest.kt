@@ -87,7 +87,7 @@ class SeasonViewModelTest {
         viewModel.id.value = TestConstants.SEASON_RESPONSE.id
 
         val result = viewModel.gameList.getOrAwaitValue()
-        assertThat(result, `is`(listOf(TestConstants.GAME_ITEM_1, TestConstants.GAME_ITEM_2)))
+        assertThat(result, `is`(listOf(TestConstants.GAME_LIST_ITEM_1, TestConstants.GAME_LIST_ITEM_2)))
     }
 
     @Test

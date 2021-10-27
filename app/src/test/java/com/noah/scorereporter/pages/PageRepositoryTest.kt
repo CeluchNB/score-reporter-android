@@ -33,6 +33,7 @@ import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.Timeout
 import org.junit.runner.RunWith
 import org.mockito.Mockito.*
 import java.util.concurrent.TimeoutException
@@ -442,8 +443,8 @@ class PageRepositoryTest {
 
         val list = result.getOrAwaitValue()
         assertThat(list.size, `is`(2))
-        assertThat(list[0], `is`(TestConstants.GAME_ITEM_1))
-        assertThat(list[1], `is`(TestConstants.GAME_ITEM_2))
+        assertThat(list[0], `is`(TestConstants.GAME_LIST_ITEM_1))
+        assertThat(list[1], `is`(TestConstants.GAME_LIST_ITEM_2))
     }
 
     @Test
@@ -460,8 +461,8 @@ class PageRepositoryTest {
 
         val list = result.getOrAwaitValue()
         assertThat(list.size, `is`(2))
-        assertThat(list[0], `is`(TestConstants.GAME_ITEM_1))
-        assertThat(list[1], `is`(TestConstants.GAME_ITEM_2))
+        assertThat(list[0], `is`(TestConstants.GAME_LIST_ITEM_1))
+        assertThat(list[1], `is`(TestConstants.GAME_LIST_ITEM_2))
     }
 
     @Test
@@ -476,6 +477,82 @@ class PageRepositoryTest {
         verify(teamDao, times(4)).hasTeam(TestConstants.TEAM_RESPONSE_2.id)
         verify(teamDao, times(2)).getTeamById(TestConstants.TEAM_RESPONSE_1.id)
         verify(teamDao, times(2)).getTeamById(TestConstants.TEAM_RESPONSE_2.id)
+
+        try {
+            result.getOrAwaitValue()
+        } catch (exception: TimeoutException) {
+            assertThat(exception.message, `is`(TestConstants.LIVE_DATA_ERROR))
+        }
+    }
+
+    @Test
+    fun `test getGame with valid source`() = mainCoroutineRule.runBlockingTest {
+        (pageDataSource as FakePageDataSource).valid = true
+
+        `when`(gameDao.hasGame(TestConstants.GAME_1.id)).thenReturn(true)
+        `when`(teamDao.hasTeam(TestConstants.GAME_1.awayTeam)).thenReturn(true)
+        `when`(teamDao.hasTeam(TestConstants.GAME_1.homeTeam)).thenReturn(true)
+        `when`(seasonDao.hasSeason(TestConstants.GAME_1.season)).thenReturn(true)
+
+        val result = repository.getGame(TestConstants.GAME_1.id).asLiveData()
+        verify(gameDao, times(1)).hasGame(TestConstants.GAME_1.id)
+        verify(teamDao, times(1)).hasTeam(TestConstants.GAME_1.awayTeam)
+        verify(teamDao, times(1)).hasTeam(TestConstants.GAME_1.homeTeam)
+        verify(seasonDao, times(1)).hasSeason(TestConstants.GAME_1.season)
+
+        verify(gameDao).getGameById(TestConstants.GAME_1.id)
+        verify(teamDao).getTeamById(TestConstants.GAME_1.awayTeam)
+        verify(teamDao).getTeamById(TestConstants.GAME_1.homeTeam)
+        verify(seasonDao).getSeasonById(TestConstants.GAME_1.season)
+
+        val game = result.getOrAwaitValue()
+        assertThat(game, `is`(TestConstants.GAME_ITEM_1))
+    }
+
+    @Test
+    fun `test getGame without saved members`() = mainCoroutineRule.runBlockingTest {
+        (pageDataSource as FakePageDataSource).valid = true
+
+        `when`(gameDao.hasGame(TestConstants.GAME_1.id)).thenReturn(false)
+        `when`(teamDao.hasTeam(TestConstants.GAME_1.awayTeam)).thenReturn(false)
+        `when`(teamDao.hasTeam(TestConstants.GAME_1.homeTeam)).thenReturn(false)
+        `when`(seasonDao.hasSeason(TestConstants.GAME_1.season)).thenReturn(false)
+
+        val result = repository.getGame(TestConstants.GAME_1.id).asLiveData()
+        verify(gameDao, times(1)).hasGame(TestConstants.GAME_1.id)
+        verify(teamDao, times(1)).hasTeam(TestConstants.GAME_1.awayTeam)
+        verify(teamDao, times(1)).hasTeam(TestConstants.GAME_1.homeTeam)
+        verify(seasonDao, times(1)).hasSeason(TestConstants.GAME_1.season)
+
+        verify(gameDao).getGameById(TestConstants.GAME_1.id)
+        verify(teamDao).getTeamById(TestConstants.GAME_1.awayTeam)
+        verify(teamDao).getTeamById(TestConstants.GAME_1.homeTeam)
+        verify(seasonDao).getSeasonById(TestConstants.GAME_1.season)
+
+        val game = result.getOrAwaitValue()
+        assertThat(game, `is`(TestConstants.GAME_ITEM_1))
+    }
+
+    @Test
+    fun `test getGame with invalid data source`() = mainCoroutineRule.runBlockingTest {
+        (pageDataSource as FakePageDataSource).valid = false
+
+        `when`(gameDao.hasGame(TestConstants.GAME_1.id)).thenReturn(false)
+        `when`(teamDao.hasTeam(TestConstants.GAME_1.awayTeam)).thenReturn(false)
+        `when`(teamDao.hasTeam(TestConstants.GAME_1.homeTeam)).thenReturn(false)
+        `when`(seasonDao.hasSeason(TestConstants.GAME_1.season)).thenReturn(false)
+
+        val result = repository.getGame(TestConstants.GAME_1.id).asLiveData()
+        verify(gameDao, times(1)).hasGame(TestConstants.GAME_1.id)
+        verify(teamDao, times(1)).hasTeam(TestConstants.GAME_1.awayTeam)
+        verify(teamDao, times(1)).hasTeam(TestConstants.GAME_1.homeTeam)
+        verify(seasonDao, times(1)).hasSeason(TestConstants.GAME_1.season)
+
+        verify(gameDao, times(0)).getGameById(TestConstants.GAME_1.id)
+        verify(teamDao, times(0)).getTeamById(TestConstants.GAME_1.awayTeam)
+        verify(teamDao, times(0)).getTeamById(TestConstants.GAME_1.homeTeam)
+        verify(seasonDao, times(0)).getSeasonById(TestConstants.GAME_1.season)
+
 
         try {
             result.getOrAwaitValue()
