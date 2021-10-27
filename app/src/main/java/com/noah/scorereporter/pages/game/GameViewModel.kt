@@ -1,21 +1,25 @@
 package com.noah.scorereporter.pages.game
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
-import com.noah.scorereporter.data.model.Game
+import androidx.lifecycle.*
+import com.noah.scorereporter.data.model.GameItem
+import com.noah.scorereporter.data.network.DispatcherProvider
 import com.noah.scorereporter.pages.IPageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class GameViewModel @Inject constructor(val repository: IPageRepository) : ViewModel() {
+class GameViewModel @Inject constructor(
+    private val repository: IPageRepository,
+    private val dispatchers: DispatcherProvider
+) : ViewModel() {
 
-    val id: LiveData<String> = MutableLiveData()
+    val id: MutableLiveData<String> = MutableLiveData()
 
-    val _game: LiveData<Game> =
-        liveData {
-
+    private val _game: LiveData<GameItem> = id.switchMap {
+        liveData(dispatchers.io()) {
+            emitSource(repository.getGame(it).asLiveData())
         }
+    }
+    val game: LiveData<GameItem>
+        get() = _game
 }

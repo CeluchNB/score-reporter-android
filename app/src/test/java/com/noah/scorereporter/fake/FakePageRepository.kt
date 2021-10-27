@@ -108,8 +108,8 @@ class FakePageRepository : IPageRepository {
     override suspend fun getGame(id: String): Flow<GameItem> {
         return if (valid) {
             when {
-                id.equals(TestConstants.GAME_1) -> flow { emit(TestConstants.GAME_ITEM_1) }
-                id.equals(TestConstants.GAME_2) -> flow { emit(TestConstants.GAME_ITEM_2) }
+                id.equals(TestConstants.GAME_1.id) -> flow { emit(TestConstants.GAME_ITEM_1) }
+                id.equals(TestConstants.GAME_2.id) -> flow { emit(TestConstants.GAME_ITEM_2) }
                 else -> flow { }
             }
         } else {
