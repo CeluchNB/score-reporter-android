@@ -544,15 +544,14 @@ class PageRepositoryTest {
 
         val result = repository.getGame(TestConstants.GAME_1.id).asLiveData()
         verify(gameDao, times(1)).hasGame(TestConstants.GAME_1.id)
-        verify(teamDao, times(1)).hasTeam(TestConstants.GAME_1.awayTeam)
-        verify(teamDao, times(1)).hasTeam(TestConstants.GAME_1.homeTeam)
-        verify(seasonDao, times(1)).hasSeason(TestConstants.GAME_1.season)
+        verify(teamDao, times(0)).hasTeam(TestConstants.GAME_1.awayTeam)
+        verify(teamDao, times(0)).hasTeam(TestConstants.GAME_1.homeTeam)
+        verify(seasonDao, times(0)).hasSeason(TestConstants.GAME_1.season)
 
         verify(gameDao, times(0)).getGameById(TestConstants.GAME_1.id)
         verify(teamDao, times(0)).getTeamById(TestConstants.GAME_1.awayTeam)
         verify(teamDao, times(0)).getTeamById(TestConstants.GAME_1.homeTeam)
         verify(seasonDao, times(0)).getSeasonById(TestConstants.GAME_1.season)
-
 
         try {
             result.getOrAwaitValue()

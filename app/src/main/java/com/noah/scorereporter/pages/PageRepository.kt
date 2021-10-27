@@ -251,6 +251,69 @@ constructor(
     }
 
     override suspend fun getGame(id: String): Flow<GameItem> {
-        TODO("Not yet implemented")
+        var game: Game? = null
+        lateinit var awayTeam: Team
+        lateinit var homeTeam: Team
+        lateinit var season: Season
+
+        if (!gameDao.hasGame(id)) {
+            try {
+                coroutineScope {
+                    launch {
+                        game = pageDataSource.getGameById(id)
+                    }
+                }
+            } catch (exception: PageNetworkError) {
+                Log.e("PageRepository", exception.message ?: "Unable to get game")
+                return flow { }
+            }
+        }
+
+        game?.let {
+            gameDao.save(it)
+        }
+
+        gameDao.getGameById(id).take(1).collect {
+            game = it
+        }
+
+        if (game == null) {
+            return flow { }
+        }
+
+        game?.let {
+            try {
+                getTeamById(it.awayTeam).collect {
+                    awayTeam = it
+                }
+
+                getTeamById(it.homeTeam).collect {
+                    homeTeam = it
+                }
+
+                getSeasonById(it.season).collect {
+                    season = it
+                }
+            } catch (exception: PageNetworkError) {
+                Log.e("PageRepository", exception.message ?: "Unable to get game members")
+                return flow { }
+            }
+        }
+
+        game?.let {
+            return flow {
+                emit(
+                    GameItem(
+                        awayTeam,
+                        homeTeam,
+                        season,
+                        it.innings,
+                        if (it.winner == it.awayTeam) TeamStatus.AWAY else TeamStatus.HOME,
+                        it.date
+                    )
+                )
+            }
+        }
+        return flow { }
     }
 }
